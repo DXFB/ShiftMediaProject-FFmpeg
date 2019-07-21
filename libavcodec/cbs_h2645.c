@@ -24,7 +24,6 @@
 #include "cbs_internal.h"
 #include "cbs_h264.h"
 #include "cbs_h265.h"
-#include "golomb.h"
 #include "h264.h"
 #include "h264_sei.h"
 #include "h2645_parse.h"
@@ -328,9 +327,11 @@ static int cbs_h2645_read_more_rbsp_data(GetBitContext *gbc)
     int bits_left = get_bits_left(gbc);
     if (bits_left > 8)
         return 1;
-    if (show_bits(gbc, bits_left) == 1 << (bits_left - 1))
+    if (bits_left == 0)
         return 0;
-    return 1;
+    if (show_bits(gbc, bits_left) & MAX_UINT_BITS(bits_left - 1))
+        return 1;
+    return 0;
 }
 
 #define more_rbsp_data(var) ((var) = cbs_h2645_read_more_rbsp_data(rw))
@@ -530,6 +531,7 @@ static void cbs_h265_free_sei_payload(H265RawSEIPayload *payload)
     case HEVC_SEI_TYPE_MASTERING_DISPLAY_INFO:
     case HEVC_SEI_TYPE_CONTENT_LIGHT_LEVEL_INFO:
     case HEVC_SEI_TYPE_ALTERNATIVE_TRANSFER_CHARACTERISTICS:
+    case HEVC_SEI_TYPE_ALPHA_CHANNEL_INFO:
         break;
     case HEVC_SEI_TYPE_USER_DATA_REGISTERED_ITU_T_T35:
         av_buffer_unref(&payload->payload.user_data_registered.data_ref);
@@ -1644,10 +1646,10 @@ int ff_cbs_h264_add_sei_message(CodedBitstreamContext *ctx,
     return 0;
 }
 
-int ff_cbs_h264_delete_sei_message(CodedBitstreamContext *ctx,
-                                   CodedBitstreamFragment *au,
-                                   CodedBitstreamUnit *nal,
-                                   int position)
+void ff_cbs_h264_delete_sei_message(CodedBitstreamContext *ctx,
+                                    CodedBitstreamFragment *au,
+                                    CodedBitstreamUnit *nal,
+                                    int position)
 {
     H264RawSEI *sei = nal->content;
 
@@ -1662,9 +1664,8 @@ int ff_cbs_h264_delete_sei_message(CodedBitstreamContext *ctx,
             if (&au->units[i] == nal)
                 break;
         }
-        av_assert0(i < au->nb_units && "NAL unit not in access unit.");
 
-        return ff_cbs_delete_unit(ctx, au, i);
+        ff_cbs_delete_unit(ctx, au, i);
     } else {
         cbs_h264_free_sei_payload(&sei->payload[position]);
 
@@ -1672,7 +1673,5 @@ int ff_cbs_h264_delete_sei_message(CodedBitstreamContext *ctx,
         memmove(sei->payload + position,
                 sei->payload + position + 1,
                 (sei->payload_count - position) * sizeof(*sei->payload));
-
-        return 0;
     }
 }

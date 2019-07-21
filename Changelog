@@ -34,6 +34,8 @@ version <next>:
 - VP4 video decoder
 - IFV demuxer
 - derain filter
+- deesser filter
+- mov muxer writes tracks with unspecified language instead of English by default
 
 
 version 4.1:

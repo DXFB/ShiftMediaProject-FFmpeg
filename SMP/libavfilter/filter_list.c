@@ -86,6 +86,7 @@ static const AVFilter *filter_list[] = {
     &ff_af_crossfeed,
     &ff_af_crystalizer,
     &ff_af_dcshift,
+    &ff_af_deesser,
     &ff_af_drmeter,
     &ff_af_dynaudnorm,
     &ff_af_earwax,

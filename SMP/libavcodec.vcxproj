@@ -947,6 +947,7 @@
     <ClCompile Include="..\libavcodec\h264_redundant_pps_bsf.c" />
     <ClCompile Include="..\libavcodec\hapqa_extract_bsf.c" />
     <ClCompile Include="..\libavcodec\h265_metadata_bsf.c" />
+    <ClCompile Include="..\libavcodec\h265_profile_level.c" />
     <ClCompile Include="..\libavcodec\hevc_mp4toannexb_bsf.c" />
     <ClCompile Include="..\libavcodec\imx_dump_header_bsf.c" />
     <ClCompile Include="..\libavcodec\mjpeg2jpeg_bsf.c" />

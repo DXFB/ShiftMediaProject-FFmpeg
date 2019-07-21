@@ -2691,6 +2691,9 @@
     <ClCompile Include="..\libavcodec\h265_metadata_bsf.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\h265_profile_level.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\hevc_mp4toannexb_bsf.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>

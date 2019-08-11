@@ -127,6 +127,7 @@ static const AVFilter *filter_list[] = {
     &ff_asrc_sinc,
     &ff_asrc_sine,
     &ff_asink_anullsink,
+    &ff_vf_addroi,
     &ff_vf_alphaextract,
     &ff_vf_alphamerge,
     &ff_vf_amplify,

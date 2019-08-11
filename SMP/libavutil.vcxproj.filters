@@ -258,6 +258,12 @@
     <ClCompile Include="..\libavutil\tx.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavutil\tx_float.c">
+      <Filter>Source Files\libavutil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavutil\tx_double.c">
+      <Filter>Source Files\libavutil</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavutil\hwcontext_cuda.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>

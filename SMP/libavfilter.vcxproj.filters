@@ -19,8 +19,11 @@
     <Filter Include="Source Files\libavfilter">
       <UniqueIdentifier>{bf017c32-250d-47da-b7e6-d5a5091cb1e6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\libavfilter\x86">
+    <Filter Include="Source Files\libavfilter\dnn">
       <UniqueIdentifier>{fd9e10e9-18f6-437d-b5d7-17290540c8b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\libavfilter\x86">
+      <UniqueIdentifier>{f026e68e-ff14-4bf4-8758-6384ac7bcfaf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +53,9 @@
       <Filter>Source Files\libavfilter\x86</Filter>
     </NASM>
     <NASM Include="..\libavfilter\x86\colorspacedsp.asm">
+      <Filter>Source Files\libavfilter\x86</Filter>
+    </NASM>
+    <NASM Include="..\libavfilter\x86\vf_convolution.asm">
       <Filter>Source Files\libavfilter\x86</Filter>
     </NASM>
     <NASM Include="..\libavfilter\x86\vf_framerate.asm">
@@ -175,12 +181,6 @@
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\qsvvpp.c">
-      <Filter>Source Files\libavfilter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavfilter\dnn_interface.c">
-      <Filter>Source Files\libavfilter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavfilter\dnn_backend_native.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\f_bench.c">
@@ -459,6 +459,9 @@
     <ClCompile Include="..\libavfilter\asink_anullsink.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_addroi.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_extractplanes.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -535,9 +538,6 @@
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\colorspace.c">
-      <Filter>Source Files\libavfilter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavfilter\vf_convolution.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vf_convolve.c">
@@ -1023,6 +1023,15 @@
     <ClCompile Include="..\libavfilter\src_movie.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\dnn\dnn_interface.c">
+      <Filter>Source Files\libavfilter\dnn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native.c">
+      <Filter>Source Files\libavfilter\dnn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_pad.c">
+      <Filter>Source Files\libavfilter\dnn</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\x86\scene_sad_init.c">
       <Filter>Source Files\libavfilter\x86</Filter>
     </ClCompile>
@@ -1039,6 +1048,9 @@
       <Filter>Source Files\libavfilter\x86</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\x86\colorspacedsp_init.c">
+      <Filter>Source Files\libavfilter\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\x86\vf_convolution_init.c">
       <Filter>Source Files\libavfilter\x86</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\x86\vf_fspp_init.c">
@@ -1132,6 +1144,9 @@
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\colorspacedsp.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_convolution.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vf_framerate.c">

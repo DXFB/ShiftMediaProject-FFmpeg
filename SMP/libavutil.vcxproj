@@ -134,6 +134,8 @@
     <ClCompile Include="..\libavutil\xtea.c" />
     <ClCompile Include="..\libavutil\tea.c" />
     <ClCompile Include="..\libavutil\tx.c" />
+    <ClCompile Include="..\libavutil\tx_float.c" />
+    <ClCompile Include="..\libavutil\tx_double.c" />
     <ClCompile Include="..\libavutil\hwcontext_cuda.c" />
     <ClCompile Include="..\libavutil\hwcontext_dxva2.c" />
     <ClCompile Include="..\libavutil\lzo.c" />

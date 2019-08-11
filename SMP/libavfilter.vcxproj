@@ -66,6 +66,7 @@
     <NASM Include="..\libavfilter\x86\vf_blend.asm" />
     <NASM Include="..\libavfilter\x86\vf_bwdif.asm" />
     <NASM Include="..\libavfilter\x86\colorspacedsp.asm" />
+    <NASM Include="..\libavfilter\x86\vf_convolution.asm" />
     <NASM Include="..\libavfilter\x86\vf_framerate.asm" />
     <NASM Include="..\libavfilter\x86\vf_fspp.asm" />
     <NASM Include="..\libavfilter\x86\vf_gblur.asm" />
@@ -109,8 +110,6 @@
     <ClCompile Include="..\libavfilter\video.c" />
     <ClCompile Include="..\libavfilter\pthread.c" />
     <ClCompile Include="..\libavfilter\qsvvpp.c" />
-    <ClCompile Include="..\libavfilter\dnn_interface.c" />
-    <ClCompile Include="..\libavfilter\dnn_backend_native.c" />
     <ClCompile Include="..\libavfilter\f_bench.c" />
     <ClCompile Include="..\libavfilter\af_sidechaincompress.c" />
     <ClCompile Include="..\libavfilter\af_acontrast.c" />
@@ -203,6 +202,7 @@
     <ClCompile Include="..\libavfilter\asrc_sinc.c" />
     <ClCompile Include="..\libavfilter\asrc_sine.c" />
     <ClCompile Include="..\libavfilter\asink_anullsink.c" />
+    <ClCompile Include="..\libavfilter\vf_addroi.c" />
     <ClCompile Include="..\libavfilter\vf_extractplanes.c" />
     <ClCompile Include="..\libavfilter\vf_alphamerge.c" />
     <ClCompile Include="..\libavfilter\vf_amplify.c" />
@@ -229,7 +229,6 @@
     <ClCompile Include="..\libavfilter\vf_colormatrix.c" />
     <ClCompile Include="..\libavfilter\vf_colorspace.c" />
     <ClCompile Include="..\libavfilter\colorspace.c" />
-    <ClCompile Include="..\libavfilter\vf_convolution.c" />
     <ClCompile Include="..\libavfilter\vf_convolve.c" />
     <ClCompile Include="..\libavfilter\vf_copy.c" />
     <ClCompile Include="..\libavfilter\vf_cover_rect.c" />
@@ -391,12 +390,16 @@
     <ClCompile Include="..\libavfilter\avf_showwaves.c" />
     <ClCompile Include="..\libavfilter\vaf_spectrumsynth.c" />
     <ClCompile Include="..\libavfilter\src_movie.c" />
+    <ClCompile Include="..\libavfilter\dnn\dnn_interface.c" />
+    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native.c" />
+    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_pad.c" />
     <ClCompile Include="..\libavfilter\x86\scene_sad_init.c" />
     <ClCompile Include="..\libavfilter\x86\af_afir_init.c" />
     <ClCompile Include="..\libavfilter\x86\af_anlmdn_init.c" />
     <ClCompile Include="..\libavfilter\x86\vf_blend_init.c" />
     <ClCompile Include="..\libavfilter\x86\vf_bwdif_init.c" />
     <ClCompile Include="..\libavfilter\x86\colorspacedsp_init.c" />
+    <ClCompile Include="..\libavfilter\x86\vf_convolution_init.c" />
     <ClCompile Include="..\libavfilter\x86\vf_fspp_init.c" />
     <ClCompile Include="..\libavfilter\x86\vf_gblur_init.c" />
     <ClCompile Include="..\libavfilter\x86\vf_gradfun_init.c" />
@@ -441,6 +444,9 @@
     </ClCompile>
     <ClCompile Include="..\libavfilter\colorspacedsp.c">
       <ObjectFileName>$(IntDir)\libavfilter_colorspacedsp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_convolution.c">
+      <ObjectFileName>$(IntDir)\libavfilter_vf_convolution.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vf_framerate.c">
       <ObjectFileName>$(IntDir)\libavfilter_vf_framerate.obj</ObjectFileName>

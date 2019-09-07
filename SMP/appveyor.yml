@@ -35,7 +35,7 @@ before_build:
 - ps: >-
     if ($env:MSVC_VER -eq 16) {
         $env:VCVARS="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat"
-    } else if ($env:MSVC_VER -eq 15) {
+    } elseif ($env:MSVC_VER -eq 15) {
         $env:VCVARS="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"
     } else {
         $env:VSCOMNTOOLS=(Get-Content ("env:VS" + "$env:MSVC_VER" + "0COMNTOOLS"))
@@ -105,18 +105,20 @@ before_build:
 # Set Targets path so that gitlink works correctly
 - ps: $env:MSBUILDDIR=((Get-Command msbuild.exe).Path | Split-Path -parent)
 - ps: >-
-    if ($env:MSVC_VER -gt 14) {
+    if ($env:MSVC_VER -eq 16) {
+        $env:VCTargetsPath="$env:MSBUILDDIR\..\..\Microsoft\VC\v160\"
+    } elseif ($env:MSVC_VER -eq 15) {
         $env:VCTargetsPath="$env:MSBUILDDIR\..\..\..\Common7\IDE\VC\VCTargets"
     } else {
         $env:VCTargetsPath="$env:MSBUILDDIR\..\..\..\Microsoft.Cpp\v4.0\V${env:MSVC_VER}0"
     }
 
 # Download and install nasm integration
-- ps: (New-Object Net.WebClient).DownloadFile('https://github.com/ShiftMediaProject/VSNASM/releases/download/0.5/VSNASM.zip', "$pwd\nasm.zip")
+- ps: (New-Object Net.WebClient).DownloadFile('https://github.com/ShiftMediaProject/VSNASM/releases/download/0.6/VSNASM.zip', "$pwd\nasm.zip")
 - ps: Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory("$pwd\nasm.zip", "$pwd\TempNASMUnpack")
 - cmd: call ".\TempNASMUnpack\install_script.bat"
 # Additional nasm location in order to fix gitlink error
-- ps: if ($env:MSVC_VER -ne 15) { Copy-Item -Force "TempNASMUnpack\*.*" "$env:VCTargetsPath\..\BuildCustomizations" }
+- ps: if ($env:MSVC_VER -lt 15) { Copy-Item -Force "TempNASMUnpack\*.*" "$env:VCTargetsPath\..\BuildCustomizations" }
 
 # Use project supplied script to download all required dependency libraries
 - cmd: call "%APPVEYOR_BUILD_FOLDER%\SMP\project_get_dependencies.bat"

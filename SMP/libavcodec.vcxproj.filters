@@ -1725,6 +1725,12 @@
     <ClCompile Include="..\libavcodec\mvcdec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\midivid.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\mvha.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\mwsc.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -2247,6 +2253,9 @@
     <ClCompile Include="..\libavcodec\vp9dsp_12bpp.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\qsvenc_vp9.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\vqavideo.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -2653,6 +2662,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\av1_metadata_bsf.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\av1_frame_merge_bsf.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\av1_frame_split_bsf.c">

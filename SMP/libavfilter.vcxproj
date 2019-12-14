@@ -169,6 +169,7 @@
     <ClCompile Include="..\libavfilter\framesync.c" />
     <ClCompile Include="..\libavfilter\af_atempo.c" />
     <ClCompile Include="..\libavfilter\trim.c" />
+    <ClCompile Include="..\libavfilter\af_axcorrelate.c" />
     <ClCompile Include="..\libavfilter\af_channelmap.c" />
     <ClCompile Include="..\libavfilter\af_channelsplit.c" />
     <ClCompile Include="..\libavfilter\af_chorus.c" />
@@ -259,6 +260,7 @@
     <ClCompile Include="..\libavfilter\vf_despill.c" />
     <ClCompile Include="..\libavfilter\vf_detelecine.c" />
     <ClCompile Include="..\libavfilter\vf_displace.c" />
+    <ClCompile Include="..\libavfilter\vf_dnn_processing.c" />
     <ClCompile Include="..\libavfilter\vf_weave.c" />
     <ClCompile Include="..\libavfilter\vf_drawbox.c" />
     <ClCompile Include="..\libavfilter\f_drawgraph.c" />
@@ -342,7 +344,7 @@
     <ClCompile Include="..\libavfilter\vf_rotate.c" />
     <ClCompile Include="..\libavfilter\vf_sab.c" />
     <ClCompile Include="..\libavfilter\vf_scale.c" />
-    <ClCompile Include="..\libavfilter\scale.c" />
+    <ClCompile Include="..\libavfilter\scale_eval.c" />
     <ClCompile Include="..\libavfilter\vf_scale_qsv.c" />
     <ClCompile Include="..\libavfilter\vf_scroll.c" />
     <ClCompile Include="..\libavfilter\vf_selectivecolor.c" />
@@ -379,6 +381,7 @@
     <ClCompile Include="..\libavfilter\vf_waveform.c" />
     <ClCompile Include="..\libavfilter\vf_xbr.c" />
     <ClCompile Include="..\libavfilter\vf_xmedian.c" />
+    <ClCompile Include="..\libavfilter\vf_yaepblur.c" />
     <ClCompile Include="..\libavfilter\vf_zoompan.c" />
     <ClCompile Include="..\libavfilter\vsrc_testsrc.c" />
     <ClCompile Include="..\libavfilter\vsrc_cellauto.c" />

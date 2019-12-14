@@ -20,6 +20,7 @@
  */
 static const AVBitStreamFilter *bitstream_filters[] = {
     &ff_aac_adtstoasc_bsf,
+    &ff_av1_frame_merge_bsf,
     &ff_av1_frame_split_bsf,
     &ff_av1_metadata_bsf,
     &ff_chomp_bsf,

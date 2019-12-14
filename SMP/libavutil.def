@@ -130,6 +130,7 @@ EXPORTS
     av_encryption_init_info_free
     av_encryption_init_info_get_side_data
     av_escape
+    av_expr_count_vars
     av_expr_eval
     av_expr_free
     av_expr_parse

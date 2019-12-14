@@ -347,6 +347,7 @@
     <ClCompile Include="..\libavformat\nut.c" />
     <ClCompile Include="..\libavformat\nutenc.c" />
     <ClCompile Include="..\libavformat\nuv.c" />
+    <ClCompile Include="..\libavformat\av1dec.c" />
     <ClCompile Include="..\libavformat\oggdec.c" />
     <ClCompile Include="..\libavformat\oggparsecelt.c" />
     <ClCompile Include="..\libavformat\oggparsedaala.c" />

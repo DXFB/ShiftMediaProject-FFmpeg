@@ -360,6 +360,9 @@
     <ClCompile Include="..\libavfilter\trim.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\af_axcorrelate.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\af_channelmap.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -630,6 +633,9 @@
     <ClCompile Include="..\libavfilter\vf_displace.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_dnn_processing.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_weave.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -879,7 +885,7 @@
     <ClCompile Include="..\libavfilter\vf_scale.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
-    <ClCompile Include="..\libavfilter\scale.c">
+    <ClCompile Include="..\libavfilter\scale_eval.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vf_scale_qsv.c">
@@ -988,6 +994,9 @@
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vf_xmedian.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_yaepblur.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vf_zoompan.c">

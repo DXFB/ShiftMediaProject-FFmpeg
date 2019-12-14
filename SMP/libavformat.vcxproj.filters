@@ -892,6 +892,9 @@
     <ClCompile Include="..\libavformat\nuv.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\av1dec.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\oggdec.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>

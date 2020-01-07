@@ -27,7 +27,7 @@
 #endif
 #define FFMPEG_CONFIGURATION "--enable-gpl --enable-version3 --enable-bzlib --enable-iconv --enable-lzma --enable-sdl2 --enable-zlib --enable-avisynth --enable-libmp3lame --enable-libvorbis --enable-libspeex --enable-libopus --enable-libilbc --enable-libtheora --enable-libx264 --enable-libx265 --enable-libxvid --enable-libvpx --enable-libgme --enable-libmodplug --enable-libsoxr --enable-libfreetype --enable-fontconfig --enable-libfribidi --enable-libass --enable-libxml2 --enable-gnutls --disable-schannel --enable-gcrypt --enable-libssh --enable-libcdio --enable-libbluray --enable-opengl --enable-libmfx --enable-ffnvcodec --enable-cuda --enable-amf --toolchain=msvc"
 #define FFMPEG_LICENSE "GPL version 3 or later"
-#define CONFIG_THIS_YEAR 2019
+#define CONFIG_THIS_YEAR 2020
 #define FFMPEG_DATADIR "."
 #define AVCONV_DATADIR "."
 #if defined(__INTEL_COMPILER)
@@ -671,6 +671,7 @@
 #define CONFIG_RDFT 1
 #define CONFIG_AUTODETECT 1
 #define CONFIG_FONTCONFIG 1
+#define CONFIG_LARGE_TESTS 0
 #define CONFIG_LINUX_PERF 0
 #define CONFIG_MEMORY_POISONING 0
 #define CONFIG_NEON_CLOBBER_TEST 0
@@ -1548,6 +1549,7 @@
 #define CONFIG_MJPEG_VAAPI_ENCODER 0
 #define CONFIG_MPEG2_QSV_ENCODER 1
 #define CONFIG_MPEG2_VAAPI_ENCODER 0
+#define CONFIG_MPEG4_OMX_ENCODER 0
 #define CONFIG_MPEG4_V4L2M2M_ENCODER 0
 #define CONFIG_VP8_V4L2M2M_ENCODER 0
 #define CONFIG_VP8_VAAPI_ENCODER 0
@@ -2092,6 +2094,7 @@
 #define CONFIG_SWAPUV_FILTER 1
 #define CONFIG_TBLEND_FILTER 1
 #define CONFIG_TELECINE_FILTER 1
+#define CONFIG_THISTOGRAM_FILTER 1
 #define CONFIG_THRESHOLD_FILTER 1
 #define CONFIG_THUMBNAIL_FILTER 1
 #define CONFIG_THUMBNAIL_CUDA_FILTER 0
@@ -2101,6 +2104,7 @@
 #define CONFIG_TMIX_FILTER 1
 #define CONFIG_TONEMAP_FILTER 1
 #define CONFIG_TONEMAP_OPENCL_FILTER 0
+#define CONFIG_TONEMAP_VAAPI_FILTER 0
 #define CONFIG_TPAD_FILTER 1
 #define CONFIG_TRANSPOSE_FILTER 1
 #define CONFIG_TRANSPOSE_NPP_FILTER 0

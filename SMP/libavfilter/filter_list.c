@@ -340,6 +340,7 @@ static const AVFilter *filter_list[] = {
     &ff_vf_swapuv,
     &ff_vf_tblend,
     &ff_vf_telecine,
+    &ff_vf_thistogram,
     &ff_vf_threshold,
     &ff_vf_thumbnail,
     &ff_vf_tile,

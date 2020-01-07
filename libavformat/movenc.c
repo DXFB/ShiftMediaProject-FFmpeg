@@ -4741,27 +4741,11 @@ static int mov_write_mdat_tag(AVIOContext *pb, MOVMuxContext *mov)
     return 0;
 }
 
-/* TODO: This needs to be more general */
-static int mov_write_ftyp_tag(AVIOContext *pb, AVFormatContext *s)
+static void mov_write_ftyp_tag_internal(AVIOContext *pb, AVFormatContext *s,
+                                        int has_h264, int has_video, int write_minor)
 {
     MOVMuxContext *mov = s->priv_data;
-    int64_t pos = avio_tell(pb);
-    int has_h264 = 0, has_video = 0;
     int minor = 0x200;
-    int i;
-
-    for (i = 0; i < s->nb_streams; i++) {
-        AVStream *st = s->streams[i];
-        if (is_cover_image(st))
-            continue;
-        if (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
-            has_video = 1;
-        if (st->codecpar->codec_id == AV_CODEC_ID_H264)
-            has_h264 = 1;
-    }
-
-    avio_wb32(pb, 0); /* size */
-    ffio_wfourcc(pb, "ftyp");
 
     if (mov->major_brand && strlen(mov->major_brand) >= 4)
         ffio_wfourcc(pb, mov->major_brand);
@@ -4773,6 +4757,9 @@ static int mov_write_ftyp_tag(AVIOContext *pb, AVFormatContext *s)
         minor =     has_h264 ? 0x20000 : 0x10000;
     } else if (mov->mode == MODE_PSP)
         ffio_wfourcc(pb, "MSNV");
+    else if (mov->mode == MODE_MP4 && mov->flags & FF_MOV_FLAG_FRAGMENT &&
+                                      mov->flags & FF_MOV_FLAG_NEGATIVE_CTS_OFFSETS)
+        ffio_wfourcc(pb, "iso6"); // Required when using signed CTS offsets in trun boxes
     else if (mov->mode == MODE_MP4 && mov->flags & FF_MOV_FLAG_DEFAULT_BASE_MOOF)
         ffio_wfourcc(pb, "iso5"); // Required when using default-base-is-moof
     else if (mov->mode == MODE_MP4 && mov->flags & FF_MOV_FLAG_NEGATIVE_CTS_OFFSETS)
@@ -4788,31 +4775,66 @@ static int mov_write_ftyp_tag(AVIOContext *pb, AVFormatContext *s)
     else
         ffio_wfourcc(pb, "qt  ");
 
-    avio_wb32(pb, minor);
+    if (write_minor)
+        avio_wb32(pb, minor);
+}
 
-    if (mov->mode == MODE_MOV)
-        ffio_wfourcc(pb, "qt  ");
-    else if (mov->mode == MODE_ISM) {
-        ffio_wfourcc(pb, "piff");
-    } else if (!(mov->flags & FF_MOV_FLAG_DEFAULT_BASE_MOOF)) {
-        ffio_wfourcc(pb, "isom");
-        ffio_wfourcc(pb, "iso2");
-        if (has_h264)
-            ffio_wfourcc(pb, "avc1");
+static int mov_write_ftyp_tag(AVIOContext *pb, AVFormatContext *s)
+{
+    MOVMuxContext *mov = s->priv_data;
+    int64_t pos = avio_tell(pb);
+    int has_h264 = 0, has_video = 0;
+    int i;
+
+    for (i = 0; i < s->nb_streams; i++) {
+        AVStream *st = s->streams[i];
+        if (is_cover_image(st))
+            continue;
+        if (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
+            has_video = 1;
+        if (st->codecpar->codec_id == AV_CODEC_ID_H264)
+            has_h264 = 1;
     }
 
-    // We add tfdt atoms when fragmenting, signal this with the iso6 compatible
-    // brand. This is compatible with users that don't understand tfdt.
-    if (mov->flags & FF_MOV_FLAG_FRAGMENT && mov->mode != MODE_ISM)
-        ffio_wfourcc(pb, "iso6");
+    avio_wb32(pb, 0); /* size */
+    ffio_wfourcc(pb, "ftyp");
 
-    if (mov->mode == MODE_3GP)
-        ffio_wfourcc(pb, has_h264 ? "3gp6":"3gp4");
-    else if (mov->mode & MODE_3G2)
-        ffio_wfourcc(pb, has_h264 ? "3g2b":"3g2a");
-    else if (mov->mode == MODE_PSP)
-        ffio_wfourcc(pb, "MSNV");
-    else if (mov->mode == MODE_MP4)
+    // Write major brand
+    mov_write_ftyp_tag_internal(pb, s, has_h264, has_video, 1);
+    // Write the major brand as the first compatible brand as well
+    mov_write_ftyp_tag_internal(pb, s, has_h264, has_video, 0);
+
+    // Write compatible brands, ensuring that we don't write the major brand as a
+    // compatible brand a second time.
+    if (mov->mode == MODE_ISM) {
+        ffio_wfourcc(pb, "piff");
+    } else if (mov->mode != MODE_MOV) {
+        // We add tfdt atoms when fragmenting, signal this with the iso6 compatible
+        // brand, if not already the major brand. This is compatible with users that
+        // don't understand tfdt.
+        if (mov->mode == MODE_MP4) {
+            if (mov->flags & FF_MOV_FLAG_FRAGMENT && !(mov->flags & FF_MOV_FLAG_NEGATIVE_CTS_OFFSETS))
+                ffio_wfourcc(pb, "iso6");
+        } else {
+            if (mov->flags & FF_MOV_FLAG_FRAGMENT)
+                ffio_wfourcc(pb, "iso6");
+            if (mov->flags & FF_MOV_FLAG_DEFAULT_BASE_MOOF)
+                ffio_wfourcc(pb, "iso5");
+            else if (mov->flags & FF_MOV_FLAG_NEGATIVE_CTS_OFFSETS)
+                ffio_wfourcc(pb, "iso4");
+        }
+        // Brands prior to iso5 can't be signaled when using default-base-is-moof
+        if (!(mov->flags & FF_MOV_FLAG_DEFAULT_BASE_MOOF)) {
+            // write isom for mp4 only if it it's not the major brand already.
+            if (mov->mode != MODE_MP4 || mov->flags & FF_MOV_FLAG_NEGATIVE_CTS_OFFSETS)
+                ffio_wfourcc(pb, "isom");
+            ffio_wfourcc(pb, "iso2");
+            if (has_h264)
+                ffio_wfourcc(pb, "avc1");
+        }
+    }
+
+    if (mov->mode == MODE_MP4)
         ffio_wfourcc(pb, "mp41");
 
     if (mov->flags & FF_MOV_FLAG_DASH && mov->flags & FF_MOV_FLAG_GLOBAL_SIDX)

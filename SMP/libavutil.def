@@ -303,6 +303,7 @@ EXPORTS
     av_log_format_line2
     av_log_get_flags
     av_log_get_level
+    av_log_once
     av_log_set_callback
     av_log_set_flags
     av_log_set_level

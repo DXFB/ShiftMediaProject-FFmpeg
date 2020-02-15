@@ -70,7 +70,7 @@ static int film_write_packet_to_header(AVFormatContext *format_context, FILMPack
         info2 = pkt->duration;
         /* The top bit being set indicates a key frame */
         if (!pkt->keyframe)
-            info1 |= (1 << 31);
+            info1 |= 1U << 31;
     }
 
     /* Write the 16-byte sample info packet to the STAB chunk in the header */
@@ -181,13 +181,24 @@ static int film_init(AVFormatContext *format_context)
                 av_log(format_context, AV_LOG_ERROR, "Sega FILM allows a maximum of one video stream.\n");
                 return AVERROR(EINVAL);
             }
+            if (st->codecpar->codec_id != AV_CODEC_ID_CINEPAK &&
+                st->codecpar->codec_id != AV_CODEC_ID_RAWVIDEO) {
+                av_log(format_context, AV_LOG_ERROR,
+                       "Incompatible video stream format.\n");
+                return AVERROR(EINVAL);
+            }
+            if (st->codecpar->format != AV_PIX_FMT_RGB24) {
+                av_log(format_context, AV_LOG_ERROR,
+                       "Pixel format must be rgb24.\n");
+                return AVERROR(EINVAL);
+            }
             film->video_index = i;
         }
+    }
 
-        if (film->video_index == -1) {
-            av_log(format_context, AV_LOG_ERROR, "No video stream present.\n");
-            return AVERROR(EINVAL);
-        }
+    if (film->video_index == -1) {
+        av_log(format_context, AV_LOG_ERROR, "No video stream present.\n");
+        return AVERROR(EINVAL);
     }
 
     if (audio != NULL && get_audio_codec_id(audio->codecpar->codec_id) < 0) {
@@ -201,7 +212,7 @@ static int film_init(AVFormatContext *format_context)
 static int shift_data(AVFormatContext *format_context, int64_t shift_size)
 {
     int ret = 0;
-    int64_t pos, pos_end = avio_tell(format_context->pb);
+    int64_t pos, pos_end;
     uint8_t *buf, *read_buf[2];
     int read_buf_id = 0;
     int read_size[2];
@@ -293,11 +304,6 @@ static int film_write_header(AVFormatContext *format_context)
         }
     }
 
-    if (video->codecpar->format != AV_PIX_FMT_RGB24) {
-        av_log(format_context, AV_LOG_ERROR, "Pixel format must be rgb24.\n");
-        return AVERROR(EINVAL);
-    }
-
     /* First, write the FILM header; this is very simple */
 
     ffio_wfourcc(pb, "FILM");
@@ -320,9 +326,6 @@ static int film_write_header(AVFormatContext *format_context)
     case AV_CODEC_ID_RAWVIDEO:
         ffio_wfourcc(pb, "raw ");
         break;
-    default:
-        av_log(format_context, AV_LOG_ERROR, "Incompatible video stream format.\n");
-        return AVERROR(EINVAL);
     }
 
     avio_wb32(pb, video->codecpar->height);
@@ -361,8 +364,6 @@ static int film_write_header(AVFormatContext *format_context)
     avio_wb32(pb, av_q2d(av_inv_q(video->time_base)));
 
     avio_wb32(pb, film->packet_count);
-
-    avio_flush(pb);
 
     /* Finally, write out each packet's data to the header */
     packet = film->start;

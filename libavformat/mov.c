@@ -1129,8 +1129,8 @@ static int mov_read_ftyp(MOVContext *c, AVIOContext *pb, MOVAtom atom)
         return ret;
     }
     comp_brands_str[comp_brand_size] = 0;
-    av_dict_set(&c->fc->metadata, "compatible_brands", comp_brands_str, 0);
-    av_freep(&comp_brands_str);
+    av_dict_set(&c->fc->metadata, "compatible_brands",
+                comp_brands_str, AV_DICT_DONT_STRDUP_VAL);
 
     return 0;
 }
@@ -1327,8 +1327,10 @@ static int update_frag_index(MOVContext *c, int64_t offset)
 
     for (i = 0; i < c->fc->nb_streams; i++) {
         // Avoid building frag index if streams lack track id.
-        if (c->fc->streams[i]->id < 0)
+        if (c->fc->streams[i]->id < 0) {
+            av_free(frag_stream_info);
             return AVERROR_INVALIDDATA;
+        }
 
         frag_stream_info[i].id = c->fc->streams[i]->id;
         frag_stream_info[i].sidx_pts = AV_NOPTS_VALUE;
@@ -1976,6 +1978,10 @@ static int mov_read_stco(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     MOVStreamContext *sc;
     unsigned int i, entries;
 
+    if (c->trak_index < 0) {
+        av_log(c->fc, AV_LOG_WARNING, "STCO outside TRAK\n");
+        return 0;
+    }
     if (c->fc->nb_streams < 1)
         return 0;
     st = c->fc->streams[c->fc->nb_streams-1];
@@ -5794,8 +5800,8 @@ static int mov_read_uuid(MOVContext *c, AVIOContext *pb, MOVAtom atom)
                 return AVERROR_INVALIDDATA;
             }
             buffer[len] = '\0';
-            av_dict_set(&c->fc->metadata, "xmp", buffer, 0);
-            av_free(buffer);
+            av_dict_set(&c->fc->metadata, "xmp",
+                        buffer, AV_DICT_DONT_STRDUP_VAL);
         } else {
             // skip all uuid atom, which makes it fast for long uuid-xmp file
             ret = avio_skip(pb, len);
@@ -6329,8 +6335,10 @@ static int mov_read_pssh(MOVContext *c, AVIOContext *pb, MOVAtom atom)
 
     if (version > 0) {
         kid_count = avio_rb32(pb);
-        if (kid_count >= INT_MAX / sizeof(*key_ids))
-            return AVERROR(ENOMEM);
+        if (kid_count >= INT_MAX / sizeof(*key_ids)) {
+            ret = AVERROR(ENOMEM);
+            goto finish;
+        }
 
         for (unsigned int i = 0; i < kid_count && !pb->eof_reached; i++) {
             unsigned int min_kid_count = FFMIN(FFMAX(i + 1, 1024), kid_count);
@@ -7882,7 +7890,6 @@ static int mov_read_packet(AVFormatContext *s, AVPacket *pkt)
 
     ret = cenc_filter(mov, st, sc, pkt, current_index);
     if (ret < 0) {
-        av_packet_unref(pkt);
         return ret;
     }
 
@@ -8073,7 +8080,7 @@ AVInputFormat ff_mov_demuxer = {
     .long_name      = NULL_IF_CONFIG_SMALL("QuickTime / MOV"),
     .priv_class     = &mov_class,
     .priv_data_size = sizeof(MOVContext),
-    .extensions     = "mov,mp4,m4a,3gp,3g2,mj2",
+    .extensions     = "mov,mp4,m4a,3gp,3g2,mj2,psp,m4b,ism,ismv,isma,f4v",
     .read_probe     = mov_probe,
     .read_header    = mov_read_header,
     .read_packet    = mov_read_packet,

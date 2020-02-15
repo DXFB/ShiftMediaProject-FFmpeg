@@ -565,10 +565,16 @@ static int cbs_h2645_fragment_add_nals(CodedBitstreamContext *ctx,
         AVBufferRef *ref;
         size_t size = nal->size;
 
+        if (nal->nuh_layer_id > 0)
+            continue;
+
         // Remove trailing zeroes.
         while (size > 0 && nal->data[size - 1] == 0)
             --size;
-        av_assert0(size > 0);
+        if (size == 0) {
+            av_log(ctx->log_ctx, AV_LOG_VERBOSE, "Discarding empty 0 NAL unit\n");
+            continue;
+        }
 
         ref = (nal->data == nal->raw_data) ? frag->data_ref
                                            : packet->rbsp.rbsp_buffer_ref;
@@ -610,7 +616,7 @@ static int cbs_h2645_split_fragment(CodedBitstreamContext *ctx,
         version = bytestream2_get_byte(&gbc);
         if (version != 1) {
             av_log(ctx->log_ctx, AV_LOG_ERROR, "Invalid AVCC header: "
-                   "first byte %u.", version);
+                   "first byte %u.\n", version);
             return AVERROR_INVALIDDATA;
         }
 
@@ -685,7 +691,7 @@ static int cbs_h2645_split_fragment(CodedBitstreamContext *ctx,
         version = bytestream2_get_byte(&gbc);
         if (version != 1) {
             av_log(ctx->log_ctx, AV_LOG_ERROR, "Invalid HVCC header: "
-                   "first byte %u.", version);
+                   "first byte %u.\n", version);
             return AVERROR_INVALIDDATA;
         }
 

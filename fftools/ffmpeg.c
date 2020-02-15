@@ -2048,20 +2048,20 @@ static void do_streamcopy(InputStream *ist, OutputStream *ost, const AVPacket *p
     if (pkt->pts != AV_NOPTS_VALUE)
         opkt.pts = av_rescale_q(pkt->pts, ist->st->time_base, ost->mux_timebase) - ost_tb_start_time;
 
-    if (pkt->dts == AV_NOPTS_VALUE)
+    if (pkt->dts == AV_NOPTS_VALUE) {
         opkt.dts = av_rescale_q(ist->dts, AV_TIME_BASE_Q, ost->mux_timebase);
-    else
-        opkt.dts = av_rescale_q(pkt->dts, ist->st->time_base, ost->mux_timebase);
-    opkt.dts -= ost_tb_start_time;
-
-    if (ost->st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO && pkt->dts != AV_NOPTS_VALUE) {
+    } else if (ost->st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
         int duration = av_get_audio_frame_duration(ist->dec_ctx, pkt->size);
         if(!duration)
             duration = ist->dec_ctx->frame_size;
-        opkt.dts = opkt.pts = av_rescale_delta(ist->st->time_base, pkt->dts,
-                                               (AVRational){1, ist->dec_ctx->sample_rate}, duration, &ist->filter_in_rescale_delta_last,
-                                               ost->mux_timebase) - ost_tb_start_time;
-    }
+        opkt.dts = av_rescale_delta(ist->st->time_base, pkt->dts,
+                                    (AVRational){1, ist->dec_ctx->sample_rate}, duration,
+                                    &ist->filter_in_rescale_delta_last, ost->mux_timebase);
+        /* dts will be set immediately afterwards to what pts is now */
+        opkt.pts = opkt.dts - ost_tb_start_time;
+    } else
+        opkt.dts = av_rescale_q(pkt->dts, ist->st->time_base, ost->mux_timebase);
+    opkt.dts -= ost_tb_start_time;
 
     opkt.duration = av_rescale_q(pkt->duration, ist->st->time_base, ost->mux_timebase);
 
@@ -2776,7 +2776,7 @@ static void print_sdp(void)
         if (avio_open2(&sdp_pb, sdp_filename, AVIO_FLAG_WRITE, &int_cb, NULL) < 0) {
             av_log(NULL, AV_LOG_ERROR, "Failed to open sdp file '%s'\n", sdp_filename);
         } else {
-            avio_printf(sdp_pb, "SDP:\n%s", sdp);
+            avio_print(sdp_pb, sdp);
             avio_closep(&sdp_pb);
             av_freep(&sdp_filename);
         }

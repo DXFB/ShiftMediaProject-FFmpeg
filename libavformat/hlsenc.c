@@ -459,7 +459,6 @@ static int flush_dynbuf(VariantStream *vs, int *range_length)
 
     // flush
     av_write_frame(ctx, NULL);
-    avio_flush(ctx->pb);
 
     // write out to file
     *range_length = avio_close_dyn_buf(ctx->pb, &vs->temp_buffer);
@@ -643,13 +642,14 @@ static int do_encrypt(AVFormatContext *s, VariantStream *vs)
     int len;
     AVIOContext *pb;
     uint8_t key[KEYSIZE];
+    char * key_basename_source = (hls->master_m3u8_url) ? hls->master_m3u8_url : s->url;
 
-    len = strlen(s->url) + 4 + 1;
+    len = strlen(key_basename_source) + 4 + 1;
     hls->key_basename = av_mallocz(len);
     if (!hls->key_basename)
         return AVERROR(ENOMEM);
 
-    av_strlcpy(hls->key_basename, s->url, len);
+    av_strlcpy(hls->key_basename, key_basename_source, len);
     av_strlcat(hls->key_basename, ".key", len);
 
     if (hls->key_url) {
@@ -764,6 +764,7 @@ static int hls_mux_init(AVFormatContext *s, VariantStream *vs)
     AVFormatContext *oc;
     AVFormatContext *vtt_oc = NULL;
     int byterange_mode = (hls->flags & HLS_SINGLE_FILE) || (hls->max_seg_size > 0);
+    int remaining_options;
     int i, ret;
 
     ret = avformat_alloc_output_context2(&vs->avf, vs->oformat, NULL, NULL);
@@ -852,21 +853,25 @@ static int hls_mux_init(AVFormatContext *s, VariantStream *vs)
         return ret;
     }
 
+    av_dict_copy(&options, hls->format_options, 0);
     if (hls->segment_type == SEGMENT_TYPE_FMP4) {
-        int remaining_options;
-
-        av_dict_copy(&options, hls->format_options, 0);
         av_dict_set(&options, "fflags", "-autobsf", 0);
         av_dict_set(&options, "movflags", "+frag_custom+dash+delay_moov", AV_DICT_APPEND);
-        ret = avformat_init_output(oc, &options);
-        remaining_options = av_dict_count(options);
-        av_dict_free(&options);
-        if (ret < 0)
-            return ret;
-        if (remaining_options) {
-            av_log(s, AV_LOG_ERROR, "Some of the provided format options are not recognized\n");
-            return AVERROR(EINVAL);
-        }
+    } else {
+        /* We only require one PAT/PMT per segment. */
+        char period[21];
+        snprintf(period, sizeof(period), "%d", (INT_MAX / 2) - 1);
+        av_dict_set(&options, "sdt_period", period, AV_DICT_DONT_OVERWRITE);
+        av_dict_set(&options, "pat_period", period, AV_DICT_DONT_OVERWRITE);
+    }
+    ret = avformat_init_output(oc, &options);
+    remaining_options = av_dict_count(options);
+    av_dict_free(&options);
+    if (ret < 0)
+        return ret;
+    if (remaining_options) {
+        av_log(s, AV_LOG_ERROR, "Some of the provided format options are not recognized\n");
+        return AVERROR(EINVAL);
     }
     avio_flush(oc->pb);
     return 0;
@@ -1188,6 +1193,7 @@ static int parse_playlist(AVFormatContext *s, const char *url, VariantStream *vs
                 is_segment = 0;
                 new_start_pos = avio_tell(vs->avf->pb);
                 vs->size = new_start_pos - vs->start_pos;
+                vs->initial_prog_date_time -= vs->duration; // this is a previously existing segment
                 ret = hls_append_segment(s, hls, vs, vs->duration, vs->start_pos, vs->size);
                 if (ret < 0)
                     goto fail;
@@ -1235,7 +1241,7 @@ static const char* get_relative_url(const char *master_url, const char *media_ur
     if (!p) p = strrchr(master_url, '\\');
 
     if (p) {
-        base_len = p + 1 - master_url;
+        base_len = p - master_url;
         if (av_strncasecmp(master_url, media_url, base_len)) {
             av_log(NULL, AV_LOG_WARNING, "Unable to find relative url\n");
             return NULL;
@@ -1682,15 +1688,8 @@ static int hls_start(AVFormatContext *s, VariantStream *vs)
         }
     }
     if (c->segment_type != SEGMENT_TYPE_FMP4) {
-        /* We only require one PAT/PMT per segment. */
         if (oc->oformat->priv_class && oc->priv_data) {
-            char period[21];
-
-            snprintf(period, sizeof(period), "%d", (INT_MAX / 2) - 1);
-
             av_opt_set(oc->priv_data, "mpegts_flags", "resend_headers", 0);
-            av_opt_set(oc->priv_data, "sdt_period", period, 0);
-            av_opt_set(oc->priv_data, "pat_period", period, 0);
         }
         if (c->flags & HLS_SINGLE_FILE) {
             set_http_options(s, &options, c);
@@ -2548,7 +2547,6 @@ static int hls_write_trailer(struct AVFormatContext *s)
             if (!vs->init_range_length) {
                 uint8_t *buffer = NULL;
                 av_write_frame(oc, NULL); /* Flush any buffered data */
-                avio_flush(oc->pb);
 
                 range_length = avio_close_dyn_buf(oc->pb, &buffer);
                 avio_write(vs->out, buffer, range_length);

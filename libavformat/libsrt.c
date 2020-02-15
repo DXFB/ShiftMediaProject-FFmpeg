@@ -154,10 +154,12 @@ static int libsrt_neterrno(URLContext *h)
 
 static int libsrt_socket_nonblock(int socket, int enable)
 {
-    int ret = srt_setsockopt(socket, 0, SRTO_SNDSYN, &enable, sizeof(enable));
+    int ret, blocking = enable ? 0 : 1;
+    /* Setting SRTO_{SND,RCV}SYN options to 1 enable blocking mode, setting them to 0 enable non-blocking mode. */
+    ret = srt_setsockopt(socket, 0, SRTO_SNDSYN, &blocking, sizeof(blocking));
     if (ret < 0)
         return ret;
-    return srt_setsockopt(socket, 0, SRTO_RCVSYN, &enable, sizeof(enable));
+    return srt_setsockopt(socket, 0, SRTO_RCVSYN, &blocking, sizeof(blocking));
 }
 
 static int libsrt_network_wait_fd(URLContext *h, int eid, int fd, int write)
@@ -337,9 +339,9 @@ static int libsrt_set_options_pre(URLContext *h, int fd)
         (s->kmrefreshrate >= 0 && libsrt_setsockopt(h, fd, SRTO_KMREFRESHRATE, "SRTO_KMREFRESHRATE", &s->kmrefreshrate, sizeof(s->kmrefreshrate)) < 0) ||
         (s->kmpreannounce >= 0 && libsrt_setsockopt(h, fd, SRTO_KMPREANNOUNCE, "SRTO_KMPREANNOUNCE", &s->kmpreannounce, sizeof(s->kmpreannounce)) < 0) ||
 #endif
-        (s->mss >= 0 && libsrt_setsockopt(h, fd, SRTO_MSS, "SRTO_MMS", &s->mss, sizeof(s->mss)) < 0) ||
+        (s->mss >= 0 && libsrt_setsockopt(h, fd, SRTO_MSS, "SRTO_MSS", &s->mss, sizeof(s->mss)) < 0) ||
         (s->ffs >= 0 && libsrt_setsockopt(h, fd, SRTO_FC, "SRTO_FC", &s->ffs, sizeof(s->ffs)) < 0) ||
-        (s->ipttl >= 0 && libsrt_setsockopt(h, fd, SRTO_IPTTL, "SRTO_UPTTL", &s->ipttl, sizeof(s->ipttl)) < 0) ||
+        (s->ipttl >= 0 && libsrt_setsockopt(h, fd, SRTO_IPTTL, "SRTO_IPTTL", &s->ipttl, sizeof(s->ipttl)) < 0) ||
         (s->iptos >= 0 && libsrt_setsockopt(h, fd, SRTO_IPTOS, "SRTO_IPTOS", &s->iptos, sizeof(s->iptos)) < 0) ||
         (s->latency >= 0 && libsrt_setsockopt(h, fd, SRTO_LATENCY, "SRTO_LATENCY", &latency, sizeof(latency)) < 0) ||
         (s->rcvlatency >= 0 && libsrt_setsockopt(h, fd, SRTO_RCVLATENCY, "SRTO_RCVLATENCY", &rcvlatency, sizeof(rcvlatency)) < 0) ||
@@ -523,6 +525,7 @@ static int libsrt_open(URLContext *h, const char *uri, int flags)
             av_freep(&s->passphrase);
             s->passphrase = av_strndup(buf, strlen(buf));
         }
+#if SRT_VERSION_VALUE >= 0x010302
         if (av_find_info_tag(buf, sizeof(buf), "enforced_encryption", p)) {
             s->enforced_encryption = strtol(buf, NULL, 10);
         }
@@ -532,6 +535,7 @@ static int libsrt_open(URLContext *h, const char *uri, int flags)
         if (av_find_info_tag(buf, sizeof(buf), "kmpreannounce", p)) {
             s->kmpreannounce = strtol(buf, NULL, 10);
         }
+#endif
         if (av_find_info_tag(buf, sizeof(buf), "mss", p)) {
             s->mss = strtol(buf, NULL, 10);
         }

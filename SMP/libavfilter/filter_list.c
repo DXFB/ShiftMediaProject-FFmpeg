@@ -148,6 +148,7 @@ static const AVFilter *filter_list[] = {
     &ff_vf_bm3d,
     &ff_vf_boxblur,
     &ff_vf_bwdif,
+    &ff_vf_cas,
     &ff_vf_chromahold,
     &ff_vf_chromakey,
     &ff_vf_chromashift,

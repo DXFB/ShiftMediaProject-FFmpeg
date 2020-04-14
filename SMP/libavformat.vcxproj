@@ -139,10 +139,12 @@
     <ClCompile Include="..\libavformat\replaygain.c" />
     <ClCompile Include="..\libavformat\aiffenc.c" />
     <ClCompile Include="..\libavformat\aixdec.c" />
+    <ClCompile Include="..\libavformat\alp.c" />
     <ClCompile Include="..\libavformat\amr.c" />
     <ClCompile Include="..\libavformat\anm.c" />
     <ClCompile Include="..\libavformat\apc.c" />
     <ClCompile Include="..\libavformat\ape.c" />
+    <ClCompile Include="..\libavformat\apm.c" />
     <ClCompile Include="..\libavformat\apngdec.c" />
     <ClCompile Include="..\libavformat\apngenc.c" />
     <ClCompile Include="..\libavformat\aptxdec.c" />
@@ -199,6 +201,7 @@
     <ClCompile Include="..\libavformat\dauddec.c" />
     <ClCompile Include="..\libavformat\daudenc.c" />
     <ClCompile Include="..\libavformat\dcstr.c" />
+    <ClCompile Include="..\libavformat\derf.c" />
     <ClCompile Include="..\libavformat\dfa.c" />
     <ClCompile Include="..\libavformat\dhav.c" />
     <ClCompile Include="..\libavformat\diracdec.c" />
@@ -240,6 +243,7 @@
     <ClCompile Include="..\libavformat\hashenc.c" />
     <ClCompile Include="..\libavformat\frmdec.c" />
     <ClCompile Include="..\libavformat\fsb.c" />
+    <ClCompile Include="..\libavformat\fwse.c" />
     <ClCompile Include="..\libavformat\gif.c" />
     <ClCompile Include="..\libavformat\gifdec.c" />
     <ClCompile Include="..\libavformat\gsmdec.c" />
@@ -255,6 +259,7 @@
     <ClCompile Include="..\libavformat\h261dec.c" />
     <ClCompile Include="..\libavformat\h263dec.c" />
     <ClCompile Include="..\libavformat\h264dec.c" />
+    <ClCompile Include="..\libavformat\hca.c" />
     <ClCompile Include="..\libavformat\hcom.c" />
     <ClCompile Include="..\libavformat\hdsenc.c" />
     <ClCompile Include="..\libavformat\hevcdec.c" />
@@ -495,7 +500,6 @@
     <ClCompile Include="..\libavformat\yop.c" />
     <ClCompile Include="..\libavformat\yuv4mpegdec.c" />
     <ClCompile Include="..\libavformat\yuv4mpegenc.c" />
-    <ClCompile Include="..\libavformat\avisynth.c" />
     <ClCompile Include="..\libavformat\libgme.c" />
     <ClCompile Include="..\libavformat\libmodplug.c" />
     <ClCompile Include="..\libavformat\async.c" />

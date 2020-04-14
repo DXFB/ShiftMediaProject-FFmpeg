@@ -534,6 +534,9 @@
     <ClCompile Include="..\libavfilter\yadif_common.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_cas.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_chromakey.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -1087,6 +1090,9 @@
       <Filter>Source Files\libavfilter\dnn</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_maximum.c">
+      <Filter>Source Files\libavfilter\dnn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_mathbinary.c">
       <Filter>Source Files\libavfilter\dnn</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\x86\scene_sad_init.c">

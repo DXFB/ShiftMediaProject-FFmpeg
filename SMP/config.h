@@ -25,7 +25,7 @@
 #   include <sdkddkver.h>
 #   include <winapifamily.h>
 #endif
-#define FFMPEG_CONFIGURATION "--enable-gpl --enable-version3 --enable-bzlib --enable-iconv --enable-lzma --enable-sdl2 --enable-zlib --enable-avisynth --enable-libmp3lame --enable-libvorbis --enable-libspeex --enable-libopus --enable-libilbc --enable-libtheora --enable-libx264 --enable-libx265 --enable-libxvid --enable-libvpx --enable-libgme --enable-libmodplug --enable-libsoxr --enable-libfreetype --enable-fontconfig --enable-libfribidi --enable-libass --enable-libxml2 --enable-gnutls --disable-schannel --enable-gcrypt --enable-libssh --enable-libcdio --enable-libbluray --enable-opengl --enable-libmfx --enable-ffnvcodec --enable-cuda --enable-amf --toolchain=msvc"
+#define FFMPEG_CONFIGURATION "--enable-gpl --enable-version3 --enable-bzlib --enable-iconv --enable-lzma --enable-sdl2 --enable-zlib --enable-libmp3lame --enable-libvorbis --enable-libspeex --enable-libopus --enable-libilbc --enable-libtheora --enable-libx264 --enable-libx265 --enable-libxvid --enable-libvpx --enable-libgme --enable-libmodplug --enable-libsoxr --enable-libfreetype --enable-fontconfig --enable-libfribidi --enable-libass --enable-libxml2 --enable-gnutls --disable-schannel --enable-gcrypt --enable-libssh --enable-libcdio --enable-libbluray --enable-opengl --enable-libmfx --enable-ffnvcodec --enable-cuda --enable-amf --toolchain=msvc"
 #define FFMPEG_LICENSE "GPL version 3 or later"
 #define CONFIG_THIS_YEAR 2020
 #define FFMPEG_DATADIR "."
@@ -469,7 +469,7 @@
 #define CONFIG_MANPAGES 0
 #define CONFIG_PODPAGES 0
 #define CONFIG_TXTPAGES 0
-#define CONFIG_AVIO_DIR_CMD_EXAMPLE 0
+#define CONFIG_AVIO_LIST_DIR_EXAMPLE 0
 #define CONFIG_AVIO_READING_EXAMPLE 0
 #define CONFIG_DECODE_AUDIO_EXAMPLE 0
 #define CONFIG_DECODE_VIDEO_EXAMPLE 0
@@ -492,7 +492,7 @@
 #define CONFIG_TRANSCODING_EXAMPLE 0
 #define CONFIG_VAAPI_ENCODE_EXAMPLE 0
 #define CONFIG_VAAPI_TRANSCODE_EXAMPLE 0
-#define CONFIG_AVISYNTH 1
+#define CONFIG_AVISYNTH 0
 #define CONFIG_FREI0R 0
 #define CONFIG_LIBCDIO 1
 #define CONFIG_LIBDAVS2 0
@@ -553,6 +553,7 @@
 #define CONFIG_LIBOPENMPT 0
 #define CONFIG_LIBOPUS 1
 #define CONFIG_LIBPULSE 0
+#define CONFIG_LIBRABBITMQ 0
 #define CONFIG_LIBRAV1E 0
 #define CONFIG_LIBRSVG 0
 #define CONFIG_LIBRTMP 0
@@ -966,6 +967,7 @@
 #define CONFIG_MSVIDEO1_DECODER 1
 #define CONFIG_MSZH_DECODER 1
 #define CONFIG_MTS2_DECODER 1
+#define CONFIG_MV30_DECODER 1
 #define CONFIG_MVC1_DECODER 1
 #define CONFIG_MVC2_DECODER 1
 #define CONFIG_MVDV_DECODER 1
@@ -1006,7 +1008,6 @@
 #define CONFIG_SANM_DECODER 1
 #define CONFIG_SCPR_DECODER 1
 #define CONFIG_SCREENPRESSO_DECODER 1
-#define CONFIG_SDX2_DPCM_DECODER 1
 #define CONFIG_SGI_DECODER 1
 #define CONFIG_SGIRLE_DECODER 1
 #define CONFIG_SHEERVIDEO_DECODER 1
@@ -1130,6 +1131,7 @@
 #define CONFIG_G729_DECODER 1
 #define CONFIG_GSM_DECODER 1
 #define CONFIG_GSM_MS_DECODER 1
+#define CONFIG_HCA_DECODER 1
 #define CONFIG_HCOM_DECODER 1
 #define CONFIG_IAC_DECODER 1
 #define CONFIG_ILBC_DECODER 1
@@ -1164,6 +1166,7 @@
 #define CONFIG_SBC_DECODER 1
 #define CONFIG_SHORTEN_DECODER 1
 #define CONFIG_SIPR_DECODER 1
+#define CONFIG_SIREN_DECODER 1
 #define CONFIG_SMACKAUD_DECODER 1
 #define CONFIG_SONIC_DECODER 1
 #define CONFIG_TAK_DECODER 1
@@ -1216,10 +1219,11 @@
 #define CONFIG_PCM_U32BE_DECODER 1
 #define CONFIG_PCM_U32LE_DECODER 1
 #define CONFIG_PCM_VIDC_DECODER 1
-#define CONFIG_PCM_ZORK_DECODER 1
+#define CONFIG_DERF_DPCM_DECODER 1
 #define CONFIG_GREMLIN_DPCM_DECODER 1
 #define CONFIG_INTERPLAY_DPCM_DECODER 1
 #define CONFIG_ROQ_DPCM_DECODER 1
+#define CONFIG_SDX2_DPCM_DECODER 1
 #define CONFIG_SOL_DPCM_DECODER 1
 #define CONFIG_XAN_DPCM_DECODER 1
 #define CONFIG_ADPCM_4XM_DECODER 1
@@ -1240,13 +1244,16 @@
 #define CONFIG_ADPCM_G726_DECODER 1
 #define CONFIG_ADPCM_G726LE_DECODER 1
 #define CONFIG_ADPCM_IMA_AMV_DECODER 1
+#define CONFIG_ADPCM_IMA_ALP_DECODER 1
 #define CONFIG_ADPCM_IMA_APC_DECODER 1
+#define CONFIG_ADPCM_IMA_APM_DECODER 1
 #define CONFIG_ADPCM_IMA_DAT4_DECODER 1
 #define CONFIG_ADPCM_IMA_DK3_DECODER 1
 #define CONFIG_ADPCM_IMA_DK4_DECODER 1
 #define CONFIG_ADPCM_IMA_EA_EACS_DECODER 1
 #define CONFIG_ADPCM_IMA_EA_SEAD_DECODER 1
 #define CONFIG_ADPCM_IMA_ISS_DECODER 1
+#define CONFIG_ADPCM_IMA_MTF_DECODER 1
 #define CONFIG_ADPCM_IMA_OKI_DECODER 1
 #define CONFIG_ADPCM_IMA_QT_DECODER 1
 #define CONFIG_ADPCM_IMA_RAD_DECODER 1
@@ -1266,6 +1273,7 @@
 #define CONFIG_ADPCM_VIMA_DECODER 1
 #define CONFIG_ADPCM_XA_DECODER 1
 #define CONFIG_ADPCM_YAMAHA_DECODER 1
+#define CONFIG_ADPCM_ZORK_DECODER 1
 #define CONFIG_SSA_DECODER 1
 #define CONFIG_ASS_DECODER 1
 #define CONFIG_CCAPTION_DECODER 1
@@ -1886,6 +1894,7 @@
 #define CONFIG_BOXBLUR_FILTER 1
 #define CONFIG_BOXBLUR_OPENCL_FILTER 0
 #define CONFIG_BWDIF_FILTER 1
+#define CONFIG_CAS_FILTER 1
 #define CONFIG_CHROMAHOLD_FILTER 1
 #define CONFIG_CHROMAKEY_FILTER 1
 #define CONFIG_CHROMASHIFT_FILTER 1
@@ -2029,6 +2038,7 @@
 #define CONFIG_OVERLAY_OPENCL_FILTER 0
 #define CONFIG_OVERLAY_QSV_FILTER 1
 #define CONFIG_OVERLAY_VULKAN_FILTER 0
+#define CONFIG_OVERLAY_CUDA_FILTER 0
 #define CONFIG_OWDENOISE_FILTER 1
 #define CONFIG_PAD_FILTER 1
 #define CONFIG_PAD_OPENCL_FILTER 0
@@ -2209,12 +2219,14 @@
 #define CONFIG_AFC_DEMUXER 1
 #define CONFIG_AIFF_DEMUXER 1
 #define CONFIG_AIX_DEMUXER 1
+#define CONFIG_ALP_DEMUXER 1
 #define CONFIG_AMR_DEMUXER 1
 #define CONFIG_AMRNB_DEMUXER 1
 #define CONFIG_AMRWB_DEMUXER 1
 #define CONFIG_ANM_DEMUXER 1
 #define CONFIG_APC_DEMUXER 1
 #define CONFIG_APE_DEMUXER 1
+#define CONFIG_APM_DEMUXER 1
 #define CONFIG_APNG_DEMUXER 1
 #define CONFIG_APTX_DEMUXER 1
 #define CONFIG_APTX_HD_DEMUXER 1
@@ -2227,7 +2239,7 @@
 #define CONFIG_AU_DEMUXER 1
 #define CONFIG_AV1_DEMUXER 1
 #define CONFIG_AVI_DEMUXER 1
-#define CONFIG_AVISYNTH_DEMUXER 1
+#define CONFIG_AVISYNTH_DEMUXER 0
 #define CONFIG_AVR_DEMUXER 1
 #define CONFIG_AVS_DEMUXER 1
 #define CONFIG_AVS2_DEMUXER 1
@@ -2253,6 +2265,7 @@
 #define CONFIG_DATA_DEMUXER 1
 #define CONFIG_DAUD_DEMUXER 1
 #define CONFIG_DCSTR_DEMUXER 1
+#define CONFIG_DERF_DEMUXER 1
 #define CONFIG_DFA_DEMUXER 1
 #define CONFIG_DHAV_DEMUXER 1
 #define CONFIG_DIRAC_DEMUXER 1
@@ -2280,6 +2293,7 @@
 #define CONFIG_FOURXM_DEMUXER 1
 #define CONFIG_FRM_DEMUXER 1
 #define CONFIG_FSB_DEMUXER 1
+#define CONFIG_FWSE_DEMUXER 1
 #define CONFIG_G722_DEMUXER 1
 #define CONFIG_G723_1_DEMUXER 1
 #define CONFIG_G726_DEMUXER 1
@@ -2293,6 +2307,7 @@
 #define CONFIG_H261_DEMUXER 1
 #define CONFIG_H263_DEMUXER 1
 #define CONFIG_H264_DEMUXER 1
+#define CONFIG_HCA_DEMUXER 1
 #define CONFIG_HCOM_DEMUXER 1
 #define CONFIG_HEVC_DEMUXER 1
 #define CONFIG_HLS_DEMUXER 1
@@ -2701,6 +2716,7 @@
 #define CONFIG_UDP_PROTOCOL 1
 #define CONFIG_UDPLITE_PROTOCOL 1
 #define CONFIG_UNIX_PROTOCOL 0
+#define CONFIG_LIBAMQP_PROTOCOL 0
 #define CONFIG_LIBRTMP_PROTOCOL 0
 #define CONFIG_LIBRTMPE_PROTOCOL 0
 #define CONFIG_LIBRTMPS_PROTOCOL 0

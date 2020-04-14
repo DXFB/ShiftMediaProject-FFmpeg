@@ -210,6 +210,7 @@
     <ClInclude Include="..\libavutil\hwcontext_dxva2.h" />
     <ClInclude Include="..\libavutil\hwcontext_qsv.h" />
     <ClInclude Include="..\libavutil\hwcontext_mediacodec.h" />
+    <ClInclude Include="..\libavutil\hwcontext_opencl.h" />
     <ClInclude Include="..\libavutil\hwcontext_vaapi.h" />
     <ClInclude Include="..\libavutil\hwcontext_videotoolbox.h" />
     <ClInclude Include="..\libavutil\hwcontext_vdpau.h" />
@@ -516,6 +517,7 @@ copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_mediacodec.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_opencl.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
@@ -664,6 +666,7 @@ copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_mediacodec.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_opencl.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
@@ -819,6 +822,7 @@ copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_mediacodec.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_opencl.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
@@ -972,6 +976,7 @@ copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_mediacodec.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_opencl.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
@@ -1126,6 +1131,7 @@ copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_mediacodec.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_opencl.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
@@ -1278,6 +1284,7 @@ copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_mediacodec.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_opencl.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
@@ -1438,6 +1445,7 @@ copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_mediacodec.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_opencl.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
@@ -1597,6 +1605,7 @@ copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_mediacodec.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_opencl.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
@@ -1757,6 +1766,7 @@ copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_mediacodec.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_opencl.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
@@ -1916,6 +1926,7 @@ copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_mediacodec.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_opencl.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil

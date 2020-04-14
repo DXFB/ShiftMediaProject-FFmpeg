@@ -227,6 +227,7 @@
     <ClCompile Include="..\libavfilter\vf_boxblur.c" />
     <ClCompile Include="..\libavfilter\boxblur.c" />
     <ClCompile Include="..\libavfilter\yadif_common.c" />
+    <ClCompile Include="..\libavfilter\vf_cas.c" />
     <ClCompile Include="..\libavfilter\vf_chromakey.c" />
     <ClCompile Include="..\libavfilter\vf_chromashift.c" />
     <ClCompile Include="..\libavfilter\vf_ciescope.c" />
@@ -412,6 +413,7 @@
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_conv2d.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_depth2space.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_maximum.c" />
+    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_mathbinary.c" />
     <ClCompile Include="..\libavfilter\x86\scene_sad_init.c" />
     <ClCompile Include="..\libavfilter\x86\af_afir_init.c" />
     <ClCompile Include="..\libavfilter\x86\af_anlmdn_init.c" />

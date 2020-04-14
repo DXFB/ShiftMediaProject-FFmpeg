@@ -26,9 +26,10 @@
 #include "libavutil/internal.h"
 #include "libavutil/mathematics.h"
 #include "libavutil/mem.h"
-#include "avcodec.h"
+
 #include "bytestream.h"
 #include "internal.h"
+#include "packet.h"
 
 void av_init_packet(AVPacket *pkt)
 {
@@ -394,6 +395,7 @@ const char *av_packet_side_data_name(enum AVPacketSideDataType type)
     case AV_PKT_DATA_ENCRYPTION_INIT_INFO:       return "Encryption initialization data";
     case AV_PKT_DATA_ENCRYPTION_INFO:            return "Encryption info";
     case AV_PKT_DATA_AFD:                        return "Active Format Description data";
+    case AV_PKT_DATA_ICC_PROFILE:                return "ICC Profile";
     }
     return NULL;
 }
@@ -609,9 +611,11 @@ int av_packet_ref(AVPacket *dst, const AVPacket *src)
 {
     int ret;
 
+    dst->buf = NULL;
+
     ret = av_packet_copy_props(dst, src);
     if (ret < 0)
-        return ret;
+        goto fail;
 
     if (!src->buf) {
         ret = packet_alloc(&dst->buf, src->size);
@@ -635,7 +639,7 @@ int av_packet_ref(AVPacket *dst, const AVPacket *src)
 
     return 0;
 fail:
-    av_packet_free_side_data(dst);
+    av_packet_unref(dst);
     return ret;
 }
 

@@ -307,8 +307,6 @@
     <ClCompile Include="..\libavformat\av1.c" />
     <ClCompile Include="..\libavformat\hevc.c" />
     <ClCompile Include="..\libavformat\wv.c" />
-    <ClCompile Include="..\libavformat\webmdashenc.c" />
-    <ClCompile Include="..\libavformat\webm_chunk.c" />
     <ClCompile Include="..\libavformat\mgsts.c" />
     <ClCompile Include="..\libavformat\microdvddec.c" />
     <ClCompile Include="..\libavformat\microdvdenc.c" />
@@ -481,6 +479,8 @@
     <ClCompile Include="..\libavformat\w64.c" />
     <ClCompile Include="..\libavformat\wavenc.c" />
     <ClCompile Include="..\libavformat\wc3movie.c" />
+    <ClCompile Include="..\libavformat\webmdashenc.c" />
+    <ClCompile Include="..\libavformat\webm_chunk.c" />
     <ClCompile Include="..\libavformat\webpenc.c" />
     <ClCompile Include="..\libavformat\webvttdec.c" />
     <ClCompile Include="..\libavformat\webvttenc.c" />

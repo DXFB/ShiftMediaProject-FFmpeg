@@ -941,6 +941,7 @@
     <ClCompile Include="..\libavcodec\vp3_parser.c" />
     <ClCompile Include="..\libavcodec\vp8_parser.c" />
     <ClCompile Include="..\libavcodec\vp9_parser.c" />
+    <ClCompile Include="..\libavcodec\webp_parser.c" />
     <ClCompile Include="..\libavcodec\xma_parser.c" />
     <ClCompile Include="..\libavcodec\aac_adtstoasc_bsf.c" />
     <ClCompile Include="..\libavcodec\av1_metadata_bsf.c" />

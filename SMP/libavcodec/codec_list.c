@@ -600,6 +600,7 @@ static const AVCodec *codec_list[] = {
     &ff_adpcm_ima_alp_decoder,
     &ff_adpcm_ima_apc_decoder,
     &ff_adpcm_ima_apm_decoder,
+    &ff_adpcm_ima_cunning_decoder,
     &ff_adpcm_ima_dat4_decoder,
     &ff_adpcm_ima_dk3_decoder,
     &ff_adpcm_ima_dk4_decoder,

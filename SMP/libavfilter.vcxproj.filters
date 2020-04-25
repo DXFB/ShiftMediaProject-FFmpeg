@@ -780,6 +780,9 @@
     <ClCompile Include="..\libavfilter\vf_maskedminmax.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_maskedthreshold.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_maskfun.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -960,6 +963,9 @@
     <ClCompile Include="..\libavfilter\vf_tile.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_xmedian.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_tonemap.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -1003,9 +1009,6 @@
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vf_xfade.c">
-      <Filter>Source Files\libavfilter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavfilter\vf_xmedian.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vf_yaepblur.c">

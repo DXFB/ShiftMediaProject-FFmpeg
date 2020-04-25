@@ -309,6 +309,7 @@
     <ClCompile Include="..\libavfilter\vf_lut.c" />
     <ClCompile Include="..\libavfilter\vf_lut2.c" />
     <ClCompile Include="..\libavfilter\vf_maskedminmax.c" />
+    <ClCompile Include="..\libavfilter\vf_maskedthreshold.c" />
     <ClCompile Include="..\libavfilter\vf_maskfun.c" />
     <ClCompile Include="..\libavfilter\vf_mcdeint.c" />
     <ClCompile Include="..\libavfilter\vf_median.c" />
@@ -369,6 +370,7 @@
     <ClCompile Include="..\libavfilter\vf_telecine.c" />
     <ClCompile Include="..\libavfilter\vf_thumbnail.c" />
     <ClCompile Include="..\libavfilter\vf_tile.c" />
+    <ClCompile Include="..\libavfilter\vf_xmedian.c" />
     <ClCompile Include="..\libavfilter\vf_tonemap.c" />
     <ClCompile Include="..\libavfilter\vf_tpad.c" />
     <ClCompile Include="..\libavfilter\vf_unsharp.c" />
@@ -384,7 +386,6 @@
     <ClCompile Include="..\libavfilter\vf_waveform.c" />
     <ClCompile Include="..\libavfilter\vf_xbr.c" />
     <ClCompile Include="..\libavfilter\vf_xfade.c" />
-    <ClCompile Include="..\libavfilter\vf_xmedian.c" />
     <ClCompile Include="..\libavfilter\vf_yaepblur.c" />
     <ClCompile Include="..\libavfilter\vf_zoompan.c" />
     <ClCompile Include="..\libavfilter\vsrc_testsrc.c" />

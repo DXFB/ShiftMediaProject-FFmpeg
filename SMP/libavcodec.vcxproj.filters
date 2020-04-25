@@ -2673,6 +2673,9 @@
     <ClCompile Include="..\libavcodec\vp9_parser.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\webp_parser.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\xma_parser.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>

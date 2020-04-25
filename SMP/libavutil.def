@@ -115,6 +115,7 @@ EXPORTS
     av_display_rotation_set
     av_div_i
     av_div_q
+    av_dovi_alloc
     av_downmix_info_update_side_data
     av_dynamic_hdr_plus_alloc
     av_dynamic_hdr_plus_create_side_data

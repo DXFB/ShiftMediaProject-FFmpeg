@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2020 Jun Zhao<barryjzhao@tencent.com>
+ *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or
@@ -16,22 +18,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavcodec/avcodec.h"
+#include "dovi_meta.h"
+#include "mem.h"
 
-int main(void){
-    void *iter = NULL;
-    const AVCodec *codec = NULL;
-    int ret = 0;
+AVDOVIDecoderConfigurationRecord *av_dovi_alloc(size_t *size)
+{
+    AVDOVIDecoderConfigurationRecord *dovi =
+        av_mallocz(sizeof(AVDOVIDecoderConfigurationRecord));
+    if (!dovi)
+        return NULL;
 
-    while (codec = av_codec_iterate(&iter)) {
-        if (av_codec_is_encoder(codec)) {
-            if (codec->type == AVMEDIA_TYPE_AUDIO) {
-                if (!codec->sample_fmts) {
-                    av_log(NULL, AV_LOG_FATAL, "Encoder %s is missing the sample_fmts field\n", codec->name);
-                    ret = 1;
-                }
-            }
-        }
-    }
-    return ret;
+     if (size)
+        *size = sizeof(*dovi);
+
+    return dovi;
 }

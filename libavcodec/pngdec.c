@@ -1286,8 +1286,10 @@ static int decode_frame_common(AVCodecContext *avctx, PNGDecContext *s,
         case MKTAG('s', 'T', 'E', 'R'): {
             int mode = bytestream2_get_byte(&s->gb);
             AVStereo3D *stereo3d = av_stereo3d_create_side_data(p);
-            if (!stereo3d)
+            if (!stereo3d) {
+                ret = AVERROR(ENOMEM);
                 goto fail;
+            }
 
             if (mode == 0 || mode == 1) {
                 stereo3d->type  = AV_STEREO3D_SIDEBYSIDE;
@@ -1300,7 +1302,7 @@ static int decode_frame_common(AVCodecContext *avctx, PNGDecContext *s,
             break;
         }
         case MKTAG('i', 'C', 'C', 'P'): {
-            if (decode_iccp_chunk(s, length, p) < 0)
+            if ((ret = decode_iccp_chunk(s, length, p)) < 0)
                 goto fail;
             break;
         }

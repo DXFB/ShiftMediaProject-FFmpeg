@@ -58,6 +58,11 @@ version <next>:
 - switch from AvxSynth to AviSynth+ on Linux
 - mv30 decoder
 - Expanded styling support for 3GPP Timed Text Subtitles (movtext)
+- WebP parser
+- tmedian filter
+- maskedthreshold filter
+- Support for muxing pcm and pgs in m2ts
+- Cunning Developments ADPCM decoder
 
 
 version 4.2:

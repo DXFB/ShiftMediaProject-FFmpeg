@@ -44,6 +44,8 @@ static const AVBitStreamFilter *bitstream_filters[] = {
     &ff_mov2textsub_bsf,
     &ff_noise_bsf,
     &ff_null_bsf,
+    &ff_opus_metadata_bsf,
+    &ff_pcm_rechunk_bsf,
     &ff_prores_metadata_bsf,
     &ff_remove_extradata_bsf,
     &ff_text2movsub_bsf,

@@ -970,6 +970,8 @@
     <ClCompile Include="..\libavcodec\mpeg2_metadata_bsf.c" />
     <ClCompile Include="..\libavcodec\noise_bsf.c" />
     <ClCompile Include="..\libavcodec\null_bsf.c" />
+    <ClCompile Include="..\libavcodec\opus_metadata_bsf.c" />
+    <ClCompile Include="..\libavcodec\pcm_rechunk_bsf.c" />
     <ClCompile Include="..\libavcodec\prores_metadata_bsf.c" />
     <ClCompile Include="..\libavcodec\remove_extradata_bsf.c" />
     <ClCompile Include="..\libavcodec\trace_headers_bsf.c" />

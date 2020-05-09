@@ -2760,6 +2760,12 @@
     <ClCompile Include="..\libavcodec\null_bsf.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\opus_metadata_bsf.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\pcm_rechunk_bsf.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\prores_metadata_bsf.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>

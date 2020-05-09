@@ -74,6 +74,7 @@ static const AVFilter *filter_list[] = {
     &ff_af_asplit,
     &ff_af_astats,
     &ff_af_astreamselect,
+    &ff_af_asubboost,
     &ff_af_atempo,
     &ff_af_atrim,
     &ff_af_axcorrelate,

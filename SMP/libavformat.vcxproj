@@ -249,7 +249,6 @@
     <ClCompile Include="..\libavformat\gsmdec.c" />
     <ClCompile Include="..\libavformat\gxf.c" />
     <ClCompile Include="..\libavformat\gxfenc.c" />
-    <ClCompile Include="..\libavformat\audiointerleave.c" />
     <ClCompile Include="..\libavformat\g722.c" />
     <ClCompile Include="..\libavformat\g723_1.c" />
     <ClCompile Include="..\libavformat\g726.c" />
@@ -373,6 +372,7 @@
     <ClCompile Include="..\libavformat\pcmenc.c" />
     <ClCompile Include="..\libavformat\pjsdec.c" />
     <ClCompile Include="..\libavformat\pmpdec.c" />
+    <ClCompile Include="..\libavformat\pp_bnk.c" />
     <ClCompile Include="..\libavformat\pva.c" />
     <ClCompile Include="..\libavformat\pvfdec.c" />
     <ClCompile Include="..\libavformat\qcp.c" />

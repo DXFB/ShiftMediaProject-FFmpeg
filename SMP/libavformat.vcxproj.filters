@@ -598,9 +598,6 @@
     <ClCompile Include="..\libavformat\gxfenc.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
-    <ClCompile Include="..\libavformat\audiointerleave.c">
-      <Filter>Source Files\libavformat</Filter>
-    </ClCompile>
     <ClCompile Include="..\libavformat\g722.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
@@ -968,6 +965,9 @@
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\pmpdec.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\pp_bnk.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\pva.c">

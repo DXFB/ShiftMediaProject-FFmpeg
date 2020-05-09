@@ -212,6 +212,7 @@ static const AVInputFormat *demuxer_list[] = {
     &ff_pcm_u8_demuxer,
     &ff_pjs_demuxer,
     &ff_pmp_demuxer,
+    &ff_pp_bnk_demuxer,
     &ff_pva_demuxer,
     &ff_pvf_demuxer,
     &ff_qcp_demuxer,

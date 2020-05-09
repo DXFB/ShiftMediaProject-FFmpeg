@@ -25,6 +25,7 @@
 #include <sys/ioctl.h>
 #include <search.h>
 #include "libavcodec/avcodec.h"
+#include "libavcodec/internal.h"
 #include "libavutil/pixdesc.h"
 #include "libavutil/pixfmt.h"
 #include "libavutil/opt.h"
@@ -47,7 +48,7 @@ static inline void v4l2_set_timeperframe(V4L2m2mContext *s, unsigned int num, un
         av_log(s->avctx, AV_LOG_WARNING, "Failed to set timeperframe");
 }
 
-static inline void v4l2_set_ext_ctrl(V4L2m2mContext *s, unsigned int id, signed int value, const char *name)
+static inline void v4l2_set_ext_ctrl(V4L2m2mContext *s, unsigned int id, signed int value, const char *name, int log_warning)
 {
     struct v4l2_ext_controls ctrls = { { 0 } };
     struct v4l2_ext_control ctrl = { 0 };
@@ -62,12 +63,13 @@ static inline void v4l2_set_ext_ctrl(V4L2m2mContext *s, unsigned int id, signed 
     ctrl.id = id;
 
     if (ioctl(s->fd, VIDIOC_S_EXT_CTRLS, &ctrls) < 0)
-        av_log(s->avctx, AV_LOG_WARNING, "Failed to set %s: %s\n", name, strerror(errno));
+        av_log(s->avctx, log_warning || errno != EINVAL ? AV_LOG_WARNING : AV_LOG_DEBUG,
+               "Failed to set %s: %s\n", name, strerror(errno));
     else
         av_log(s->avctx, AV_LOG_DEBUG, "Encoder: %s = %d\n", name, value);
 }
 
-static inline int v4l2_get_ext_ctrl(V4L2m2mContext *s, unsigned int id, signed int *value, const char *name)
+static inline int v4l2_get_ext_ctrl(V4L2m2mContext *s, unsigned int id, signed int *value, const char *name, int log_warning)
 {
     struct v4l2_ext_controls ctrls = { { 0 } };
     struct v4l2_ext_control ctrl = { 0 };
@@ -83,7 +85,8 @@ static inline int v4l2_get_ext_ctrl(V4L2m2mContext *s, unsigned int id, signed i
 
     ret = ioctl(s->fd, VIDIOC_G_EXT_CTRLS, &ctrls);
     if (ret < 0) {
-        av_log(s->avctx, AV_LOG_WARNING, "Failed to get %s\n", name);
+        av_log(s->avctx, log_warning || errno != EINVAL ? AV_LOG_WARNING : AV_LOG_DEBUG,
+               "Failed to get %s\n", name);
         return ret;
     }
 
@@ -145,8 +148,8 @@ static int v4l2_check_b_frame_support(V4L2m2mContext *s)
     if (s->avctx->max_b_frames)
         av_log(s->avctx, AV_LOG_WARNING, "Encoder does not support b-frames yet\n");
 
-    v4l2_set_ext_ctrl(s, MPEG_CID(B_FRAMES), 0, "number of B-frames");
-    v4l2_get_ext_ctrl(s, MPEG_CID(B_FRAMES), &s->avctx->max_b_frames, "number of B-frames");
+    v4l2_set_ext_ctrl(s, MPEG_CID(B_FRAMES), 0, "number of B-frames", 0);
+    v4l2_get_ext_ctrl(s, MPEG_CID(B_FRAMES), &s->avctx->max_b_frames, "number of B-frames", 0);
     if (s->avctx->max_b_frames == 0)
         return 0;
 
@@ -188,9 +191,10 @@ static int v4l2_prepare_encoder(V4L2m2mContext *s)
         v4l2_set_timeperframe(s, avctx->framerate.den, avctx->framerate.num);
 
     /* set ext ctrls */
-    v4l2_set_ext_ctrl(s, MPEG_CID(HEADER_MODE), MPEG_VIDEO(HEADER_MODE_SEPARATE), "header mode");
-    v4l2_set_ext_ctrl(s, MPEG_CID(BITRATE) , avctx->bit_rate, "bit rate");
-    v4l2_set_ext_ctrl(s, MPEG_CID(GOP_SIZE), avctx->gop_size,"gop size");
+    v4l2_set_ext_ctrl(s, MPEG_CID(HEADER_MODE), MPEG_VIDEO(HEADER_MODE_SEPARATE), "header mode", 0);
+    v4l2_set_ext_ctrl(s, MPEG_CID(BITRATE) , avctx->bit_rate, "bit rate", 1);
+    v4l2_set_ext_ctrl(s, MPEG_CID(FRAME_RC_ENABLE), 1, "frame level rate control", 0);
+    v4l2_set_ext_ctrl(s, MPEG_CID(GOP_SIZE), avctx->gop_size,"gop size", 1);
 
     av_log(avctx, AV_LOG_DEBUG,
         "Encoder Context: id (%d), profile (%d), frame rate(%d/%d), number b-frames (%d), "
@@ -200,26 +204,30 @@ static int v4l2_prepare_encoder(V4L2m2mContext *s)
 
     switch (avctx->codec_id) {
     case AV_CODEC_ID_H264:
-        val = v4l2_h264_profile_from_ff(avctx->profile);
-        if (val < 0)
-            av_log(avctx, AV_LOG_WARNING, "h264 profile not found\n");
-        else
-            v4l2_set_ext_ctrl(s, MPEG_CID(H264_PROFILE), val, "h264 profile");
+        if (avctx->profile != FF_PROFILE_UNKNOWN) {
+            val = v4l2_h264_profile_from_ff(avctx->profile);
+            if (val < 0)
+                av_log(avctx, AV_LOG_WARNING, "h264 profile not found\n");
+            else
+                v4l2_set_ext_ctrl(s, MPEG_CID(H264_PROFILE), val, "h264 profile", 1);
+        }
         qmin_cid = MPEG_CID(H264_MIN_QP);
         qmax_cid = MPEG_CID(H264_MAX_QP);
         qmin = 0;
         qmax = 51;
         break;
     case AV_CODEC_ID_MPEG4:
-        val = v4l2_mpeg4_profile_from_ff(avctx->profile);
-        if (val < 0)
-            av_log(avctx, AV_LOG_WARNING, "mpeg4 profile not found\n");
-        else
-            v4l2_set_ext_ctrl(s, MPEG_CID(MPEG4_PROFILE), val, "mpeg4 profile");
+        if (avctx->profile != FF_PROFILE_UNKNOWN) {
+            val = v4l2_mpeg4_profile_from_ff(avctx->profile);
+            if (val < 0)
+                av_log(avctx, AV_LOG_WARNING, "mpeg4 profile not found\n");
+            else
+                v4l2_set_ext_ctrl(s, MPEG_CID(MPEG4_PROFILE), val, "mpeg4 profile", 1);
+        }
         qmin_cid = MPEG_CID(MPEG4_MIN_QP);
         qmax_cid = MPEG_CID(MPEG4_MAX_QP);
         if (avctx->flags & AV_CODEC_FLAG_QPEL)
-            v4l2_set_ext_ctrl(s, MPEG_CID(MPEG4_QPEL), 1, "qpel");
+            v4l2_set_ext_ctrl(s, MPEG_CID(MPEG4_QPEL), 1, "qpel", 1);
         qmin = 1;
         qmax = 31;
         break;
@@ -245,11 +253,18 @@ static int v4l2_prepare_encoder(V4L2m2mContext *s)
         return 0;
     }
 
-    if (qmin != avctx->qmin || qmax != avctx->qmax)
-        av_log(avctx, AV_LOG_WARNING, "Encoder adjusted: qmin (%d), qmax (%d)\n", qmin, qmax);
+    if (avctx->qmin >= 0 && avctx->qmax >= 0 && avctx->qmin > avctx->qmax) {
+        av_log(avctx, AV_LOG_WARNING, "Invalid qmin:%d qmax:%d. qmin should not "
+                                      "exceed qmax\n", avctx->qmin, avctx->qmax);
+    } else {
+        qmin = avctx->qmin >= 0 ? avctx->qmin : qmin;
+        qmax = avctx->qmax >= 0 ? avctx->qmax : qmax;
+    }
 
-    v4l2_set_ext_ctrl(s, qmin_cid, qmin, "minimum video quantizer scale");
-    v4l2_set_ext_ctrl(s, qmax_cid, qmax, "maximum video quantizer scale");
+    v4l2_set_ext_ctrl(s, qmin_cid, qmin, "minimum video quantizer scale",
+                      avctx->qmin >= 0);
+    v4l2_set_ext_ctrl(s, qmax_cid, qmax, "maximum video quantizer scale",
+                      avctx->qmax >= 0);
 
     return 0;
 }
@@ -261,7 +276,7 @@ static int v4l2_send_frame(AVCodecContext *avctx, const AVFrame *frame)
 
 #ifdef V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME
     if (frame && frame->pict_type == AV_PICTURE_TYPE_I)
-        v4l2_set_ext_ctrl(s, MPEG_CID(FORCE_KEY_FRAME), 0, "force key frame");
+        v4l2_set_ext_ctrl(s, MPEG_CID(FORCE_KEY_FRAME), 0, "force key frame", 1);
 #endif
 
     return ff_v4l2_context_enqueue_frame(output, frame);
@@ -362,6 +377,12 @@ static const AVOption options[] = {
     { NULL },
 };
 
+static const AVCodecDefault v4l2_m2m_defaults[] = {
+    { "qmin", "-1" },
+    { "qmax", "-1" },
+    { NULL },
+};
+
 #define M2MENC_CLASS(NAME) \
     static const AVClass v4l2_m2m_ ## NAME ## _enc_class = { \
         .class_name = #NAME "_v4l2m2m_encoder", \
@@ -383,6 +404,7 @@ static const AVOption options[] = {
         .send_frame     = v4l2_send_frame, \
         .receive_packet = v4l2_receive_packet, \
         .close          = v4l2_encode_close, \
+        .defaults       = v4l2_m2m_defaults, \
         .capabilities   = AV_CODEC_CAP_HARDWARE | AV_CODEC_CAP_DELAY, \
         .wrapper_name   = "v4l2m2m", \
     };

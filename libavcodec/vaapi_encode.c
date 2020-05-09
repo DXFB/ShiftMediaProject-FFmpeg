@@ -27,6 +27,11 @@
 #include "vaapi_encode.h"
 #include "avcodec.h"
 
+const AVCodecHWConfigInternal *ff_vaapi_encode_hw_configs[] = {
+    HW_CONFIG_ENCODER_FRAMES(VAAPI, VAAPI),
+    NULL,
+};
+
 static const char * const picture_type_name[] = { "IDR", "I", "P", "B" };
 
 static int vaapi_encode_make_packed_header(AVCodecContext *avctx,
@@ -2361,7 +2366,6 @@ av_cold int ff_vaapi_encode_init(AVCodecContext *avctx)
     return 0;
 
 fail:
-    ff_vaapi_encode_close(avctx);
     return err;
 }
 

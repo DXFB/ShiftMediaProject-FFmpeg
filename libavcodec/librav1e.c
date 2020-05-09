@@ -186,10 +186,27 @@ static av_cold int librav1e_encode_init(AVCodecContext *avctx)
         return AVERROR_EXTERNAL;
     }
 
-    rav1e_config_set_time_base(cfg, (RaRational) {
-                               avctx->time_base.num * avctx->ticks_per_frame,
-                               avctx->time_base.den
-                               });
+    /*
+     * Rav1e currently uses the time base given to it only for ratecontrol... where
+     * the inverse is taken and used as a framerate. So, do what we do in other wrappers
+     * and use the framerate if we can.
+     */
+    if (avctx->framerate.num > 0 && avctx->framerate.den > 0) {
+        rav1e_config_set_time_base(cfg, (RaRational) {
+                                   avctx->framerate.den, avctx->framerate.num
+                                   });
+    } else {
+        rav1e_config_set_time_base(cfg, (RaRational) {
+                                   avctx->time_base.num * avctx->ticks_per_frame,
+                                   avctx->time_base.den
+                                   });
+    }
+
+    if ((avctx->flags & AV_CODEC_FLAG_PASS1 || avctx->flags & AV_CODEC_FLAG_PASS2) && !avctx->bit_rate) {
+        av_log(avctx, AV_LOG_ERROR, "A bitrate must be set to use two pass mode.\n");
+        ret = AVERROR_INVALIDDATA;
+        goto end;
+    }
 
     if (avctx->flags & AV_CODEC_FLAG_PASS2) {
         if (!avctx->stats_in) {

@@ -139,16 +139,17 @@ static int find_frame_rate_index(MpegEncContext *s)
 
 static av_cold int encode_init(AVCodecContext *avctx)
 {
+    int ret;
     MpegEncContext *s = avctx->priv_data;
 
-    if (ff_mpv_encode_init(avctx) < 0)
-        return -1;
+    if ((ret = ff_mpv_encode_init(avctx)) < 0)
+        return ret;
 
     if (find_frame_rate_index(s) < 0) {
         if (s->strict_std_compliance > FF_COMPLIANCE_EXPERIMENTAL) {
             av_log(avctx, AV_LOG_ERROR, "MPEG-1/2 does not support %d/%d fps\n",
                    avctx->time_base.den, avctx->time_base.num);
-            return -1;
+            return AVERROR(EINVAL);
         } else {
             av_log(avctx, AV_LOG_INFO,
                    "MPEG-1/2 does not support %d/%d fps, there may be AV sync issues\n",
@@ -159,23 +160,23 @@ static av_cold int encode_init(AVCodecContext *avctx)
     if (avctx->profile == FF_PROFILE_UNKNOWN) {
         if (avctx->level != FF_LEVEL_UNKNOWN) {
             av_log(avctx, AV_LOG_ERROR, "Set profile and level\n");
-            return -1;
+            return AVERROR(EINVAL);
         }
         /* Main or 4:2:2 */
-        avctx->profile = s->chroma_format == CHROMA_420 ? 4 : 0;
+        avctx->profile = s->chroma_format == CHROMA_420 ? FF_PROFILE_MPEG2_MAIN : FF_PROFILE_MPEG2_422;
     }
 
     if (avctx->level == FF_LEVEL_UNKNOWN) {
-        if (avctx->profile == 0) {                  /* 4:2:2 */
+        if (avctx->profile == FF_PROFILE_MPEG2_422) {   /* 4:2:2 */
             if (avctx->width <= 720 && avctx->height <= 608)
                 avctx->level = 5;                   /* Main */
             else
                 avctx->level = 2;                   /* High */
         } else {
-            if (avctx->profile != 1 && s->chroma_format != CHROMA_420) {
+            if (avctx->profile != FF_PROFILE_MPEG2_HIGH && s->chroma_format != CHROMA_420) {
                 av_log(avctx, AV_LOG_ERROR,
                        "Only High(1) and 4:2:2(0) profiles support 4:2:2 color sampling\n");
-                return -1;
+                return AVERROR(EINVAL);
             }
             if (avctx->width <= 720 && avctx->height <= 576)
                 avctx->level = 8;                   /* Main */
@@ -205,7 +206,7 @@ static av_cold int encode_init(AVCodecContext *avctx)
     if (s->drop_frame_timecode && s->frame_rate_index != 4) {
         av_log(avctx, AV_LOG_ERROR,
                "Drop frame time code only allowed with 1001/30000 fps\n");
-        return -1;
+        return AVERROR(EINVAL);
     }
 
 #if FF_API_PRIVATE_OPT
@@ -321,7 +322,7 @@ static void mpeg1_encode_sequence_header(MpegEncContext *s)
             put_header(s, EXT_START_CODE);
             put_bits(&s->pb, 4, 1);                 // seq ext
 
-            put_bits(&s->pb, 1, s->avctx->profile == 0); // escx 1 for 4:2:2 profile
+            put_bits(&s->pb, 1, s->avctx->profile == FF_PROFILE_MPEG2_422); // escx 1 for 4:2:2 profile
 
             put_bits(&s->pb, 3, s->avctx->profile); // profile
             put_bits(&s->pb, 4, s->avctx->level);   // level

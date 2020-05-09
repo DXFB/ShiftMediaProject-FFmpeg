@@ -152,12 +152,11 @@ struct AVStreamInternal {
     int reorder;
 
     /**
-     * bitstream filters to run on stream
+     * bitstream filter to run on stream
      * - encoding: Set by muxer using ff_stream_add_bitstream_filter
      * - decoding: unused
      */
-    AVBSFContext **bsfcs;
-    int nb_bsfcs;
+    AVBSFContext *bsfc;
 
     /**
      * Whether or not check_bitstream should still be run on each packet
@@ -188,6 +187,8 @@ struct AVStreamInternal {
      * Whether the internal avctx needs to be updated from codecpar (after a late change to codecpar)
      */
     int need_context_update;
+
+    int is_intra_only;
 
     FFFrac *priv_pts;
 };
@@ -289,16 +290,6 @@ void ff_sdp_write_media(char *buff, int size, AVStream *st, int idx,
  */
 int ff_write_chained(AVFormatContext *dst, int dst_stream, AVPacket *pkt,
                      AVFormatContext *src, int interleave);
-
-/**
- * Get the length in bytes which is needed to store val as v.
- */
-int ff_get_v_length(uint64_t val);
-
-/**
- * Put val using a variable number of bytes.
- */
-void ff_put_v(AVIOContext *bc, uint64_t val);
 
 /**
  * Read a whole line of text from AVIOContext. Stop reading after reaching
@@ -520,6 +511,8 @@ void ff_compute_frame_duration(AVFormatContext *s, int *pnum, int *pden, AVStrea
 unsigned int ff_codec_get_tag(const AVCodecTag *tags, enum AVCodecID id);
 
 enum AVCodecID ff_codec_get_id(const AVCodecTag *tags, unsigned int tag);
+
+int ff_is_intra_only(enum AVCodecID id);
 
 /**
  * Select a PCM codec based on the given parameters.

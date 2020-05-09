@@ -1731,7 +1731,7 @@ static int add_segment(OutputStream *os, const char *file,
     Segment *seg;
     if (os->nb_segments >= os->segments_size) {
         os->segments_size = (os->segments_size + 1) * 2;
-        if ((err = av_reallocp(&os->segments, sizeof(*os->segments) *
+        if ((err = av_reallocp_array(&os->segments, sizeof(*os->segments),
                                os->segments_size)) < 0) {
             os->segments_size = 0;
             os->nb_segments = 0;
@@ -1850,28 +1850,20 @@ static void dashenc_delete_file(AVFormatContext *s, char *filename) {
 static int dashenc_delete_segment_file(AVFormatContext *s, const char* file)
 {
     DASHContext *c = s->priv_data;
-    size_t dirname_len, file_len;
-    char filename[1024];
+    AVBPrint buf;
 
-    dirname_len = strlen(c->dirname);
-    if (dirname_len >= sizeof(filename)) {
-        av_log(s, AV_LOG_WARNING, "Cannot delete segments as the directory path is too long: %"PRIu64" characters: %s\n",
-            (uint64_t)dirname_len, c->dirname);
-        return AVERROR(ENAMETOOLONG);
+    av_bprint_init(&buf, 0, AV_BPRINT_SIZE_UNLIMITED);
+
+    av_bprintf(&buf, "%s%s", c->dirname, file);
+    if (!av_bprint_is_complete(&buf)) {
+        av_bprint_finalize(&buf, NULL);
+        av_log(s, AV_LOG_WARNING, "Out of memory for filename\n");
+        return AVERROR(ENOMEM);
     }
 
-    memcpy(filename, c->dirname, dirname_len);
+    dashenc_delete_file(s, buf.str);
 
-    file_len = strlen(file);
-    if ((dirname_len + file_len) >= sizeof(filename)) {
-        av_log(s, AV_LOG_WARNING, "Cannot delete segments as the path is too long: %"PRIu64" characters: %s%s\n",
-            (uint64_t)(dirname_len + file_len), c->dirname, file);
-        return AVERROR(ENAMETOOLONG);
-    }
-
-    memcpy(filename + dirname_len, file, file_len + 1); // include the terminating zero
-    dashenc_delete_file(s, filename);
-
+    av_bprint_finalize(&buf, NULL);
     return 0;
 }
 
@@ -1916,6 +1908,7 @@ static int dash_flush(AVFormatContext *s, int final, int stream)
         OutputStream *os = &c->streams[i];
         AVStream *st = s->streams[i];
         int range_length, index_length = 0;
+        int64_t duration;
 
         if (!os->packets_written)
             continue;
@@ -1955,23 +1948,18 @@ static int dash_flush(AVFormatContext *s, int final, int stream)
             }
         }
 
-        os->last_duration = FFMAX(os->last_duration, av_rescale_q(os->max_pts - os->start_pts,
-                                                                  st->time_base,
-                                                                  AV_TIME_BASE_Q));
+        duration = av_rescale_q(os->max_pts - os->start_pts, st->time_base, AV_TIME_BASE_Q);
+        os->last_duration = FFMAX(os->last_duration, duration);
 
         if (!os->muxer_overhead && os->max_pts > os->start_pts)
             os->muxer_overhead = ((int64_t) (range_length - os->total_pkt_size) *
-                                  8 * AV_TIME_BASE) /
-                                 av_rescale_q(os->max_pts - os->start_pts,
-                                              st->time_base, AV_TIME_BASE_Q);
+                                  8 * AV_TIME_BASE) / duration;
         os->total_pkt_size = 0;
         os->total_pkt_duration = 0;
 
         if (!os->bit_rate) {
             // calculate average bitrate of first segment
-            int64_t bitrate = (int64_t) range_length * 8 * AV_TIME_BASE / av_rescale_q(os->max_pts - os->start_pts,
-                                                                                       st->time_base,
-                                                                                       AV_TIME_BASE_Q);
+            int64_t bitrate = (int64_t) range_length * 8 * AV_TIME_BASE / duration;
             if (bitrate >= 0)
                 os->bit_rate = bitrate;
         }
@@ -2149,21 +2137,21 @@ static int dash_write_packet(AVFormatContext *s, AVPacket *pkt)
         av_compare_ts(elapsed_duration, st->time_base,
                       seg_end_duration, AV_TIME_BASE_Q) >= 0) {
         if (!c->has_video || st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
-        c->last_duration = av_rescale_q(pkt->pts - os->start_pts,
-                                        st->time_base,
-                                        AV_TIME_BASE_Q);
-        c->total_duration = av_rescale_q(pkt->pts - os->first_pts,
-                                         st->time_base,
-                                         AV_TIME_BASE_Q);
+            c->last_duration = av_rescale_q(pkt->pts - os->start_pts,
+                    st->time_base,
+                    AV_TIME_BASE_Q);
+            c->total_duration = av_rescale_q(pkt->pts - os->first_pts,
+                    st->time_base,
+                    AV_TIME_BASE_Q);
 
-        if ((!c->use_timeline || !c->use_template) && os->last_duration) {
-            if (c->last_duration < os->last_duration*9/10 ||
-                c->last_duration > os->last_duration*11/10) {
-                av_log(s, AV_LOG_WARNING,
-                       "Segment durations differ too much, enable use_timeline "
-                       "and use_template, or keep a stricter keyframe interval\n");
+            if ((!c->use_timeline || !c->use_template) && os->last_duration) {
+                if (c->last_duration < os->last_duration*9/10 ||
+                        c->last_duration > os->last_duration*11/10) {
+                    av_log(s, AV_LOG_WARNING,
+                            "Segment durations differ too much, enable use_timeline "
+                            "and use_template, or keep a stricter keyframe interval\n");
+                }
             }
-        }
         }
 
         if (c->write_prft && os->producer_reference_time.wallclock && !os->producer_reference_time_str[0])
@@ -2325,10 +2313,8 @@ static int dash_check_bitstream(struct AVFormatContext *s, const AVPacket *avpkt
         if (ret == 1) {
             AVStream *st = s->streams[avpkt->stream_index];
             AVStream *ost = oc->streams[0];
-            st->internal->bsfcs = ost->internal->bsfcs;
-            st->internal->nb_bsfcs = ost->internal->nb_bsfcs;
-            ost->internal->bsfcs = NULL;
-            ost->internal->nb_bsfcs = 0;
+            st->internal->bsfc = ost->internal->bsfc;
+            ost->internal->bsfc = NULL;
         }
         return ret;
     }

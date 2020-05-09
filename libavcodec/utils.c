@@ -44,7 +44,7 @@
 #include "libavutil/thread.h"
 #include "avcodec.h"
 #include "decode.h"
-#include "hwaccel.h"
+#include "hwconfig.h"
 #include "libavutil/opt.h"
 #include "mpegvideo.h"
 #include "thread.h"
@@ -584,37 +584,14 @@ int attribute_align_arg avcodec_open2(AVCodecContext *avctx, const AVCodec *code
     avctx->internal = avci;
 
     avci->to_free = av_frame_alloc();
-    if (!avci->to_free) {
-        ret = AVERROR(ENOMEM);
-        goto free_and_end;
-    }
-
     avci->compat_decode_frame = av_frame_alloc();
-    if (!avci->compat_decode_frame) {
-        ret = AVERROR(ENOMEM);
-        goto free_and_end;
-    }
-
     avci->buffer_frame = av_frame_alloc();
-    if (!avci->buffer_frame) {
-        ret = AVERROR(ENOMEM);
-        goto free_and_end;
-    }
-
     avci->buffer_pkt = av_packet_alloc();
-    if (!avci->buffer_pkt) {
-        ret = AVERROR(ENOMEM);
-        goto free_and_end;
-    }
-
     avci->ds.in_pkt = av_packet_alloc();
-    if (!avci->ds.in_pkt) {
-        ret = AVERROR(ENOMEM);
-        goto free_and_end;
-    }
-
     avci->last_pkt_props = av_packet_alloc();
-    if (!avci->last_pkt_props) {
+    if (!avci->to_free      || !avci->compat_decode_frame ||
+        !avci->buffer_frame || !avci->buffer_pkt          ||
+        !avci->ds.in_pkt    || !avci->last_pkt_props) {
         ret = AVERROR(ENOMEM);
         goto free_and_end;
     }

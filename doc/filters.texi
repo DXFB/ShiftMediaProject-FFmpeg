@@ -1703,6 +1703,14 @@ Specify weight of each input audio stream as sequence.
 Each weight is separated by space. By default all inputs have same weight.
 @end table
 
+@subsection Commands
+
+This filter supports the following commands:
+@table @option
+@item weights
+Syntax is same as option with same name.
+@end table
+
 @section amultiply
 
 Multiply first audio stream with second audio stream and store result
@@ -2445,6 +2453,45 @@ Number of points where the waveform crosses the zero level axis.
 @item Zero crossings rate
 Rate of Zero crossings and number of audio samples.
 @end table
+
+@section asubboost
+Boost subwoofer frequencies.
+
+The filter accepts the following options:
+
+@table @option
+@item dry
+Set dry gain, how much of original signal is kept. Allowed range is from 0 to 1.
+Default value is 0.5.
+
+@item wet
+Set wet gain, how much of filtered signal is kept. Allowed range is from 0 to 1.
+Default value is 0.8.
+
+@item decay
+Set delay line decay gain value. Allowed range is from 0 to 1.
+Default value is 0.7.
+
+@item feedback
+Set delay line feedback gain value. Allowed range is from 0 to 1.
+Default value is 0.5.
+
+@item cutoff
+Set cutoff frequency in herz. Allowed range is 50 to 900.
+Default value is 100.
+
+@item slope
+Set slope amount for cutoff frequency. Allowed range is 0.0001 to 1.
+Default value is 0.5.
+
+@item delay
+Set delay. Allowed range is from 1 to 100.
+Default value is 20.
+@end table
+
+@subsection Commands
+
+This filter supports the all above options as @ref{commands}.
 
 @section atempo
 
@@ -3220,12 +3267,20 @@ Set soundstage wideness. Default is 0.5. Allowed range is from 0 to 1.
 This sets cut off frequency of low shelf filter. Default is cut off near
 1550 Hz. With range set to 1 cut off frequency is set to 2100 Hz.
 
+@item slope
+Set curve slope of low shelf filter. Default is 0.5.
+Allowed range is from 0.01 to 1.
+
 @item level_in
 Set input gain. Default is 0.9.
 
 @item level_out
 Set output gain. Default is 1.
 @end table
+
+@subsection Commands
+
+This filter supports the all above options as @ref{commands}.
 
 @section crystalizer
 Simple algorithm to expand audio dynamic range.
@@ -18956,6 +19011,7 @@ No padding.
 @end table
 
 Default value is @b{@samp{0}}.
+Maximum value is @b{@samp{0.1}}.
 
 @item fin_pad
 @item fout_pad
@@ -19034,19 +19090,19 @@ Dual fisheye.
 
 Format specific options:
 @table @option
-@item in_pad
-@item out_pad
-Set padding proportion. Values in decimals.
+@item h_fov
+@item v_fov
+@item d_fov
+Set output horizontal/vertical/diagonal field of view. Values in degrees.
 
-Example values:
-@table @samp
-@item 0
-No padding.
-@item 0.01
-1% padding.
-@end table
+If diagonal field of view is set it overrides horizontal and vertical field of view.
 
-Default value is @b{@samp{0}}.
+@item ih_fov
+@item iv_fov
+@item id_fov
+Set input horizontal/vertical/diagonal field of view. Values in degrees.
+
+If diagonal field of view is set it overrides horizontal and vertical field of view.
 @end table
 
 @item barrel

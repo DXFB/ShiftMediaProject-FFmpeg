@@ -33,6 +33,7 @@ typedef void ID3D11Device;
 #include "compat/cuda/dynlink_loader.h"
 #include "libavutil/fifo.h"
 #include "libavutil/opt.h"
+#include "hwconfig.h"
 
 #include "avcodec.h"
 
@@ -160,11 +161,6 @@ typedef struct NvencContext
      * AVCodecContext.pix_fmt when using hwaccel frames on input */
     enum AVPixelFormat data_pix_fmt;
 
-    /* timestamps of the first two frames, for computing the first dts
-     * when B-frames are present */
-    int64_t initial_pts[2];
-    int first_packet_output;
-
     int support_dyn_bitrate;
 
     void *nvencoder;
@@ -217,5 +213,6 @@ int ff_nvenc_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
 void ff_nvenc_encode_flush(AVCodecContext *avctx);
 
 extern const enum AVPixelFormat ff_nvenc_pix_fmts[];
+extern const AVCodecHWConfigInternal *ff_nvenc_hw_configs[];
 
 #endif /* AVCODEC_NVENC_H */

@@ -99,7 +99,9 @@ static const AVOption options[] = {
     { "b_adapt",      "When lookahead is enabled, set this to 0 to disable adaptive B-frame decision",
                                                             OFFSET(b_adapt),      AV_OPT_TYPE_BOOL,  { .i64 = 1 }, 0,  1, VE },
     { "spatial-aq",   "set to 1 to enable Spatial AQ",      OFFSET(aq),           AV_OPT_TYPE_BOOL,  { .i64 = 0 }, 0,  1, VE },
+    { "spatial_aq",   "set to 1 to enable Spatial AQ",      OFFSET(aq),           AV_OPT_TYPE_BOOL,  { .i64 = 0 }, 0,  1, VE },
     { "temporal-aq",  "set to 1 to enable Temporal AQ",     OFFSET(temporal_aq),  AV_OPT_TYPE_BOOL,  { .i64 = 0 }, 0,  1, VE },
+    { "temporal_aq",  "set to 1 to enable Temporal AQ",     OFFSET(temporal_aq),  AV_OPT_TYPE_BOOL,  { .i64 = 0 }, 0,  1, VE },
     { "zerolatency",  "Set 1 to indicate zero latency operation (no reordering delay)",
                                                             OFFSET(zerolatency),  AV_OPT_TYPE_BOOL,  { .i64 = 0 }, 0,  1, VE },
     { "nonref_p",     "Set this to 1 to enable automatic insertion of non-reference P-frames",
@@ -191,6 +193,7 @@ AVCodec ff_nvenc_encoder = {
     .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
     .pix_fmts       = ff_nvenc_pix_fmts,
     .wrapper_name   = "nvenc",
+    .hw_configs     = ff_nvenc_hw_configs,
 };
 #endif
 
@@ -222,6 +225,7 @@ AVCodec ff_nvenc_h264_encoder = {
     .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
     .pix_fmts       = ff_nvenc_pix_fmts,
     .wrapper_name   = "nvenc",
+    .hw_configs     = ff_nvenc_hw_configs,
 };
 #endif
 
@@ -253,4 +257,5 @@ AVCodec ff_h264_nvenc_encoder = {
     .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
     .pix_fmts       = ff_nvenc_pix_fmts,
     .wrapper_name   = "nvenc",
+    .hw_configs     = ff_nvenc_hw_configs,
 };

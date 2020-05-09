@@ -648,6 +648,9 @@ Set the starting sequence numbers according to @var{start_number} option value.
 @item epoch
 The start number will be the seconds since epoch (1970-01-01 00:00:00)
 
+@item epoch_us
+The start number will be the microseconds since epoch (1970-01-01 00:00:00)
+
 @item datetime
 The start number will be based on the current date/time as YYYYmmddHHMMSS. e.g. 20161231235759.
 
@@ -844,7 +847,7 @@ fmp4 files may be used in HLS version 7 and above.
 @item hls_fmp4_init_filename @var{filename}
 Set filename to the fragment files header file, default filename is @file{init.mp4}.
 
-@item hls_fmp4_init_resend @var{filename}
+@item hls_fmp4_init_resend
 Resend init file after m3u8 file refresh every time, default is @var{0}.
 
 When @code{var_stream_map} is set with two or more variant streams, the

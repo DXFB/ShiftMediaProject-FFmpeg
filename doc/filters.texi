@@ -1389,13 +1389,13 @@ Apply an arbitrary Infinite Impulse Response filter.
 It accepts the following parameters:
 
 @table @option
-@item z
+@item zeros, z
 Set numerator/zeros coefficients.
 
-@item p
+@item poles, p
 Set denominator/poles coefficients.
 
-@item k
+@item gains, k
 Set channels gains.
 
 @item dry_gain
@@ -1404,7 +1404,7 @@ Set input gain.
 @item wet_gain
 Set output gain.
 
-@item f
+@item format, f
 Set coefficients format.
 
 @table @samp
@@ -1418,11 +1418,11 @@ Z-plane zeros/poles, polar radians
 Z-plane zeros/poles, polar degrees
 @end table
 
-@item r
+@item process, r
 Set kind of processing.
 Can be @code{d} - direct or @code{s} - serial cascading. Default is @code{s}.
 
-@item e
+@item precision, e
 Set filtering precision.
 
 @table @samp
@@ -1435,6 +1435,10 @@ single-precision floating-point
 @item i16
 16-bit integers
 @end table
+
+@item normalize, n
+Normalize filter coefficients, by default is enabled.
+Enabling it will normalize magnitude response at DC to 0dB.
 
 @item mix
 How much to use filtered signal in output. Default is 1.
@@ -13640,7 +13644,7 @@ Frame difference. Corresponding pixel values are compared and if it satisfies @v
 Default method is @samp{fdiff}.
 
 @item scd_threshold
-Scene change detection threshold. Default is @code{5.0}.
+Scene change detection threshold. Default is @code{10.}.
 @end table
 
 @section mix
@@ -16578,6 +16582,41 @@ Set the horizontal scrolling speed.
 Set the vertical scrolling speed.
 @end table
 
+@anchor{scdet}
+@section scdet
+
+Detect video scene change.
+
+This filter sets frame metadata with mafd between frame, the scene score, and
+forward the frame to the next filter, so they can use these metadata to detect
+scene change or others.
+
+In addition, this filter logs a message and sets frame metadata when it detects
+a scene change by @option{threshold}.
+
+@code{lavfi.scd.mafd} metadata keys are set with mafd for every frame.
+
+@code{lavfi.scd.score} metadata keys are set with scene change score for every frame
+to detect scene change.
+
+@code{lavfi.scd.time} metadata keys are set with current filtered frame time which
+detect scene change with @option{threshold}.
+
+The filter accepts the following options:
+
+@table @option
+@item threshold, t
+Set the scene change detection threshold as a percentage of maximum change. Good
+values are in the @code{[8.0, 14.0]} range. The range for @option{threshold} is
+@code{[0., 100.]}.
+
+Default value is @code{10.}.
+
+@item sc_pass, s
+Set the flag to pass scene change frames to the next filter. Default value is @code{0}
+You can enable it if you want to get snapshot of scene change frames only.
+@end table
+
 @anchor{selectivecolor}
 @section selectivecolor
 
@@ -18158,9 +18197,12 @@ ffmpeg -i in.avi -vf thumbnail,scale=300:200 -frames:v 1 out.png
 @end example
 @end itemize
 
+@anchor{tile}
 @section tile
 
 Tile several successive frames together.
+
+The @ref{untile} filter can do the reverse.
 
 The filter accepts the following options:
 
@@ -18942,6 +18984,37 @@ unsharp=luma_msize_x=7:luma_msize_y=7:luma_amount=2.5
 Apply a strong blur of both luma and chroma parameters:
 @example
 unsharp=7:7:-2:7:7:-2
+@end example
+@end itemize
+
+@anchor{untile}
+@section untile
+
+Decompose a video made of tiled images into the individual images.
+
+The frame rate of the output video is the frame rate of the input video
+multiplied by the number of tiles.
+
+This filter does the reverse of @ref{tile}.
+
+The filter accepts the following options:
+
+@table @option
+
+@item layout
+Set the grid size (i.e. the number of lines and columns). For the syntax of
+this option, check the
+@ref{video size syntax,,"Video size" section in the ffmpeg-utils manual,ffmpeg-utils}.
+@end table
+
+@subsection Examples
+
+@itemize
+@item
+Produce a 1-second video from a still image file made of 25 frames stacked
+vertically, like an analogic film reel:
+@example
+ffmpeg -r 1 -i image.jpg -vf untile=1x25 movie.mkv
 @end example
 @end itemize
 
@@ -22244,6 +22317,33 @@ ffmpeg -f lavfi -i coreimagesrc=s=100x100:filter=CIQRCodeGenerator@@inputMessage
 This example is equivalent to the QRCode example of @ref{coreimage} without the
 need for a nullsrc video source.
 @end itemize
+
+
+@section gradients
+Generate several gradients.
+
+@table @option
+@item size, s
+Set frame size. For the syntax of this option, check the @ref{video size syntax,,"Video
+size" section in the ffmpeg-utils manual,ffmpeg-utils}. Default value is "640x480".
+
+@item rate, r
+Set frame rate, expressed as number of frames per second. Default
+value is "25".
+
+@item c0, c1, c2, c3, c4, c5, c6, c7
+Set 8 colors. Default values for colors is to pick random one.
+
+@item x0, y0, y0, y1
+Set gradient line source and destination points. If negative or out of range, random ones
+are picked.
+
+@item nb_colors, n
+Set number of colors to use at once. Allowed range is from 2 to 8. Default value is 2.
+
+@item seed
+Set seed for picking gradient line points.
+@end table
 
 
 @section mandelbrot

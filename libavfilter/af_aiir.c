@@ -58,6 +58,7 @@ typedef struct AudioIIRContext {
     char *a_str, *b_str, *g_str;
     double dry_gain, wet_gain;
     double mix;
+    int normalize;
     int format;
     int process;
     int precision;
@@ -129,8 +130,8 @@ static int iir_ch_## name(AVFilterContext *ctx, void *arg, int ch, int nb_jobs) 
     ThreadData *td = arg;                                               \
     AVFrame *in = td->in, *out = td->out;                               \
     const type *src = (const type *)in->extended_data[ch];              \
-    double *ic = (double *)s->iir[ch].cache[0];                         \
-    double *oc = (double *)s->iir[ch].cache[1];                         \
+    double *oc = (double *)s->iir[ch].cache[0];                         \
+    double *ic = (double *)s->iir[ch].cache[1];                         \
     const int nb_a = s->iir[ch].nb_ab[0];                               \
     const int nb_b = s->iir[ch].nb_ab[1];                               \
     const double *a = s->iir[ch].ab[0];                                 \
@@ -430,6 +431,34 @@ static int expand(AVFilterContext *ctx, double *pz, int nb, double *coeffs)
     return 0;
 }
 
+static void normalize_coeffs(AVFilterContext *ctx, int ch)
+{
+    AudioIIRContext *s = ctx->priv;
+    IIRChannel *iir = &s->iir[ch];
+    double sum_den = 0.;
+
+    if (!s->normalize)
+        return;
+
+    for (int i = 0; i < iir->nb_ab[1]; i++) {
+        sum_den += iir->ab[1][i];
+    }
+
+    if (sum_den > 1e-6) {
+        double factor, sum_num = 0.;
+
+        for (int i = 0; i < iir->nb_ab[0]; i++) {
+            sum_num += iir->ab[0][i];
+        }
+
+        factor = sum_num / sum_den;
+
+        for (int i = 0; i < iir->nb_ab[1]; i++) {
+            iir->ab[1][i] *= factor;
+        }
+    }
+}
+
 static int convert_zp2tf(AVFilterContext *ctx, int channels)
 {
     AudioIIRContext *s = ctx->priv;
@@ -465,6 +494,8 @@ static int convert_zp2tf(AVFilterContext *ctx, int channels)
             iir->ab[0][j] = botc[2 * i];
         }
         iir->nb_ab[0]++;
+
+        normalize_coeffs(ctx, ch);
 
 fail:
         av_free(topc);
@@ -601,7 +632,8 @@ static int decompose_zp2biquads(AVFilterContext *ctx, int channels)
             iir->biquads[current_biquad].b[1] = b[2] / a[4];
             iir->biquads[current_biquad].b[2] = b[0] / a[4];
 
-            if (fabs(iir->biquads[current_biquad].b[0] +
+            if (s->normalize &&
+                fabs(iir->biquads[current_biquad].b[0] +
                      iir->biquads[current_biquad].b[1] +
                      iir->biquads[current_biquad].b[2]) > 1e-6) {
                 factor = (iir->biquads[current_biquad].a[0] +
@@ -819,11 +851,11 @@ static void get_response(int channel, int format, double w,
     *i = imag;
 }
 
-static void draw_response(AVFilterContext *ctx, AVFrame *out)
+static void draw_response(AVFilterContext *ctx, AVFrame *out, int sample_rate)
 {
     AudioIIRContext *s = ctx->priv;
-    float *mag, *phase, *delay, min = FLT_MAX, max = FLT_MIN;
-    float min_delay = FLT_MAX, max_delay = FLT_MIN;
+    double *mag, *phase, *temp, *delay, min = DBL_MAX, max = -DBL_MAX;
+    double min_delay = DBL_MAX, max_delay = -DBL_MAX, min_phase, max_phase;
     int prev_ymag = -1, prev_yphase = -1, prev_ydelay = -1;
     char text[32];
     int ch, i;
@@ -831,9 +863,10 @@ static void draw_response(AVFilterContext *ctx, AVFrame *out)
     memset(out->data[0], 0, s->h * out->linesize[0]);
 
     phase = av_malloc_array(s->w, sizeof(*phase));
+    temp = av_malloc_array(s->w, sizeof(*temp));
     mag = av_malloc_array(s->w, sizeof(*mag));
     delay = av_malloc_array(s->w, sizeof(*delay));
-    if (!mag || !phase || !delay)
+    if (!mag || !phase || !delay || !temp)
         goto end;
 
     ch = av_clip(s->ir_channel, 0, s->channels - 1);
@@ -849,24 +882,38 @@ static void draw_response(AVFilterContext *ctx, AVFrame *out)
 
         mag[i] = s->iir[ch].g * hypot(real, imag);
         phase[i] = atan2(imag, real);
-        min = fminf(min, mag[i]);
-        max = fmaxf(max, mag[i]);
+        min = fmin(min, mag[i]);
+        max = fmax(max, mag[i]);
+    }
+
+    temp[0] = 0.;
+    for (i = 0; i < s->w - 1; i++) {
+        double d = phase[i] - phase[i + 1];
+        temp[i + 1] = ceil(fabs(d) / (2. * M_PI)) * 2. * M_PI * ((d > M_PI) - (d < -M_PI));
+    }
+
+    min_phase = phase[0];
+    max_phase = phase[0];
+    for (i = 1; i < s->w; i++) {
+        temp[i] += temp[i - 1];
+        phase[i] += temp[i];
+        min_phase = fmin(min_phase, phase[i]);
+        max_phase = fmax(max_phase, phase[i]);
     }
 
     for (i = 0; i < s->w - 1; i++) {
-        float dw =  M_PI / (s->w - 1);
+        double div = s->w / (double)sample_rate;
 
-        delay[i] = -(phase[i + 1] - phase[i]) / dw;
-        min_delay = fminf(min_delay, delay[i]);
-        max_delay = fmaxf(max_delay, delay[i]);
+        delay[i + 1] = -(phase[i] - phase[i + 1]) / div;
+        min_delay = fmin(min_delay, delay[i + 1]);
+        max_delay = fmax(max_delay, delay[i + 1]);
     }
-
-    delay[i] = delay[i - 1];
+    delay[0] = delay[1];
 
     for (i = 0; i < s->w; i++) {
         int ymag = mag[i] / max * (s->h - 1);
         int ydelay = (delay[i] - min_delay) / (max_delay - min_delay) * (s->h - 1);
-        int yphase = (0.5 * (1. + phase[i] / M_PI)) * (s->h - 1);
+        int yphase = (phase[i] - min_phase) / (max_phase - min_phase) * (s->h - 1);
 
         ymag = s->h - 1 - av_clip(ymag, 0, s->h - 1);
         yphase = s->h - 1 - av_clip(yphase, 0, s->h - 1);
@@ -897,17 +944,26 @@ static void draw_response(AVFilterContext *ctx, AVFrame *out)
         snprintf(text, sizeof(text), "%.2f", min);
         drawtext(out, 15 * 8 + 2, 12, text, 0xDDDDDDDD);
 
-        drawtext(out, 2, 22, "Max Delay:", 0xDDDDDDDD);
-        snprintf(text, sizeof(text), "%.2f", max_delay);
-        drawtext(out, 11 * 8 + 2, 22, text, 0xDDDDDDDD);
+        drawtext(out, 2, 22, "Max Phase:", 0xDDDDDDDD);
+        snprintf(text, sizeof(text), "%.2f", max_phase);
+        drawtext(out, 15 * 8 + 2, 22, text, 0xDDDDDDDD);
 
-        drawtext(out, 2, 32, "Min Delay:", 0xDDDDDDDD);
+        drawtext(out, 2, 32, "Min Phase:", 0xDDDDDDDD);
+        snprintf(text, sizeof(text), "%.2f", min_phase);
+        drawtext(out, 15 * 8 + 2, 32, text, 0xDDDDDDDD);
+
+        drawtext(out, 2, 42, "Max Delay:", 0xDDDDDDDD);
+        snprintf(text, sizeof(text), "%.2f", max_delay);
+        drawtext(out, 11 * 8 + 2, 42, text, 0xDDDDDDDD);
+
+        drawtext(out, 2, 52, "Min Delay:", 0xDDDDDDDD);
         snprintf(text, sizeof(text), "%.2f", min_delay);
-        drawtext(out, 11 * 8 + 2, 32, text, 0xDDDDDDDD);
+        drawtext(out, 11 * 8 + 2, 52, text, 0xDDDDDDDD);
     }
 
 end:
     av_free(delay);
+    av_free(temp);
     av_free(phase);
     av_free(mag);
 }
@@ -945,15 +1001,6 @@ static int config_output(AVFilterLink *outlink)
         check_stability(ctx, inlink->channels);
     }
 
-    av_frame_free(&s->video);
-    if (s->response) {
-        s->video = ff_get_video_buffer(ctx->outputs[1], s->w, s->h);
-        if (!s->video)
-            return AVERROR(ENOMEM);
-
-        draw_response(ctx, s->video);
-    }
-
     if (s->format == 0)
         av_log(ctx, AV_LOG_WARNING, "tf coefficients format is not recommended for too high number of zeros/poles.\n");
 
@@ -982,9 +1029,12 @@ static int config_output(AVFilterLink *outlink)
             iir->ab[0][i] /= iir->ab[0][0];
         }
 
+        iir->ab[0][0] = 1.0;
         for (i = 0; i < iir->nb_ab[1]; i++) {
-            iir->ab[1][i] *= iir->g / iir->ab[0][0];
+            iir->ab[1][i] *= iir->g;
         }
+
+        normalize_coeffs(ctx, ch);
     }
 
     switch (inlink->format) {
@@ -992,6 +1042,15 @@ static int config_output(AVFilterLink *outlink)
     case AV_SAMPLE_FMT_FLTP: s->iir_channel = s->process == 1 ? iir_ch_serial_fltp : iir_ch_fltp; break;
     case AV_SAMPLE_FMT_S32P: s->iir_channel = s->process == 1 ? iir_ch_serial_s32p : iir_ch_s32p; break;
     case AV_SAMPLE_FMT_S16P: s->iir_channel = s->process == 1 ? iir_ch_serial_s16p : iir_ch_s16p; break;
+    }
+
+    av_frame_free(&s->video);
+    if (s->response) {
+        s->video = ff_get_video_buffer(ctx->outputs[1], s->w, s->h);
+        if (!s->video)
+            return AVERROR(ENOMEM);
+
+        draw_response(ctx, s->video, inlink->sample_rate);
     }
 
     return 0;
@@ -1154,24 +1213,32 @@ static const AVFilterPad inputs[] = {
 #define VF AV_OPT_FLAG_VIDEO_PARAM|AV_OPT_FLAG_FILTERING_PARAM
 
 static const AVOption aiir_options[] = {
+    { "zeros", "set B/numerator/zeros coefficients", OFFSET(b_str),  AV_OPT_TYPE_STRING, {.str="1+0i 1-0i"}, 0, 0, AF },
     { "z", "set B/numerator/zeros coefficients",   OFFSET(b_str),    AV_OPT_TYPE_STRING, {.str="1+0i 1-0i"}, 0, 0, AF },
+    { "poles", "set A/denominator/poles coefficients", OFFSET(a_str),AV_OPT_TYPE_STRING, {.str="1+0i 1-0i"}, 0, 0, AF },
     { "p", "set A/denominator/poles coefficients", OFFSET(a_str),    AV_OPT_TYPE_STRING, {.str="1+0i 1-0i"}, 0, 0, AF },
+    { "gains", "set channels gains",               OFFSET(g_str),    AV_OPT_TYPE_STRING, {.str="1|1"}, 0, 0, AF },
     { "k", "set channels gains",                   OFFSET(g_str),    AV_OPT_TYPE_STRING, {.str="1|1"}, 0, 0, AF },
     { "dry", "set dry gain",                       OFFSET(dry_gain), AV_OPT_TYPE_DOUBLE, {.dbl=1},     0, 1, AF },
     { "wet", "set wet gain",                       OFFSET(wet_gain), AV_OPT_TYPE_DOUBLE, {.dbl=1},     0, 1, AF },
+    { "format", "set coefficients format",         OFFSET(format),   AV_OPT_TYPE_INT,    {.i64=1},     0, 3, AF, "format" },
     { "f", "set coefficients format",              OFFSET(format),   AV_OPT_TYPE_INT,    {.i64=1},     0, 3, AF, "format" },
     { "tf", "transfer function",                   0,                AV_OPT_TYPE_CONST,  {.i64=0},     0, 0, AF, "format" },
     { "zp", "Z-plane zeros/poles",                 0,                AV_OPT_TYPE_CONST,  {.i64=1},     0, 0, AF, "format" },
     { "pr", "Z-plane zeros/poles (polar radians)", 0,                AV_OPT_TYPE_CONST,  {.i64=2},     0, 0, AF, "format" },
     { "pd", "Z-plane zeros/poles (polar degrees)", 0,                AV_OPT_TYPE_CONST,  {.i64=3},     0, 0, AF, "format" },
+    { "process", "set kind of processing",         OFFSET(process),  AV_OPT_TYPE_INT,    {.i64=1},     0, 1, AF, "process" },
     { "r", "set kind of processing",               OFFSET(process),  AV_OPT_TYPE_INT,    {.i64=1},     0, 1, AF, "process" },
     { "d", "direct",                               0,                AV_OPT_TYPE_CONST,  {.i64=0},     0, 0, AF, "process" },
     { "s", "serial cascading",                     0,                AV_OPT_TYPE_CONST,  {.i64=1},     0, 0, AF, "process" },
+    { "precision", "set filtering precision",      OFFSET(precision),AV_OPT_TYPE_INT,    {.i64=0},     0, 3, AF, "precision" },
     { "e", "set precision",                        OFFSET(precision),AV_OPT_TYPE_INT,    {.i64=0},     0, 3, AF, "precision" },
     { "dbl", "double-precision floating-point",    0,                AV_OPT_TYPE_CONST,  {.i64=0},     0, 0, AF, "precision" },
     { "flt", "single-precision floating-point",    0,                AV_OPT_TYPE_CONST,  {.i64=1},     0, 0, AF, "precision" },
     { "i32", "32-bit integers",                    0,                AV_OPT_TYPE_CONST,  {.i64=2},     0, 0, AF, "precision" },
     { "i16", "16-bit integers",                    0,                AV_OPT_TYPE_CONST,  {.i64=3},     0, 0, AF, "precision" },
+    { "normalize", "normalize coefficients",       OFFSET(normalize),AV_OPT_TYPE_BOOL,   {.i64=1},     0, 1, AF },
+    { "n", "normalize coefficients",               OFFSET(normalize),AV_OPT_TYPE_BOOL,   {.i64=1},     0, 1, AF },
     { "mix", "set mix",                            OFFSET(mix),      AV_OPT_TYPE_DOUBLE, {.dbl=1},     0, 1, AF },
     { "response", "show IR frequency response",    OFFSET(response), AV_OPT_TYPE_BOOL,   {.i64=0},     0, 1, VF },
     { "channel", "set IR channel to display frequency response", OFFSET(ir_channel), AV_OPT_TYPE_INT, {.i64=0}, 0, 1024, VF },

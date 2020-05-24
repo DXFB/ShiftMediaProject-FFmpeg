@@ -223,10 +223,14 @@ static inline void add_block(uint16_t *dst, int linesize, const int16_t block[64
     int y;
 
     for (y = 0; y < 8; y++) {
-        *(uint32_t *)&dst[0 + y*linesize] += *(uint32_t *)&block[0 + y*8];
-        *(uint32_t *)&dst[2 + y*linesize] += *(uint32_t *)&block[2 + y*8];
-        *(uint32_t *)&dst[4 + y*linesize] += *(uint32_t *)&block[4 + y*8];
-        *(uint32_t *)&dst[6 + y*linesize] += *(uint32_t *)&block[6 + y*8];
+        dst[0 + y*linesize] += block[0 + y*8];
+        dst[1 + y*linesize] += block[1 + y*8];
+        dst[2 + y*linesize] += block[2 + y*8];
+        dst[3 + y*linesize] += block[3 + y*8];
+        dst[4 + y*linesize] += block[4 + y*8];
+        dst[5 + y*linesize] += block[5 + y*8];
+        dst[6 + y*linesize] += block[6 + y*8];
+        dst[7 + y*linesize] += block[7 + y*8];
     }
 }
 
@@ -279,7 +283,7 @@ static void filter(SPPContext *p, uint8_t *dst, uint8_t *src,
                 const int x1 = x + offset[i + count - 1][0];
                 const int y1 = y + offset[i + count - 1][1];
                 const int index = x1 + y1*linesize;
-                p->dct->get_pixels(block, p->src + sample_bytes*index, sample_bytes*linesize);
+                p->dct->get_pixels_unaligned(block, p->src + sample_bytes*index, sample_bytes*linesize);
                 p->dct->fdct(block);
                 p->requantize(block2, block, qp, p->dct->idct_permutation);
                 p->dct->idct(block2);
@@ -460,9 +464,8 @@ static av_cold int init_dict(AVFilterContext *ctx, AVDictionary **opts)
     SPPContext *s = ctx->priv;
     int ret;
 
-    s->avctx = avcodec_alloc_context3(NULL);
     s->dct = avcodec_dct_alloc();
-    if (!s->avctx || !s->dct)
+    if (!s->dct)
         return AVERROR(ENOMEM);
 
     if (opts) {
@@ -489,10 +492,6 @@ static av_cold void uninit(AVFilterContext *ctx)
 
     av_freep(&s->temp);
     av_freep(&s->src);
-    if (s->avctx) {
-        avcodec_close(s->avctx);
-        av_freep(&s->avctx);
-    }
     av_freep(&s->dct);
     av_freep(&s->non_b_qp_table);
 }

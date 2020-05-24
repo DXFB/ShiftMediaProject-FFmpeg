@@ -231,7 +231,7 @@ int ff_decode_bsfs_init(AVCodecContext *avctx)
 
     return 0;
 fail:
-    ff_decode_bsfs_uninit(avctx);
+    av_bsf_free(&avci->bsf);
     return ret;
 }
 
@@ -308,7 +308,7 @@ static int64_t guess_correct_pts(AVCodecContext *ctx,
  * returning any output, so this function needs to be called in a loop until it
  * returns EAGAIN.
  **/
-static int decode_simple_internal(AVCodecContext *avctx, AVFrame *frame)
+static inline int decode_simple_internal(AVCodecContext *avctx, AVFrame *frame)
 {
     AVCodecInternal   *avci = avctx->internal;
     DecodeSimpleContext *ds = &avci->ds;
@@ -736,7 +736,6 @@ static int compat_decode(AVCodecContext *avctx, AVFrame *frame,
     }
 
     *got_frame = 0;
-    avci->compat_decode = 1;
 
     if (avci->compat_decode_partial_size > 0 &&
         avci->compat_decode_partial_size != pkt->size) {
@@ -2005,9 +2004,4 @@ void avcodec_flush_buffers(AVCodecContext *avctx)
 
     if (!avctx->refcounted_frames)
         av_frame_unref(avci->to_free);
-}
-
-void ff_decode_bsfs_uninit(AVCodecContext *avctx)
-{
-    av_bsf_free(&avctx->internal->bsf);
 }

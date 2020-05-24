@@ -2885,6 +2885,11 @@ static int mov_read_stsz(MOVContext *c, AVIOContext *pb, MOVAtom atom)
 
     for (i = 0; i < entries && !pb->eof_reached; i++) {
         sc->sample_sizes[i] = get_bits_long(&gb, field_size);
+        if (sc->sample_sizes[i] < 0) {
+            av_free(buf);
+            av_log(c->fc, AV_LOG_ERROR, "Invalid sample size %d\n", sc->sample_sizes[i]);
+            return AVERROR_INVALIDDATA;
+        }
         sc->data_size += sc->sample_sizes[i];
     }
 
@@ -7022,7 +7027,8 @@ static int mov_read_default(MOVContext *c, AVIOContext *pb, MOVAtom atom)
         // https://developer.apple.com/library/mac/documentation/QuickTime/QTFF/Metadata/Metadata.html
         if (!parse && c->found_hdlr_mdta &&
             atom.type == MKTAG('m','e','t','a') &&
-            a.type == MKTAG('k','e','y','s')) {
+            a.type == MKTAG('k','e','y','s') &&
+            c->meta_keys_count == 0) {
             parse = mov_read_keys;
         }
 

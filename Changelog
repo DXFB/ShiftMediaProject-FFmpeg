@@ -66,6 +66,11 @@ version <next>:
 - asubboost filter
 - Pro Pinball Series Soundbank demuxer
 - pcm_rechunk bitstream filter
+- scdet filter
+- NotchLC decoder
+- gradients source video filter
+- MediaFoundation encoder wrapper
+- untile filter
 
 
 version 4.2:

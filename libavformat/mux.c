@@ -759,15 +759,8 @@ static int check_packet(AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-static int prepare_input_packet(AVFormatContext *s, AVPacket *pkt)
+static int prepare_input_packet(AVFormatContext *s, AVStream *st, AVPacket *pkt)
 {
-    int ret;
-    AVStream *st = s->streams[pkt->stream_index];
-
-    ret = check_packet(s, pkt);
-    if (ret < 0)
-        return ret;
-
 #if !FF_API_COMPUTE_PKT_FIELDS2 || !FF_API_LAVF_AVCTX
     /* sanitize the timestamps */
     if (!(s->oformat->flags & AVFMT_NOTIMESTAMPS)) {
@@ -1074,10 +1067,7 @@ int ff_interleaved_peek(AVFormatContext *s, int stream,
 static int interleave_packet(AVFormatContext *s, AVPacket *out, AVPacket *in, int flush)
 {
     if (s->oformat->interleave_packet) {
-        int ret = s->oformat->interleave_packet(s, out, in, flush);
-        if (in)
-            av_packet_unref(in);
-        return ret;
+        return s->oformat->interleave_packet(s, out, in, flush);
     } else
         return ff_interleave_packet_per_dts(s, out, in, flush);
 }
@@ -1176,8 +1166,13 @@ static int write_packets_from_bsfs(AVFormatContext *s, AVStream *st, AVPacket *p
 
 static int write_packets_common(AVFormatContext *s, AVPacket *pkt, int interleaved)
 {
-    AVStream *st = s->streams[pkt->stream_index];
-    int ret = prepare_input_packet(s, pkt);
+    AVStream *st;
+    int ret = check_packet(s, pkt);
+    if (ret < 0)
+        return ret;
+    st = s->streams[pkt->stream_index];
+
+    ret = prepare_input_packet(s, st, pkt);
     if (ret < 0)
         return ret;
 

@@ -3491,6 +3491,8 @@ void ff_mpv_common_init_mips(MpegEncContext *s) {return;}
 void ff_mpv_common_init_neon(MpegEncContext *s) {return;}
 void ff_mpv_common_init_ppc(MpegEncContext *s) {return;}
 void ff_opus_dsp_init_aarch64(OpusDSP *ctx) {return;}
+void ff_pixblockdsp_init_aarch64(PixblockDSPContext *c, AVCodecContext *avctx,
+                                 unsigned high_bit_depth) {return;}
 void ff_pixblockdsp_init_alpha(PixblockDSPContext *c, AVCodecContext *avctx,
                                unsigned high_bit_depth) {return;}
 void ff_pixblockdsp_init_arm(PixblockDSPContext *c, AVCodecContext *avctx,

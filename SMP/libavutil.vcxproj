@@ -138,6 +138,7 @@
     <ClCompile Include="..\libavutil\tx_float.c" />
     <ClCompile Include="..\libavutil\tx_double.c" />
     <ClCompile Include="..\libavutil\tx_int32.c" />
+    <ClCompile Include="..\libavutil\video_enc_params.c" />
     <ClCompile Include="..\libavutil\hwcontext_cuda.c" />
     <ClCompile Include="..\libavutil\hwcontext_dxva2.c" />
     <ClCompile Include="..\libavutil\lzo.c" />
@@ -251,6 +252,7 @@
     <ClInclude Include="..\libavutil\tree.h" />
     <ClInclude Include="..\libavutil\twofish.h" />
     <ClInclude Include="..\libavutil\version.h" />
+    <ClInclude Include="..\libavutil\video_enc_params.h" />
     <ClInclude Include="..\libavutil\xtea.h" />
     <ClInclude Include="..\libavutil\tea.h" />
     <ClInclude Include="..\libavutil\tx.h" />
@@ -559,6 +561,7 @@ copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
@@ -709,6 +712,7 @@ copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
@@ -866,6 +870,7 @@ copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
@@ -1021,6 +1026,7 @@ copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
@@ -1177,6 +1183,7 @@ copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
@@ -1331,6 +1338,7 @@ copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
@@ -1493,6 +1501,7 @@ copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
@@ -1654,6 +1663,7 @@ copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
@@ -1816,6 +1826,7 @@ copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
@@ -1977,6 +1988,7 @@ copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil

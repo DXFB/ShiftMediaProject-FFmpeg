@@ -765,6 +765,12 @@
     <ClCompile Include="..\libavcodec\psymodel.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\mfenc.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\mf_utils.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\aasc.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -1762,6 +1768,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\nellymoserenc.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\notchlc.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\nuv.c">
@@ -3209,10 +3218,16 @@
     <ClInclude Include="..\libavcodec\avfft.h">
       <Filter>Header Files\libavcodec</Filter>
     </ClInclude>
+    <ClInclude Include="..\libavcodec\bsf.h">
+      <Filter>Header Files\libavcodec</Filter>
+    </ClInclude>
     <ClInclude Include="..\libavcodec\codec_desc.h">
       <Filter>Header Files\libavcodec</Filter>
     </ClInclude>
     <ClInclude Include="..\libavcodec\codec_id.h">
+      <Filter>Header Files\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libavcodec\codec_par.h">
       <Filter>Header Files\libavcodec</Filter>
     </ClInclude>
     <ClInclude Include="..\libavcodec\d3d11va.h">

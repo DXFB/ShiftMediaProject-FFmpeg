@@ -906,6 +906,9 @@
     <ClCompile Include="..\libavfilter\vf_scale_qsv.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_scdet.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_scroll.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -978,6 +981,9 @@
     <ClCompile Include="..\libavfilter\vf_unsharp.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_untile.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_uspp.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -1024,6 +1030,9 @@
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vsrc_cellauto.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\vsrc_gradients.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vsrc_life.c">

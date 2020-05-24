@@ -913,9 +913,6 @@
     <ClCompile Include="..\libavformat\oggparsecelt.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
-    <ClCompile Include="..\libavformat\oggparsedaala.c">
-      <Filter>Source Files\libavformat</Filter>
-    </ClCompile>
     <ClCompile Include="..\libavformat\oggparsedirac.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>

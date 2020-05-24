@@ -351,6 +351,7 @@
     <ClCompile Include="..\libavfilter\vf_scale.c" />
     <ClCompile Include="..\libavfilter\scale_eval.c" />
     <ClCompile Include="..\libavfilter\vf_scale_qsv.c" />
+    <ClCompile Include="..\libavfilter\vf_scdet.c" />
     <ClCompile Include="..\libavfilter\vf_scroll.c" />
     <ClCompile Include="..\libavfilter\vf_selectivecolor.c" />
     <ClCompile Include="..\libavfilter\vf_separatefields.c" />
@@ -375,6 +376,7 @@
     <ClCompile Include="..\libavfilter\vf_tonemap.c" />
     <ClCompile Include="..\libavfilter\vf_tpad.c" />
     <ClCompile Include="..\libavfilter\vf_unsharp.c" />
+    <ClCompile Include="..\libavfilter\vf_untile.c" />
     <ClCompile Include="..\libavfilter\vf_uspp.c" />
     <ClCompile Include="..\libavfilter\vf_vaguedenoiser.c" />
     <ClCompile Include="..\libavfilter\vf_vectorscope.c" />
@@ -391,6 +393,7 @@
     <ClCompile Include="..\libavfilter\vf_zoompan.c" />
     <ClCompile Include="..\libavfilter\vsrc_testsrc.c" />
     <ClCompile Include="..\libavfilter\vsrc_cellauto.c" />
+    <ClCompile Include="..\libavfilter\vsrc_gradients.c" />
     <ClCompile Include="..\libavfilter\vsrc_life.c" />
     <ClCompile Include="..\libavfilter\vsrc_mandelbrot.c" />
     <ClCompile Include="..\libavfilter\vsrc_mptestsrc.c" />

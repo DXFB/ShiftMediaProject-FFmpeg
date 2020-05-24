@@ -354,7 +354,6 @@
     <ClCompile Include="..\libavformat\av1dec.c" />
     <ClCompile Include="..\libavformat\oggdec.c" />
     <ClCompile Include="..\libavformat\oggparsecelt.c" />
-    <ClCompile Include="..\libavformat\oggparsedaala.c" />
     <ClCompile Include="..\libavformat\oggparsedirac.c" />
     <ClCompile Include="..\libavformat\oggparseflac.c" />
     <ClCompile Include="..\libavformat\oggparseogm.c" />

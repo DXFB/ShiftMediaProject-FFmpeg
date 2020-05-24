@@ -208,6 +208,7 @@ EXPORTS
     av_free
     av_freep
     av_gcd
+    av_gcd_q
     av_get_alt_sample_fmt
     av_get_bits_per_pixel
     av_get_bytes_per_sample
@@ -261,6 +262,7 @@ EXPORTS
     av_hwdevice_ctx_alloc
     av_hwdevice_ctx_create
     av_hwdevice_ctx_create_derived
+    av_hwdevice_ctx_create_derived_opts
     av_hwdevice_ctx_init
     av_hwdevice_find_type_by_name
     av_hwdevice_get_hwframe_constraints
@@ -499,6 +501,8 @@ EXPORTS
     av_utf8_decode
     av_vbprintf
     av_version_info
+    av_video_enc_params_alloc
+    av_video_enc_params_create_side_data
     av_vlog
     av_write_image_line
     av_write_image_line2

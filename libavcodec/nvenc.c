@@ -31,6 +31,7 @@
 #include "libavutil/mem.h"
 #include "libavutil/pixdesc.h"
 #include "internal.h"
+#include "packet_internal.h"
 
 #define CHECK_CU(x) FF_CUDA_CHECK_DL(avctx, dl_fn->cuda_dl, x)
 
@@ -947,12 +948,17 @@ static av_cold void nvenc_setup_rate_control(AVCodecContext *avctx)
     if (ctx->zerolatency)
         ctx->encode_config.rcParams.zeroReorderDelay = 1;
 
-    if (ctx->quality)
-    {
+    if (ctx->quality) {
         //convert from float to fixed point 8.8
         int tmp_quality = (int)(ctx->quality * 256.0f);
         ctx->encode_config.rcParams.targetQuality = (uint8_t)(tmp_quality >> 8);
         ctx->encode_config.rcParams.targetQualityLSB = (uint8_t)(tmp_quality & 0xff);
+
+        av_log(avctx, AV_LOG_VERBOSE, "CQ(%d) mode enabled.\n", tmp_quality);
+
+        //CQ mode shall discard avg bitrate & honor max bitrate;
+        ctx->encode_config.rcParams.averageBitRate = avctx->bit_rate = 0;
+        ctx->encode_config.rcParams.maxBitRate = avctx->rc_max_rate;
     }
 }
 

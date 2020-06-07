@@ -32,6 +32,8 @@
 #include "libavutil/imgutils.h"
 #include "libavutil/opt.h"
 #include "libavutil/stereo3d.h"
+#include "libavutil/video_enc_params.h"
+
 #include "internal.h"
 #include "bytestream.h"
 #include "cabac.h"
@@ -226,7 +228,6 @@ int ff_h264_alloc_tables(H264Context *h)
     return 0;
 
 fail:
-    ff_h264_free_tables(h);
     return AVERROR(ENOMEM);
 }
 
@@ -418,7 +419,6 @@ static av_cold int h264_decode_init(AVCodecContext *avctx)
                av_log(avctx, explode ? AV_LOG_ERROR: AV_LOG_WARNING,
                       "Error decoding the extradata\n");
                if (explode) {
-                   h264_decode_end(avctx);
                    return ret;
                }
                ret = 0;
@@ -603,7 +603,7 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size)
     }
 
     ret = ff_h2645_packet_split(&h->pkt, buf, buf_size, avctx, h->is_avc, h->nal_length_size,
-                                avctx->codec_id, avctx->flags2 & AV_CODEC_FLAG2_FAST, 0);
+                                avctx->codec_id, 0, 0);
     if (ret < 0) {
         av_log(avctx, AV_LOG_ERROR,
                "Error splitting the input into NAL units.\n");
@@ -812,6 +812,40 @@ static int get_consumed_bytes(int pos, int buf_size)
     return pos;
 }
 
+static int h264_export_enc_params(AVFrame *f, H264Picture *p)
+{
+    AVVideoEncParams *par;
+    unsigned int nb_mb = p->mb_height * p->mb_width;
+    unsigned int x, y;
+
+    par = av_video_enc_params_create_side_data(f, AV_VIDEO_ENC_PARAMS_H264, nb_mb);
+    if (!par)
+        return AVERROR(ENOMEM);
+
+    par->qp = p->pps->init_qp;
+
+    par->delta_qp[1][0] = p->pps->chroma_qp_index_offset[0];
+    par->delta_qp[1][1] = p->pps->chroma_qp_index_offset[0];
+    par->delta_qp[2][0] = p->pps->chroma_qp_index_offset[1];
+    par->delta_qp[2][1] = p->pps->chroma_qp_index_offset[1];
+
+    for (y = 0; y < p->mb_height; y++)
+        for (x = 0; x < p->mb_width; x++) {
+            const unsigned int block_idx = y * p->mb_width + x;
+            const unsigned int     mb_xy = y * p->mb_stride + x;
+            AVVideoBlockParams *b = av_video_enc_params_block(par, block_idx);
+
+            b->src_x = x * 16;
+            b->src_y = y * 16;
+            b->w     = 16;
+            b->h     = 16;
+
+            b->delta_qp = p->qscale_table[mb_xy] - par->qp;
+        }
+
+    return 0;
+}
+
 static int output_frame(H264Context *h, AVFrame *dst, H264Picture *srcp)
 {
     AVFrame *src = srcp->f;
@@ -826,7 +860,16 @@ static int output_frame(H264Context *h, AVFrame *dst, H264Picture *srcp)
     if (srcp->sei_recovery_frame_cnt == 0)
         dst->key_frame = 1;
 
+    if (h->avctx->export_side_data & AV_CODEC_EXPORT_DATA_VIDEO_ENC_PARAMS) {
+        ret = h264_export_enc_params(dst, srcp);
+        if (ret < 0)
+            goto fail;
+    }
+
     return 0;
+fail:
+    av_frame_unref(dst);
+    return ret;
 }
 
 static int is_extra(const uint8_t *buf, int buf_size)
@@ -1062,7 +1105,7 @@ AVCodec ff_h264_decoder = {
                                NULL
                            },
     .caps_internal         = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_EXPORTS_CROPPING |
-                             FF_CODEC_CAP_ALLOCATE_PROGRESS,
+                             FF_CODEC_CAP_ALLOCATE_PROGRESS | FF_CODEC_CAP_INIT_CLEANUP,
     .flush                 = h264_decode_flush,
     .update_thread_context = ONLY_IF_THREADS_ENABLED(ff_h264_update_thread_context),
     .profiles              = NULL_IF_CONFIG_SMALL(ff_h264_profiles),

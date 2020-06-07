@@ -219,7 +219,7 @@ static const AVCodec *find_probe_decoder(AVFormatContext *s, const AVStream *st,
         const AVCodec *probe_codec = NULL;
         void *iter = NULL;
         while ((probe_codec = av_codec_iterate(&iter))) {
-            if (probe_codec->id == codec_id &&
+            if (probe_codec->id == codec->id &&
                     av_codec_is_decoder(probe_codec) &&
                     !(probe_codec->capabilities & (AV_CODEC_CAP_AVOID_PROBING | AV_CODEC_CAP_EXPERIMENTAL))) {
                 return probe_codec;
@@ -638,11 +638,11 @@ FF_ENABLE_DEPRECATION_WARNINGS
     if (id3v2_extra_meta) {
         if (!strcmp(s->iformat->name, "mp3") || !strcmp(s->iformat->name, "aac") ||
             !strcmp(s->iformat->name, "tta") || !strcmp(s->iformat->name, "wav")) {
-            if ((ret = ff_id3v2_parse_apic(s, &id3v2_extra_meta)) < 0)
+            if ((ret = ff_id3v2_parse_apic(s, id3v2_extra_meta)) < 0)
                 goto close;
-            if ((ret = ff_id3v2_parse_chapters(s, &id3v2_extra_meta)) < 0)
+            if ((ret = ff_id3v2_parse_chapters(s, id3v2_extra_meta)) < 0)
                 goto close;
-            if ((ret = ff_id3v2_parse_priv(s, &id3v2_extra_meta)) < 0)
+            if ((ret = ff_id3v2_parse_priv(s, id3v2_extra_meta)) < 0)
                 goto close;
         } else
             av_log(s, AV_LOG_DEBUG, "demuxer does not support additional id3 data, skipping\n");
@@ -1156,7 +1156,7 @@ static void update_initial_timestamps(AVFormatContext *s, int stream_index,
         if (st->start_time == AV_NOPTS_VALUE && pktl_it->pkt.pts != AV_NOPTS_VALUE) {
             st->start_time = pktl_it->pkt.pts;
             if (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO && st->codecpar->sample_rate)
-                st->start_time += av_rescale_q(st->skip_samples, (AVRational){1, st->codecpar->sample_rate}, st->time_base);
+                st->start_time = av_sat_add64(st->start_time, av_rescale_q(st->skip_samples, (AVRational){1, st->codecpar->sample_rate}, st->time_base));
         }
     }
 
@@ -1169,7 +1169,7 @@ static void update_initial_timestamps(AVFormatContext *s, int stream_index,
             st->start_time = pts;
         }
         if (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO && st->codecpar->sample_rate)
-            st->start_time += av_rescale_q(st->skip_samples, (AVRational){1, st->codecpar->sample_rate}, st->time_base);
+            st->start_time = av_sat_add64(st->start_time, av_rescale_q(st->skip_samples, (AVRational){1, st->codecpar->sample_rate}, st->time_base));
     }
 }
 
@@ -1359,7 +1359,7 @@ static void compute_pkt_fields(AVFormatContext *s, AVStream *st,
             if (st->last_IP_duration == 0 && (uint64_t)pkt->duration <= INT32_MAX)
                 st->last_IP_duration = pkt->duration;
             if (pkt->dts != AV_NOPTS_VALUE)
-                st->cur_dts = pkt->dts + st->last_IP_duration;
+                st->cur_dts = av_sat_add64(pkt->dts, st->last_IP_duration);
             if (pkt->dts != AV_NOPTS_VALUE &&
                 pkt->pts == AV_NOPTS_VALUE &&
                 st->last_IP_duration > 0 &&
@@ -2984,16 +2984,16 @@ static void estimate_timings(AVFormatContext *ic, int64_t old_offset)
         for (i = 0; i < ic->nb_streams; i++) {
             st = ic->streams[i];
             if (st->time_base.den)
-                av_log(ic, AV_LOG_TRACE, "stream %d: start_time: %0.3f duration: %0.3f\n", i,
-                       (double) st->start_time * av_q2d(st->time_base),
-                       (double) st->duration   * av_q2d(st->time_base));
+                av_log(ic, AV_LOG_TRACE, "stream %d: start_time: %s duration: %s\n", i,
+                       av_ts2timestr(st->start_time, &st->time_base),
+                       av_ts2timestr(st->duration, &st->time_base));
         }
         av_log(ic, AV_LOG_TRACE,
-                "format: start_time: %0.3f duration: %0.3f (estimate from %s) bitrate=%"PRId64" kb/s\n",
-                (double) ic->start_time / AV_TIME_BASE,
-                (double) ic->duration   / AV_TIME_BASE,
-                duration_estimate_name(ic->duration_estimation_method),
-                (int64_t)ic->bit_rate / 1000);
+               "format: start_time: %s duration: %s (estimate from %s) bitrate=%"PRId64" kb/s\n",
+               av_ts2timestr(ic->start_time, &AV_TIME_BASE_Q),
+               av_ts2timestr(ic->duration, &AV_TIME_BASE_Q),
+               duration_estimate_name(ic->duration_estimation_method),
+               (int64_t)ic->bit_rate / 1000);
     }
 }
 

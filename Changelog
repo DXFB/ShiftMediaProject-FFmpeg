@@ -71,6 +71,10 @@ version <next>:
 - gradients source video filter
 - MediaFoundation encoder wrapper
 - untile filter
+- Simon & Schuster Interactive ADPCM encoder
+- PFM decoder
+- dblur video filter
+- Real War KVAG muxer
 
 
 version 4.2:

@@ -42,10 +42,11 @@ typedef enum {
     DLT_MIRROR_PAD = 3,
     DLT_MAXIMUM = 4,
     DLT_MATH_BINARY = 5,
+    DLT_MATH_UNARY = 6,
     DLT_COUNT
 } DNNLayerType;
 
-typedef enum {DOT_INPUT = 1, DOT_OUTPUT = 2, DOT_INTERMEDIATE = DOT_INPUT | DOT_INPUT} DNNOperandType;
+typedef enum {DOT_INPUT = 1, DOT_OUTPUT = 2, DOT_INTERMEDIATE = DOT_INPUT | DOT_OUTPUT} DNNOperandType;
 
 typedef struct Layer{
     DNNLayerType type;

@@ -93,7 +93,7 @@ OBJS-$(CONFIG_AMRWB_DEMUXER)             += amr.o
 OBJS-$(CONFIG_ANM_DEMUXER)               += anm.o
 OBJS-$(CONFIG_APC_DEMUXER)               += apc.o
 OBJS-$(CONFIG_APE_DEMUXER)               += ape.o apetag.o img2.o
-OBJS-$(CONFIG_APM_DEMUXER)               += apm.o
+OBJS-$(CONFIG_APM_DEMUXER)               += apm.o riffdec.o
 OBJS-$(CONFIG_APNG_DEMUXER)              += apngdec.o
 OBJS-$(CONFIG_APNG_MUXER)                += apngenc.o
 OBJS-$(CONFIG_APTX_DEMUXER)              += aptxdec.o rawdec.o
@@ -285,6 +285,7 @@ OBJS-$(CONFIG_JACOSUB_MUXER)             += jacosubenc.o rawenc.o
 OBJS-$(CONFIG_JV_DEMUXER)                += jvdec.o
 OBJS-$(CONFIG_KUX_DEMUXER)               += flvdec.o
 OBJS-$(CONFIG_KVAG_DEMUXER)              += kvag.o
+OBJS-$(CONFIG_KVAG_MUXER)                += kvag.o rawenc.o
 OBJS-$(CONFIG_LATM_MUXER)                += latmenc.o rawenc.o
 OBJS-$(CONFIG_LMLM4_DEMUXER)             += lmlm4.o
 OBJS-$(CONFIG_LOAS_DEMUXER)              += loasdec.o rawdec.o
@@ -669,3 +670,4 @@ TOOLS     = aviocat                                                     \
             probetest                                                   \
             seek_print                                                  \
             sidxindex                                                   \
+            venc_data_dump

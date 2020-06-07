@@ -597,6 +597,9 @@
     <ClCompile Include="..\libavfilter\vf_datascope.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_dblur.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_dctdnoiz.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -1108,6 +1111,9 @@
       <Filter>Source Files\libavfilter\dnn</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_mathbinary.c">
+      <Filter>Source Files\libavfilter\dnn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_mathunary.c">
       <Filter>Source Files\libavfilter\dnn</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\x86\scene_sad_init.c">

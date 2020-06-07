@@ -2631,6 +2631,9 @@
     <ClCompile Include="..\libavcodec\hevc_parser.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\jpeg2000_parser.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\mjpeg_parser.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -3219,6 +3222,9 @@
       <Filter>Header Files\libavcodec</Filter>
     </ClInclude>
     <ClInclude Include="..\libavcodec\bsf.h">
+      <Filter>Header Files\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libavcodec\codec.h">
       <Filter>Header Files\libavcodec</Filter>
     </ClInclude>
     <ClInclude Include="..\libavcodec\codec_desc.h">

@@ -248,6 +248,7 @@
     <ClCompile Include="..\libavfilter\vf_cropdetect.c" />
     <ClCompile Include="..\libavfilter\vf_curves.c" />
     <ClCompile Include="..\libavfilter\vf_datascope.c" />
+    <ClCompile Include="..\libavfilter\vf_dblur.c" />
     <ClCompile Include="..\libavfilter\vf_dctdnoiz.c" />
     <ClCompile Include="..\libavfilter\vf_deband.c" />
     <ClCompile Include="..\libavfilter\vf_deblock.c" />
@@ -419,6 +420,7 @@
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_depth2space.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_maximum.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_mathbinary.c" />
+    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_mathunary.c" />
     <ClCompile Include="..\libavfilter\x86\scene_sad_init.c" />
     <ClCompile Include="..\libavfilter\x86\af_afir_init.c" />
     <ClCompile Include="..\libavfilter\x86\af_anlmdn_init.c" />

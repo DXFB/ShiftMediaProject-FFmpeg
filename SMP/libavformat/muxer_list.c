@@ -84,6 +84,7 @@ static const AVOutputFormat *muxer_list[] = {
     &ff_ismv_muxer,
     &ff_ivf_muxer,
     &ff_jacosub_muxer,
+    &ff_kvag_muxer,
     &ff_latm_muxer,
     &ff_lrc_muxer,
     &ff_m4v_muxer,

@@ -171,6 +171,7 @@ static const AVFilter *filter_list[] = {
     &ff_vf_cue,
     &ff_vf_curves,
     &ff_vf_datascope,
+    &ff_vf_dblur,
     &ff_vf_dctdnoiz,
     &ff_vf_deband,
     &ff_vf_deblock,

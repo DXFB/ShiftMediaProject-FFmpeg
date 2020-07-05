@@ -1839,6 +1839,9 @@
     <ClCompile Include="..\libavcodec\pgssubdec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\pgxdec.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\pictordec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>

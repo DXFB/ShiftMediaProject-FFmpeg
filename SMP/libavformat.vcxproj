@@ -306,6 +306,7 @@
     <ClCompile Include="..\libavformat\av1.c" />
     <ClCompile Include="..\libavformat\hevc.c" />
     <ClCompile Include="..\libavformat\wv.c" />
+    <ClCompile Include="..\libavformat\mccdec.c" />
     <ClCompile Include="..\libavformat\mgsts.c" />
     <ClCompile Include="..\libavformat\microdvddec.c" />
     <ClCompile Include="..\libavformat\microdvdenc.c" />

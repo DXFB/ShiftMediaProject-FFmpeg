@@ -663,6 +663,7 @@
     <ClCompile Include="..\libavcodec\pcx.c" />
     <ClCompile Include="..\libavcodec\pcxenc.c" />
     <ClCompile Include="..\libavcodec\pgssubdec.c" />
+    <ClCompile Include="..\libavcodec\pgxdec.c" />
     <ClCompile Include="..\libavcodec\pictordec.c" />
     <ClCompile Include="..\libavcodec\pixlet.c" />
     <ClCompile Include="..\libavcodec\textdec.c" />

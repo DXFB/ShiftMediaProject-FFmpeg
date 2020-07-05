@@ -769,6 +769,9 @@
     <ClCompile Include="..\libavformat\wv.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\mccdec.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\mgsts.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>

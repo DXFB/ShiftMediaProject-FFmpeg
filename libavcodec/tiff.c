@@ -679,6 +679,9 @@ static int tiff_unpack_strip(TiffContext *s, AVFrame *p, uint8_t *dst, int strid
         return 0;
     }
 
+    if (is_dng && stride == 0)
+        return AVERROR_INVALIDDATA;
+
     for (line = 0; line < lines; line++) {
         if (src - ssrc > size) {
             av_log(s->avctx, AV_LOG_ERROR, "Source data overread\n");
@@ -856,8 +859,11 @@ static void dng_blit(TiffContext *s, uint8_t *dst, int dst_stride,
             }
         } else {
             for (line = 0; line < height; line++) {
+                uint8_t *dst_u8 = dst;
+                const uint8_t *src_u8 = src;
+
                 for (col = 0; col < width; col++)
-                    *dst++ = dng_process_color8(*src++, s->dng_lut, s->black_level, scale_factor);
+                    *dst_u8++ = dng_process_color8(*src_u8++, s->dng_lut, s->black_level, scale_factor);
 
                 dst += dst_stride;
                 src += src_stride;

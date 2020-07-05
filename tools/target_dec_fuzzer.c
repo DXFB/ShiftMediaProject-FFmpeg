@@ -120,6 +120,12 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
         codec_list[0] = &DECODER_SYMBOL(FFMPEG_DECODER);
         avcodec_register(&DECODER_SYMBOL(FFMPEG_DECODER));
 
+#if FFMPEG_DECODER == tiff || FFMPEG_DECODER == tdsc
+        extern AVCodec DECODER_SYMBOL(mjpeg);
+        codec_list[1] = &DECODER_SYMBOL(mjpeg);
+        avcodec_register(&DECODER_SYMBOL(mjpeg));
+#endif
+
         c = &DECODER_SYMBOL(FFMPEG_DECODER);
 #else
         avcodec_register_all();
@@ -153,6 +159,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     case AV_CODEC_ID_HNM4_VIDEO:  maxpixels  /= 128;   break;
     case AV_CODEC_ID_IFF_ILBM:    maxpixels  /= 128;   break;
     case AV_CODEC_ID_INDEO4:      maxpixels  /= 128;   break;
+    case AV_CODEC_ID_LAGARITH:    maxpixels  /= 1024;  break;
     case AV_CODEC_ID_LSCR:        maxpixels  /= 16;    break;
     case AV_CODEC_ID_MOTIONPIXELS:maxpixels  /= 256;   break;
     case AV_CODEC_ID_MP4ALS:      maxsamples /= 65536; break;

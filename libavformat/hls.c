@@ -311,6 +311,8 @@ static struct playlist *new_playlist(HLSContext *c, const char *url,
         return NULL;
     reset_packet(&pls->pkt);
     ff_make_absolute_url(pls->url, sizeof(pls->url), base, url);
+    if (!pls->url[0])
+        return NULL;
     pls->seek_timestamp = AV_NOPTS_VALUE;
 
     pls->is_id3_timestamped = -1;
@@ -416,6 +418,10 @@ static struct segment *new_init_section(struct playlist *pls,
         ptr = info->uri;
     } else {
         ff_make_absolute_url(tmp_str, sizeof(tmp_str), url_base, info->uri);
+        if (!tmp_str[0]) {
+            av_free(sec);
+            return NULL;
+        }
     }
     sec->url = av_strdup(ptr);
     if (!sec->url) {
@@ -841,6 +847,11 @@ static int parse_playlist(HLSContext *c, const char *url,
 
             if (key_type != KEY_NONE) {
                 ff_make_absolute_url(tmp_str, sizeof(tmp_str), url, key);
+                if (!tmp_str[0]) {
+                    av_free(cur_init_section);
+                    ret = AVERROR_INVALIDDATA;
+                    goto fail;
+                }
                 cur_init_section->key = av_strdup(tmp_str);
                 if (!cur_init_section->key) {
                     av_free(cur_init_section);
@@ -883,8 +894,6 @@ static int parse_playlist(HLSContext *c, const char *url,
                     ret = AVERROR(ENOMEM);
                     goto fail;
                 }
-                seg->duration = duration;
-                seg->key_type = key_type;
                 if (has_iv) {
                     memcpy(seg->iv, iv, sizeof(iv));
                 } else {
@@ -895,6 +904,11 @@ static int parse_playlist(HLSContext *c, const char *url,
 
                 if (key_type != KEY_NONE) {
                     ff_make_absolute_url(tmp_str, sizeof(tmp_str), url, key);
+                    if (!tmp_str[0]) {
+                        ret = AVERROR_INVALIDDATA;
+                        av_free(seg);
+                        goto fail;
+                    }
                     seg->key = av_strdup(tmp_str);
                     if (!seg->key) {
                         av_free(seg);
@@ -906,6 +920,13 @@ static int parse_playlist(HLSContext *c, const char *url,
                 }
 
                 ff_make_absolute_url(tmp_str, sizeof(tmp_str), url, line);
+                if (!tmp_str[0]) {
+                    ret = AVERROR_INVALIDDATA;
+                    if (seg->key)
+                        av_free(seg->key);
+                    av_free(seg);
+                    goto fail;
+                }
                 seg->url = av_strdup(tmp_str);
                 if (!seg->url) {
                     av_free(seg->key);
@@ -914,6 +935,13 @@ static int parse_playlist(HLSContext *c, const char *url,
                     goto fail;
                 }
 
+                if (duration < 0.001 * AV_TIME_BASE) {
+                    av_log(c->ctx, AV_LOG_WARNING, "Cannot get correct #EXTINF value of segment %s,"
+                                    " set to default value to 1ms.\n", seg->url);
+                    duration = 0.001 * AV_TIME_BASE;
+                }
+                seg->duration = duration;
+                seg->key_type = key_type;
                 dynarray_add(&pls->segments, &pls->n_segments, seg);
                 is_segment = 0;
 
@@ -1740,6 +1768,20 @@ static int set_stream_info_from_input_stream(AVStream *st, struct playlist *pls,
     else
         avpriv_set_pts_info(st, ist->pts_wrap_bits, ist->time_base.num, ist->time_base.den);
 
+    // copy disposition
+    st->disposition = ist->disposition;
+
+    // copy side data
+    for (int i = 0; i < ist->nb_side_data; i++) {
+        const AVPacketSideData *sd_src = &ist->side_data[i];
+        uint8_t *dst_data;
+
+        dst_data = av_stream_new_side_data(st, sd_src->type, sd_src->size);
+        if (!dst_data)
+            return AVERROR(ENOMEM);
+        memcpy(dst_data, sd_src->data, sd_src->size);
+    }
+
     st->internal->need_context_update = 1;
 
     return 0;
@@ -1904,6 +1946,7 @@ static int hls_read_header(AVFormatContext *s)
     /* Open the demuxer for each playlist */
     for (i = 0; i < c->n_playlists; i++) {
         struct playlist *pls = c->playlists[i];
+        char *url;
         ff_const59 AVInputFormat *in_fmt = NULL;
 
         if (!(pls->ctx = avformat_alloc_context())) {
@@ -1941,8 +1984,9 @@ static int hls_read_header(AVFormatContext *s)
                           read_data, NULL, NULL);
         pls->ctx->probesize = s->probesize > 0 ? s->probesize : 1024 * 4;
         pls->ctx->max_analyze_duration = s->max_analyze_duration > 0 ? s->max_analyze_duration : 4 * AV_TIME_BASE;
-        ret = av_probe_input_buffer(&pls->pb, &in_fmt, pls->segments[0]->url,
-                                    NULL, 0, 0);
+        url = av_strdup(pls->segments[0]->url);
+        ret = av_probe_input_buffer(&pls->pb, &in_fmt, url, NULL, 0, 0);
+        av_free(url);
         if (ret < 0) {
             /* Free the ctx - it isn't initialized properly at this point,
              * so avformat_close_input shouldn't be called. If

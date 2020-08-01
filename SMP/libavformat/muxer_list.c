@@ -25,6 +25,7 @@ static const AVOutputFormat *muxer_list[] = {
     &ff_adx_muxer,
     &ff_aiff_muxer,
     &ff_amr_muxer,
+    &ff_apm_muxer,
     &ff_apng_muxer,
     &ff_aptx_muxer,
     &ff_aptx_hd_muxer,

@@ -158,6 +158,7 @@ static const AVCodec *codec_list[] = {
     &ff_adpcm_g722_encoder,
     &ff_adpcm_g726_encoder,
     &ff_adpcm_g726le_encoder,
+    &ff_adpcm_ima_apm_encoder,
     &ff_adpcm_ima_qt_encoder,
     &ff_adpcm_ima_ssi_encoder,
     &ff_adpcm_ima_wav_encoder,

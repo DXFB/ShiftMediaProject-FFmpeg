@@ -543,6 +543,9 @@
     <ClCompile Include="..\libavfilter\vf_chromakey.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_chromanr.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_chromashift.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>

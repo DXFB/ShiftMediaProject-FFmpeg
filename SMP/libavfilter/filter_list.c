@@ -152,6 +152,7 @@ static const AVFilter *filter_list[] = {
     &ff_vf_cas,
     &ff_vf_chromahold,
     &ff_vf_chromakey,
+    &ff_vf_chromanr,
     &ff_vf_chromashift,
     &ff_vf_ciescope,
     &ff_vf_codecview,

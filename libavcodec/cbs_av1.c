@@ -794,7 +794,7 @@ static int cbs_av1_split_fragment(CodedBitstreamContext *ctx,
             goto fail;
         }
 
-        err = ff_cbs_insert_unit_data(ctx, frag, -1, header.obu_type,
+        err = ff_cbs_insert_unit_data(frag, -1, header.obu_type,
                                       data, obu_length, frag->data_ref);
         if (err < 0)
             goto fail;
@@ -887,7 +887,7 @@ static int cbs_av1_read_unit(CodedBitstreamContext *ctx,
     GetBitContext gbc;
     int err, start_pos, end_pos;
 
-    err = ff_cbs_alloc_unit_content(ctx, unit, sizeof(*obu),
+    err = ff_cbs_alloc_unit_content(unit, sizeof(*obu),
                                     &cbs_av1_free_obu);
     if (err < 0)
         return err;
@@ -938,8 +938,6 @@ static int cbs_av1_read_unit(CodedBitstreamContext *ctx,
         priv->temporal_id = 0;
         priv->spatial_id  = 0;
     }
-
-    priv->ref = (AV1ReferenceFrameState *)&priv->read_ref;
 
     switch (obu->header.obu_type) {
     case AV1_OBU_SEQUENCE_HEADER:
@@ -1083,8 +1081,6 @@ static int cbs_av1_write_obu(CodedBitstreamContext *ctx,
 
     td = NULL;
     start_pos = put_bits_count(pbc);
-
-    priv->ref = (AV1ReferenceFrameState *)&priv->write_ref;
 
     switch (obu->header.obu_type) {
     case AV1_OBU_SEQUENCE_HEADER:

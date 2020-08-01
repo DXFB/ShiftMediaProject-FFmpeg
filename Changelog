@@ -5,6 +5,11 @@ version <next>:
 - AudioToolbox output device
 - MacCaption demuxer
 - PGX decoder
+- chromanr video filter
+- VDPAU accelerated HEVC 10/12bit decoding
+- ADPCM IMA Ubisoft APM encoder
+- Rayman 2 APM muxer
+- AV1 encoding support SVT-AV1
 
 
 version 4.3:

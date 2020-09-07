@@ -416,6 +416,7 @@
     <ClCompile Include="..\libavfilter\dnn\dnn_interface.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layers.c" />
+    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_avgpool.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_pad.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_conv2d.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_depth2space.c" />

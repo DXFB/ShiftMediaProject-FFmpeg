@@ -315,6 +315,8 @@
     <ClCompile Include="..\libavformat\mlvdec.c" />
     <ClCompile Include="..\libavformat\mm.c" />
     <ClCompile Include="..\libavformat\mmf.c" />
+    <ClCompile Include="..\libavformat\mods.c" />
+    <ClCompile Include="..\libavformat\moflex.c" />
     <ClCompile Include="..\libavformat\mov.c" />
     <ClCompile Include="..\libavformat\movenc.c" />
     <ClCompile Include="..\libavformat\vpcc.c" />

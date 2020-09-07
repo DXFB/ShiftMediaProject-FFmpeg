@@ -796,6 +796,12 @@
     <ClCompile Include="..\libavformat\mmf.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\mods.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\moflex.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\mov.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>

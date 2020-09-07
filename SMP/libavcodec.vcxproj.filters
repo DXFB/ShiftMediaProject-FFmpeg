@@ -196,6 +196,9 @@
     <NASM Include="..\libavcodec\x86\cavsidct.asm">
       <Filter>Source Files\libavcodec\x86</Filter>
     </NASM>
+    <NASM Include="..\libavcodec\x86\cfhddsp.asm">
+      <Filter>Source Files\libavcodec\x86</Filter>
+    </NASM>
     <NASM Include="..\libavcodec\x86\dcadsp.asm">
       <Filter>Source Files\libavcodec\x86</Filter>
     </NASM>
@@ -424,6 +427,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\audio_frame_queue.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\atsc_a53.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\cabac.c">
@@ -1032,6 +1038,9 @@
     <ClCompile Include="..\libavcodec\cfhddata.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\cfhdenc.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\cinepak.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -1158,7 +1167,7 @@
     <ClCompile Include="..\libavcodec\dvbsubdec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
-    <ClCompile Include="..\libavcodec\dvbsub.c">
+    <ClCompile Include="..\libavcodec\dvbsubenc.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\dvdsubdec.c">
@@ -1237,6 +1246,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\exr.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\fastaudio.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\ffv1dec.c">
@@ -1653,6 +1665,9 @@
     <ClCompile Include="..\libavcodec\mmvideo.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\mobiclip.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\motionpixels.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -1842,6 +1857,9 @@
     <ClCompile Include="..\libavcodec\pgxdec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\photocd.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\pictordec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -1936,6 +1954,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\rpza.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\rpzaenc.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\rscc.c">
@@ -2442,6 +2463,9 @@
     <ClCompile Include="..\libavcodec\adxenc.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\adpcmenc.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\g722.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -2452,9 +2476,6 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\g726.c">
-      <Filter>Source Files\libavcodec</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavcodec\adpcmenc.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\vima.c">
@@ -2943,6 +2964,9 @@
     <ClCompile Include="..\libavcodec\x86\pngdsp_init.c">
       <Filter>Source Files\libavcodec\x86</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\x86\cfhddsp_init.c">
+      <Filter>Source Files\libavcodec\x86</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\x86\dcadsp_init.c">
       <Filter>Source Files\libavcodec\x86</Filter>
     </ClCompile>
@@ -3121,6 +3145,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\pngdsp.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\cfhddsp.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\dcadsp.c">

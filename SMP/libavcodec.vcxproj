@@ -114,6 +114,7 @@
     <NASM Include="..\libavcodec\x86\alacdsp.asm" />
     <NASM Include="..\libavcodec\x86\pngdsp.asm" />
     <NASM Include="..\libavcodec\x86\cavsidct.asm" />
+    <NASM Include="..\libavcodec\x86\cfhddsp.asm" />
     <NASM Include="..\libavcodec\x86\dcadsp.asm" />
     <NASM Include="..\libavcodec\x86\synth_filter.asm" />
     <NASM Include="..\libavcodec\x86\diracdsp.asm" />
@@ -192,6 +193,7 @@
     <ClCompile Include="..\libavcodec\mpeg4audio.c" />
     <ClCompile Include="..\libavcodec\amfenc.c" />
     <ClCompile Include="..\libavcodec\audio_frame_queue.c" />
+    <ClCompile Include="..\libavcodec\atsc_a53.c" />
     <ClCompile Include="..\libavcodec\cabac.c" />
     <ClCompile Include="..\libavcodec\cbs.c" />
     <ClCompile Include="..\libavcodec\cbs_av1.c" />
@@ -394,6 +396,7 @@
     <ClCompile Include="..\libavcodec\cdxl.c" />
     <ClCompile Include="..\libavcodec\cfhd.c" />
     <ClCompile Include="..\libavcodec\cfhddata.c" />
+    <ClCompile Include="..\libavcodec\cfhdenc.c" />
     <ClCompile Include="..\libavcodec\cinepak.c" />
     <ClCompile Include="..\libavcodec\cinepakenc.c" />
     <ClCompile Include="..\libavcodec\clearvideo.c" />
@@ -436,7 +439,7 @@
     <ClCompile Include="..\libavcodec\dss_sp.c" />
     <ClCompile Include="..\libavcodec\dstdec.c" />
     <ClCompile Include="..\libavcodec\dvbsubdec.c" />
-    <ClCompile Include="..\libavcodec\dvbsub.c" />
+    <ClCompile Include="..\libavcodec\dvbsubenc.c" />
     <ClCompile Include="..\libavcodec\dvdsubdec.c" />
     <ClCompile Include="..\libavcodec\dvdsub.c" />
     <ClCompile Include="..\libavcodec\dvdsubenc.c" />
@@ -463,6 +466,7 @@
     <ClCompile Include="..\libavcodec\escape130.c" />
     <ClCompile Include="..\libavcodec\evrcdec.c" />
     <ClCompile Include="..\libavcodec\exr.c" />
+    <ClCompile Include="..\libavcodec\fastaudio.c" />
     <ClCompile Include="..\libavcodec\ffv1dec.c" />
     <ClCompile Include="..\libavcodec\ffv1.c" />
     <ClCompile Include="..\libavcodec\ffv1enc.c" />
@@ -601,6 +605,7 @@
     <ClCompile Include="..\libavcodec\mlpenc.c" />
     <ClCompile Include="..\libavcodec\mlp.c" />
     <ClCompile Include="..\libavcodec\mmvideo.c" />
+    <ClCompile Include="..\libavcodec\mobiclip.c" />
     <ClCompile Include="..\libavcodec\motionpixels.c" />
     <ClCompile Include="..\libavcodec\movtextdec.c" />
     <ClCompile Include="..\libavcodec\movtextenc.c" />
@@ -664,6 +669,7 @@
     <ClCompile Include="..\libavcodec\pcxenc.c" />
     <ClCompile Include="..\libavcodec\pgssubdec.c" />
     <ClCompile Include="..\libavcodec\pgxdec.c" />
+    <ClCompile Include="..\libavcodec\photocd.c" />
     <ClCompile Include="..\libavcodec\pictordec.c" />
     <ClCompile Include="..\libavcodec\pixlet.c" />
     <ClCompile Include="..\libavcodec\textdec.c" />
@@ -696,6 +702,7 @@
     <ClCompile Include="..\libavcodec\roqvideoenc.c" />
     <ClCompile Include="..\libavcodec\roqaudioenc.c" />
     <ClCompile Include="..\libavcodec\rpza.c" />
+    <ClCompile Include="..\libavcodec\rpzaenc.c" />
     <ClCompile Include="..\libavcodec\rscc.c" />
     <ClCompile Include="..\libavcodec\rv10.c" />
     <ClCompile Include="..\libavcodec\rv10enc.c" />
@@ -864,11 +871,11 @@
     <ClCompile Include="..\libavcodec\adxdec.c" />
     <ClCompile Include="..\libavcodec\adx.c" />
     <ClCompile Include="..\libavcodec\adxenc.c" />
+    <ClCompile Include="..\libavcodec\adpcmenc.c" />
     <ClCompile Include="..\libavcodec\g722.c" />
     <ClCompile Include="..\libavcodec\g722dec.c" />
     <ClCompile Include="..\libavcodec\g722enc.c" />
     <ClCompile Include="..\libavcodec\g726.c" />
-    <ClCompile Include="..\libavcodec\adpcmenc.c" />
     <ClCompile Include="..\libavcodec\vima.c" />
     <ClCompile Include="..\libavcodec\dxva2.c" />
     <ClCompile Include="..\libavcodec\nvdec.c" />
@@ -1031,6 +1038,7 @@
     <ClCompile Include="..\libavcodec\x86\g722dsp_init.c" />
     <ClCompile Include="..\libavcodec\x86\alacdsp_init.c" />
     <ClCompile Include="..\libavcodec\x86\pngdsp_init.c" />
+    <ClCompile Include="..\libavcodec\x86\cfhddsp_init.c" />
     <ClCompile Include="..\libavcodec\x86\dcadsp_init.c" />
     <ClCompile Include="..\libavcodec\x86\synth_filter_init.c" />
     <ClCompile Include="..\libavcodec\x86\dnxhdenc_init.c" />
@@ -1142,6 +1150,9 @@
     </ClCompile>
     <ClCompile Include="..\libavcodec\pngdsp.c">
       <ObjectFileName>$(IntDir)\libavcodec_pngdsp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\cfhddsp.c">
+      <ObjectFileName>$(IntDir)\libavcodec_cfhddsp.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\libavcodec\dcadsp.c">
       <ObjectFileName>$(IntDir)\libavcodec_dcadsp.obj</ObjectFileName>

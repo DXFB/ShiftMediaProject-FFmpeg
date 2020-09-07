@@ -1101,6 +1101,9 @@
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layers.c">
       <Filter>Source Files\libavfilter\dnn</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_avgpool.c">
+      <Filter>Source Files\libavfilter\dnn</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_pad.c">
       <Filter>Source Files\libavfilter\dnn</Filter>
     </ClCompile>

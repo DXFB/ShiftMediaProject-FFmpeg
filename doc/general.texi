@@ -436,13 +436,9 @@ library:
 @item Delphine Software International CIN @tab   @tab X
     @tab Multimedia format used by Delphine Software games.
 @item Digital Speech Standard (DSS) @tab   @tab X
-@item Canopus HQ                @tab   @tab X
-@item Canopus HQA               @tab   @tab X
-@item Canopus HQX               @tab   @tab X
 @item CD+G                      @tab   @tab X
     @tab Video format used by CD+G karaoke disks
 @item Phantom Cine              @tab   @tab X
-@item Cineform HD               @tab   @tab X
 @item Commodore CDXL            @tab   @tab X
     @tab Amiga CD video format
 @item Core Audio Format         @tab X @tab X
@@ -806,6 +802,7 @@ following image formats are supported:
 @item Amazing Studio PAF Video @tab     @tab  X
 @item American Laser Games MM  @tab    @tab X
     @tab Used in games like Mad Dog McCree.
+@item Amuse Graphics Movie   @tab     @tab  X
 @item AMV Video              @tab  X  @tab  X
     @tab Used in Chinese MP3 players.
 @item ANSI/ASCII art         @tab     @tab  X
@@ -863,6 +860,10 @@ following image formats are supported:
 @item Delphine Software International CIN video  @tab     @tab  X
     @tab Codec used in Delphine Software International games.
 @item Discworld II BMV Video @tab     @tab  X
+@item CineForm HD            @tab  X  @tab  X
+@item Canopus HQ             @tab     @tab  X
+@item Canopus HQA            @tab     @tab  X
+@item Canopus HQX            @tab     @tab  X
 @item Canopus Lossless Codec @tab     @tab  X
 @item CDToons                @tab     @tab  X
     @tab Codec used in various Broderbund games.
@@ -1007,7 +1008,7 @@ following image formats are supported:
     @tab fourcc: 'rle '
 @item QuickTime Graphics (SMC)  @tab     @tab  X
     @tab fourcc: 'smc '
-@item QuickTime video (RPZA) @tab     @tab  X
+@item QuickTime video (RPZA) @tab  X  @tab  X
     @tab fourcc: rpza
 @item R10K AJA Kona 10-bit RGB Codec     @tab  X  @tab  X
 @item R210 Quicktime Uncompressed RGB 10-bit     @tab  X  @tab  X
@@ -1097,8 +1098,9 @@ following image formats are supported:
 @item AC-3                   @tab IX  @tab  IX
 @item ACELP.KELVIN           @tab     @tab  X
 @item ADPCM 4X Movie         @tab     @tab  X
-@item APDCM Yamaha AICA      @tab     @tab  X
-@item ADPCM Argonaut Games   @tab     @tab  X
+@item ADPCM Yamaha AICA      @tab     @tab  X
+@item ADPCM AmuseGraphics Movie @tab    @tab  X
+@item ADPCM Argonaut Games   @tab X   @tab  X
 @item ADPCM CDROM XA         @tab     @tab  X
 @item ADPCM Creative Technology @tab     @tab  X
     @tab 16 -> 4, 8 -> 4, 8 -> 3, 8 -> 2
@@ -1138,7 +1140,7 @@ following image formats are supported:
 @item ADPCM Nintendo Gamecube AFC  @tab     @tab  X
 @item ADPCM Nintendo Gamecube DTK  @tab     @tab  X
 @item ADPCM Nintendo THP  @tab     @tab  X
-@item APDCM Playstation      @tab     @tab  X
+@item ADPCM Playstation      @tab     @tab  X
 @item ADPCM QT IMA           @tab  X  @tab  X
 @item ADPCM SEGA CRI ADX     @tab  X  @tab  X
     @tab Used in Sega Dreamcast games.

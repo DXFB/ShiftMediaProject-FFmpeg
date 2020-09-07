@@ -44,6 +44,7 @@
 
 #include "audio.h"
 #include "avfilter.h"
+#include "filters.h"
 #include "formats.h"
 #include "internal.h"
 #include "video.h"
@@ -97,7 +98,6 @@ static const AVOption movie_options[]= {
 };
 
 static int movie_config_output_props(AVFilterLink *outlink);
-static int movie_request_frame(AVFilterLink *outlink);
 
 static AVStream *find_stream(void *log, AVFormatContext *avf, const char *spec)
 {
@@ -213,7 +213,6 @@ static av_cold int movie_common_init(AVFilterContext *ctx)
     int64_t timestamp;
     int nb_streams = 1, ret, i;
     char default_streams[16], *stream_specs, *spec, *cursor;
-    char name[16];
     AVStream *st;
 
     if (!movie->file_name) {
@@ -305,13 +304,11 @@ static av_cold int movie_common_init(AVFilterContext *ctx)
     for (i = 0; i < nb_streams; i++) {
         AVFilterPad pad = { 0 };
         movie->out_index[movie->st[i].st->index] = i;
-        snprintf(name, sizeof(name), "out%d", i);
         pad.type          = movie->st[i].st->codecpar->codec_type;
-        pad.name          = av_strdup(name);
+        pad.name          = av_asprintf("out%d", i);
         if (!pad.name)
             return AVERROR(ENOMEM);
         pad.config_props  = movie_config_output_props;
-        pad.request_frame = movie_request_frame;
         if ((ret = ff_insert_outpad(ctx, i, &pad)) < 0) {
             av_freep(&pad.name);
             return ret;
@@ -376,7 +373,7 @@ static int movie_query_formats(AVFilterContext *ctx)
             if ((ret = ff_formats_ref(ff_make_format_list(list), &outlink->in_samplerates)) < 0)
                 return ret;
             list64[0] = c->channel_layout;
-            if ((ret = ff_channel_layouts_ref(avfilter_make_format64_list(list64),
+            if ((ret = ff_channel_layouts_ref(ff_make_format64_list(list64),
                                    &outlink->in_channel_layouts)) < 0)
                 return ret;
             break;
@@ -597,17 +594,33 @@ static int movie_push_frame(AVFilterContext *ctx, unsigned out_id)
     return pkt_out_id == out_id;
 }
 
-static int movie_request_frame(AVFilterLink *outlink)
+static int activate(AVFilterContext *ctx)
 {
-    AVFilterContext *ctx = outlink->src;
-    unsigned out_id = FF_OUTLINK_IDX(outlink);
-    int ret;
+    MovieContext *movie = ctx->priv;
+    int nb_eofs = 0;
 
-    while (1) {
-        ret = movie_push_frame(ctx, out_id);
-        if (ret)
-            return FFMIN(ret, 0);
+    for (int i = 0; i < ctx->nb_outputs; i++) {
+        AVFilterLink *outlink = ctx->outputs[i];
+
+        nb_eofs += !!ff_outlink_get_status(outlink);
+        if (ff_outlink_frame_wanted(outlink)) {
+            int ret = movie_push_frame(ctx, i);
+
+            if (ret == AVERROR_EOF) {
+                ff_outlink_set_status(outlink, AVERROR_EOF, movie->st[i].last_pts);
+                return 0;
+            } else if (ret) {
+                return FFMIN(ret, 0);
+            }
+        }
     }
+
+    if (nb_eofs != ctx->nb_outputs) {
+        ff_filter_set_ready(ctx, 100);
+        return 0;
+    }
+
+    return FFERROR_NOT_READY;
 }
 
 static int process_command(AVFilterContext *ctx, const char *cmd, const char *args,
@@ -668,6 +681,7 @@ AVFilter ff_avsrc_movie = {
 
     .inputs    = NULL,
     .outputs   = NULL,
+    .activate  = activate,
     .flags     = AVFILTER_FLAG_DYNAMIC_OUTPUTS,
     .process_command = process_command
 };
@@ -689,6 +703,7 @@ AVFilter ff_avsrc_amovie = {
 
     .inputs     = NULL,
     .outputs    = NULL,
+    .activate   = activate,
     .priv_class = &amovie_class,
     .flags      = AVFILTER_FLAG_DYNAMIC_OUTPUTS,
     .process_command = process_command,

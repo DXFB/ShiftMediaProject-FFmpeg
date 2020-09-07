@@ -1108,7 +1108,7 @@ static int mov_read_ftyp(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     av_dict_set_int(&c->fc->metadata, "minor_version", minor_ver, 0);
 
     comp_brand_size = atom.size - 8;
-    if (comp_brand_size < 0)
+    if (comp_brand_size < 0 || comp_brand_size == INT_MAX)
         return AVERROR_INVALIDDATA;
     comp_brands_str = av_malloc(comp_brand_size + 1); /* Add null terminator */
     if (!comp_brands_str)
@@ -2422,6 +2422,9 @@ static int mov_finalize_stsd_codec(MOVContext *c, AVIOContext *pb,
     case AV_CODEC_ID_VP8:
     case AV_CODEC_ID_VP9:
         st->need_parsing = AVSTREAM_PARSE_FULL;
+        break;
+    case AV_CODEC_ID_AV1:
+        st->need_parsing = AVSTREAM_PARSE_HEADERS;
         break;
     default:
         break;
@@ -5014,8 +5017,9 @@ static int mov_read_trun(MOVContext *c, AVIOContext *pb, MOVAtom atom)
 
 static int mov_read_sidx(MOVContext *c, AVIOContext *pb, MOVAtom atom)
 {
+    int64_t stream_size = avio_size(pb);
     int64_t offset = avio_tell(pb) + atom.size, pts, timestamp;
-    uint8_t version;
+    uint8_t version, is_complete;
     unsigned i, j, track_id, item_count;
     AVStream *st = NULL;
     AVStream *ref_st = NULL;
@@ -5088,7 +5092,24 @@ static int mov_read_sidx(MOVContext *c, AVIOContext *pb, MOVAtom atom)
 
     sc->has_sidx = 1;
 
-    if (offset == avio_size(pb)) {
+    // See if the remaining bytes are just an mfra which we can ignore.
+    is_complete = offset == stream_size;
+    if (!is_complete && (pb->seekable & AVIO_SEEKABLE_NORMAL)) {
+        int64_t ret;
+        int64_t original_pos = avio_tell(pb);
+        if (!c->have_read_mfra_size) {
+            if ((ret = avio_seek(pb, stream_size - 4, SEEK_SET)) < 0)
+                return ret;
+            c->mfra_size = avio_rb32(pb);
+            c->have_read_mfra_size = 1;
+            if ((ret = avio_seek(pb, original_pos, SEEK_SET)) < 0)
+                return ret;
+        }
+        if (offset + c->mfra_size == stream_size)
+            is_complete = 1;
+    }
+
+    if (is_complete) {
         // Find first entry in fragment index that came from an sidx.
         // This will pretty much always be the first entry.
         for (i = 0; i < c->frag_index.nb_items; i++) {
@@ -7478,22 +7499,22 @@ static int mov_read_mfra(MOVContext *c, AVIOContext *f)
     int64_t stream_size = avio_size(f);
     int64_t original_pos = avio_tell(f);
     int64_t seek_ret;
-    int32_t mfra_size;
     int ret = -1;
     if ((seek_ret = avio_seek(f, stream_size - 4, SEEK_SET)) < 0) {
         ret = seek_ret;
         goto fail;
     }
-    mfra_size = avio_rb32(f);
-    if (mfra_size < 0 || mfra_size > stream_size) {
+    c->mfra_size = avio_rb32(f);
+    c->have_read_mfra_size = 1;
+    if (!c->mfra_size || c->mfra_size > stream_size) {
         av_log(c->fc, AV_LOG_DEBUG, "doesn't look like mfra (unreasonable size)\n");
         goto fail;
     }
-    if ((seek_ret = avio_seek(f, -mfra_size, SEEK_CUR)) < 0) {
+    if ((seek_ret = avio_seek(f, -((int64_t) c->mfra_size), SEEK_CUR)) < 0) {
         ret = seek_ret;
         goto fail;
     }
-    if (avio_rb32(f) != mfra_size) {
+    if (avio_rb32(f) != c->mfra_size) {
         av_log(c->fc, AV_LOG_DEBUG, "doesn't look like mfra (size mismatch)\n");
         goto fail;
     }

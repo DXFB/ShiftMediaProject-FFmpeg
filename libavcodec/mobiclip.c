@@ -382,10 +382,13 @@ static av_cold int mobiclip_init(AVCodecContext *avctx)
     return 0;
 }
 
-static void setup_qtables(AVCodecContext *avctx, int quantizer)
+static int setup_qtables(AVCodecContext *avctx, int quantizer)
 {
     MobiClipContext *s = avctx->priv_data;
     int qx, qy;
+
+    if (quantizer < 12 || quantizer > 161)
+        return AVERROR_INVALIDDATA;
 
     s->quantizer = quantizer;
 
@@ -400,6 +403,8 @@ static void setup_qtables(AVCodecContext *avctx, int quantizer)
 
     for (int i = 0; i < 20; i++)
         s->pre[i] = 9;
+
+    return 0;
 }
 
 static void inverse4(int *rs)
@@ -905,7 +910,7 @@ static int predict_intra(AVCodecContext *avctx, AVFrame *frame, int ax, int ay,
             int arr1[16];
             int arr2[16];
             uint8_t *top = frame->data[plane] + FFMAX(ay - 1, 0) * frame->linesize[plane] + ax;
-            uint8_t *left = frame->data[plane] + ay * frame->linesize[plane] + ax - 1;
+            uint8_t *left = frame->data[plane] + ay * frame->linesize[plane] + FFMAX(ax - 1, 0);
             int bottommost = frame->data[plane][(ay + size - 1) * frame->linesize[plane] + FFMAX(ax - 1, 0)];
             int rightmost = frame->data[plane][FFMAX(ay - 1, 0) * frame->linesize[plane] + ax + size - 1];
             int avg = (bottommost + rightmost + 1) / 2 + 2 * get_se_golomb(gb);
@@ -1313,7 +1318,10 @@ static int mobiclip_decode(AVCodecContext *avctx, void *data,
         s->moflex = get_bits1(gb);
         s->dct_tab_idx = get_bits1(gb);
 
-        setup_qtables(avctx, get_bits(gb, 6));
+        ret = setup_qtables(avctx, get_bits(gb, 6));
+        if (ret < 0)
+            return ret;
+
         for (int y = 0; y < avctx->height; y += 16) {
             for (int x = 0; x < avctx->width; x += 16) {
                 ret = decode_macroblock(avctx, frame, x, y, get_bits1(gb));
@@ -1330,7 +1338,10 @@ static int mobiclip_decode(AVCodecContext *avctx, void *data,
         frame->key_frame = 0;
         s->dct_tab_idx = 0;
 
-        setup_qtables(avctx, s->quantizer + get_se_golomb(gb));
+        ret = setup_qtables(avctx, s->quantizer + get_se_golomb(gb));
+        if (ret < 0)
+            return ret;
+
         for (int y = 0; y < avctx->height; y += 16) {
             for (int x = 0; x < avctx->width; x += 16) {
                 int idx;
@@ -1389,6 +1400,14 @@ static int mobiclip_decode(AVCodecContext *avctx, void *data,
     return 0;
 }
 
+static void mobiclip_flush(AVCodecContext *avctx)
+{
+    MobiClipContext *s = avctx->priv_data;
+
+    for (int i = 0; i < 6; i++)
+        av_frame_unref(s->pic[i]);
+}
+
 static av_cold int mobiclip_close(AVCodecContext *avctx)
 {
     MobiClipContext *s = avctx->priv_data;
@@ -1421,6 +1440,8 @@ AVCodec ff_mobiclip_decoder = {
     .priv_data_size = sizeof(MobiClipContext),
     .init           = mobiclip_init,
     .decode         = mobiclip_decode,
+    .flush          = mobiclip_flush,
     .close          = mobiclip_close,
     .capabilities   = AV_CODEC_CAP_DR1,
+    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
 };

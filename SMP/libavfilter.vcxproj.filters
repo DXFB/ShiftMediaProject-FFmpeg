@@ -1095,6 +1095,9 @@
     <ClCompile Include="..\libavfilter\dnn\dnn_interface.c">
       <Filter>Source Files\libavfilter\dnn</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\dnn\dnn_io_proc.c">
+      <Filter>Source Files\libavfilter\dnn</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native.c">
       <Filter>Source Files\libavfilter\dnn</Filter>
     </ClCompile>
@@ -1102,6 +1105,9 @@
       <Filter>Source Files\libavfilter\dnn</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_avgpool.c">
+      <Filter>Source Files\libavfilter\dnn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_dense.c">
       <Filter>Source Files\libavfilter\dnn</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_pad.c">

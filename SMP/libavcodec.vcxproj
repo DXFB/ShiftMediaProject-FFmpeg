@@ -349,6 +349,7 @@
     <ClCompile Include="..\libavcodec\pngdec.c" />
     <ClCompile Include="..\libavcodec\pngenc.c" />
     <ClCompile Include="..\libavcodec\arbc.c" />
+    <ClCompile Include="..\libavcodec\argo.c" />
     <ClCompile Include="..\libavcodec\assdec.c" />
     <ClCompile Include="..\libavcodec\ass.c" />
     <ClCompile Include="..\libavcodec\assenc.c" />
@@ -364,6 +365,7 @@
     <ClCompile Include="..\libavcodec\atrac9dec.c" />
     <ClCompile Include="..\libavcodec\cyuv.c" />
     <ClCompile Include="..\libavcodec\aura.c" />
+    <ClCompile Include="..\libavcodec\av1dec.c" />
     <ClCompile Include="..\libavcodec\avrndec.c" />
     <ClCompile Include="..\libavcodec\mjpegdec.c" />
     <ClCompile Include="..\libavcodec\r210dec.c" />
@@ -570,6 +572,7 @@
     <ClCompile Include="..\libavcodec\indeo5.c" />
     <ClCompile Include="..\libavcodec\interplayacm.c" />
     <ClCompile Include="..\libavcodec\interplayvideo.c" />
+    <ClCompile Include="..\libavcodec\mpeg12dec.c" />
     <ClCompile Include="..\libavcodec\jacosubdec.c" />
     <ClCompile Include="..\libavcodec\j2kenc.c" />
     <ClCompile Include="..\libavcodec\mqcenc.c" />
@@ -617,7 +620,6 @@
     <ClCompile Include="..\libavcodec\mpc7.c" />
     <ClCompile Include="..\libavcodec\mpc.c" />
     <ClCompile Include="..\libavcodec\mpc8.c" />
-    <ClCompile Include="..\libavcodec\mpeg12dec.c" />
     <ClCompile Include="..\libavcodec\mpeg12enc.c" />
     <ClCompile Include="..\libavcodec\qsvenc_mpeg2.c" />
     <ClCompile Include="..\libavcodec\mpl2dec.c" />
@@ -775,7 +777,6 @@
     <ClCompile Include="..\libavcodec\txd.c" />
     <ClCompile Include="..\libavcodec\ulti.c" />
     <ClCompile Include="..\libavcodec\utvideodec.c" />
-    <ClCompile Include="..\libavcodec\utvideo.c" />
     <ClCompile Include="..\libavcodec\utvideoenc.c" />
     <ClCompile Include="..\libavcodec\v210dec.c" />
     <ClCompile Include="..\libavcodec\v210x.c" />
@@ -935,6 +936,7 @@
     <ClCompile Include="..\libavcodec\h263_parser.c" />
     <ClCompile Include="..\libavcodec\h264_parser.c" />
     <ClCompile Include="..\libavcodec\hevc_parser.c" />
+    <ClCompile Include="..\libavcodec\ipu_parser.c" />
     <ClCompile Include="..\libavcodec\jpeg2000_parser.c" />
     <ClCompile Include="..\libavcodec\mjpeg_parser.c" />
     <ClCompile Include="..\libavcodec\mlp_parse.c" />

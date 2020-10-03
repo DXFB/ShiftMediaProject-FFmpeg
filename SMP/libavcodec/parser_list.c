@@ -45,6 +45,7 @@ static const AVCodecParser *parser_list[] = {
     &ff_h263_parser,
     &ff_h264_parser,
     &ff_hevc_parser,
+    &ff_ipu_parser,
     &ff_jpeg2000_parser,
     &ff_mjpeg_parser,
     &ff_mlp_parser,

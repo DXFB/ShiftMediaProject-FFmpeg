@@ -121,6 +121,7 @@
     <ClCompile Include="..\libavformat\apetag.c" />
     <ClCompile Include="..\libavformat\img2.c" />
     <ClCompile Include="..\libavformat\rawdec.c" />
+    <ClCompile Include="..\libavformat\aaxdec.c" />
     <ClCompile Include="..\libavformat\ac3dec.c" />
     <ClCompile Include="..\libavformat\acm.c" />
     <ClCompile Include="..\libavformat\act.c" />
@@ -151,6 +152,7 @@
     <ClCompile Include="..\libavformat\aqtitledec.c" />
     <ClCompile Include="..\libavformat\subtitles.c" />
     <ClCompile Include="..\libavformat\argo_asf.c" />
+    <ClCompile Include="..\libavformat\argo_brp.c" />
     <ClCompile Include="..\libavformat\asfdec_f.c" />
     <ClCompile Include="..\libavformat\asf.c" />
     <ClCompile Include="..\libavformat\asfcrypt.c" />
@@ -277,6 +279,7 @@
     <ClCompile Include="..\libavformat\img2_brender_pix.c" />
     <ClCompile Include="..\libavformat\ingenientdec.c" />
     <ClCompile Include="..\libavformat\ipmovie.c" />
+    <ClCompile Include="..\libavformat\ipudec.c" />
     <ClCompile Include="..\libavformat\ircamdec.c" />
     <ClCompile Include="..\libavformat\ircam.c" />
     <ClCompile Include="..\libavformat\ircamenc.c" />
@@ -294,6 +297,7 @@
     <ClCompile Include="..\libavformat\latmenc.c" />
     <ClCompile Include="..\libavformat\lmlm4.c" />
     <ClCompile Include="..\libavformat\loasdec.c" />
+    <ClCompile Include="..\libavformat\luodatdec.c" />
     <ClCompile Include="..\libavformat\lrcdec.c" />
     <ClCompile Include="..\libavformat\lrc.c" />
     <ClCompile Include="..\libavformat\lrcenc.c" />
@@ -306,6 +310,7 @@
     <ClCompile Include="..\libavformat\av1.c" />
     <ClCompile Include="..\libavformat\hevc.c" />
     <ClCompile Include="..\libavformat\wv.c" />
+    <ClCompile Include="..\libavformat\mca.c" />
     <ClCompile Include="..\libavformat\mccdec.c" />
     <ClCompile Include="..\libavformat\mgsts.c" />
     <ClCompile Include="..\libavformat\microdvddec.c" />
@@ -449,6 +454,7 @@
     <ClCompile Include="..\libavformat\supdec.c" />
     <ClCompile Include="..\libavformat\supenc.c" />
     <ClCompile Include="..\libavformat\svag.c" />
+    <ClCompile Include="..\libavformat\svs.c" />
     <ClCompile Include="..\libavformat\swfdec.c" />
     <ClCompile Include="..\libavformat\takdec.c" />
     <ClCompile Include="..\libavformat\tedcaptionsdec.c" />

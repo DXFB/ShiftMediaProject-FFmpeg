@@ -63,6 +63,7 @@ EXPORTS
     av_buffer_pool_uninit
     av_buffer_realloc
     av_buffer_ref
+    av_buffer_replace
     av_buffer_unref
     av_calloc
     av_camellia_alloc
@@ -488,6 +489,7 @@ EXPORTS
     av_timecode_init_from_string
     av_timecode_make_mpeg_tc_string
     av_timecode_make_smpte_tc_string
+    av_timecode_make_smpte_tc_string2
     av_timecode_make_string
     av_timegm
     av_tree_destroy

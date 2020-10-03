@@ -218,6 +218,9 @@ EXPORTS
     avpriv_mpeg4audio_get_config
     avpriv_mpeg4audio_get_config2
     avpriv_mpegaudio_decode_header
+    avpriv_packet_list_free
+    avpriv_packet_list_get
+    avpriv_packet_list_put
     avpriv_put_string
     avpriv_split_xiph_headers
     avpriv_tak_parse_streaminfo

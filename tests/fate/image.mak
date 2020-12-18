@@ -97,6 +97,10 @@ fate-dpx: CMD = framecrc -i $(TARGET_SAMPLES)/dpx/lighthouse_rgb48.dpx
 FATE_SAMPLES_AVCONV-$(call PARSERDEMDEC, DPX, IMAGE2PIPE, DPX) += fate-dpxparser
 fate-dpxparser: CMD = framecrc -f image2pipe -i $(TARGET_SAMPLES)/dpx/lena_4x_concat.dpx -sws_flags +accurate_rnd+bitexact
 
+FATE_IMAGE-$(call DEMDEC, IMAGE2, DPX) += fate-dpx-probe
+fate-dpx-probe: SRC = $(TARGET_SAMPLES)/dpx/cyan.dpx
+fate-dpx-probe: CMD = run ffprobe$(PROGSSUF)$(EXESUF) -show_frames -show_entries frame=color_transfer,color_range,color_space,color_primaries,sample_aspect_ratio -print_format default -bitexact -v 0 -i "$(SRC)"
+
 FATE_EXR += fate-exr-slice-raw
 fate-exr-slice-raw: CMD = framecrc -i $(TARGET_SAMPLES)/exr/rgba_slice_raw.exr -pix_fmt gbrapf32le
 
@@ -317,6 +321,8 @@ fate-exr-rgb-scanline-half-zip-dw-outside: CMD = framecrc -i $(TARGET_SAMPLES)/e
 FATE_EXR += fate-exr-rgb-tile-half-zip-dw-outside
 fate-exr-rgb-tile-half-zip-dw-outside: CMD = framecrc -i $(TARGET_SAMPLES)/exr/rgb_tile_half_zip_dw_outside.exr -pix_fmt gbrpf32le
 
+FATE_EXR += fate-exr-rgb-scanline-zip-half-0x0-0xFFFF
+fate-exr-rgb-scanline-zip-half-0x0-0xFFFF: CMD = framecrc -i $(TARGET_SAMPLES)/exr/rgb_scanline_zip_half_float_0x0_to_0xFFFF.exr -pix_fmt gbrpf32le
 
 FATE_EXR-$(call DEMDEC, IMAGE2, EXR) += $(FATE_EXR)
 

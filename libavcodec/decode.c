@@ -318,7 +318,7 @@ static int64_t guess_correct_pts(AVCodecContext *ctx,
  * returning any output, so this function needs to be called in a loop until it
  * returns EAGAIN.
  **/
-static inline int decode_simple_internal(AVCodecContext *avctx, AVFrame *frame)
+static inline int decode_simple_internal(AVCodecContext *avctx, AVFrame *frame, int64_t *discarded_samples)
 {
     AVCodecInternal   *avci = avctx->internal;
     DecodeSimpleContext *ds = &avci->ds;
@@ -372,10 +372,6 @@ static inline int decode_simple_internal(AVCodecContext *avctx, AVFrame *frame)
     if (avctx->codec->type == AVMEDIA_TYPE_VIDEO) {
         if (frame->flags & AV_FRAME_FLAG_DISCARD)
             got_frame = 0;
-        if (got_frame)
-            frame->best_effort_timestamp = guess_correct_pts(avctx,
-                                                             frame->pts,
-                                                             frame->pkt_dts);
     } else if (avctx->codec->type == AVMEDIA_TYPE_AUDIO) {
         uint8_t *side;
         int side_size;
@@ -384,9 +380,6 @@ static inline int decode_simple_internal(AVCodecContext *avctx, AVFrame *frame)
         uint8_t discard_reason = 0;
 
         if (ret >= 0 && got_frame) {
-            frame->best_effort_timestamp = guess_correct_pts(avctx,
-                                                             frame->pts,
-                                                             frame->pkt_dts);
             if (frame->format == AV_SAMPLE_FMT_NONE)
                 frame->format = avctx->sample_fmt;
             if (!frame->channel_layout)
@@ -411,12 +404,14 @@ static inline int decode_simple_internal(AVCodecContext *avctx, AVFrame *frame)
             !(avctx->flags2 & AV_CODEC_FLAG2_SKIP_MANUAL)) {
             avci->skip_samples = FFMAX(0, avci->skip_samples - frame->nb_samples);
             got_frame = 0;
+            *discarded_samples += frame->nb_samples;
         }
 
         if (avci->skip_samples > 0 && got_frame &&
             !(avctx->flags2 & AV_CODEC_FLAG2_SKIP_MANUAL)) {
             if(frame->nb_samples <= avci->skip_samples){
                 got_frame = 0;
+                *discarded_samples += frame->nb_samples;
                 avci->skip_samples -= frame->nb_samples;
                 av_log(avctx, AV_LOG_DEBUG, "skip whole frame, skip left: %d\n",
                        avci->skip_samples);
@@ -444,6 +439,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
                 }
                 av_log(avctx, AV_LOG_DEBUG, "skip %d/%d samples\n",
                        avci->skip_samples, frame->nb_samples);
+                *discarded_samples += avci->skip_samples;
                 frame->nb_samples -= avci->skip_samples;
                 avci->skip_samples = 0;
             }
@@ -452,6 +448,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
         if (discard_padding > 0 && discard_padding <= frame->nb_samples && got_frame &&
             !(avctx->flags2 & AV_CODEC_FLAG2_SKIP_MANUAL)) {
             if (discard_padding == frame->nb_samples) {
+                *discarded_samples += frame->nb_samples;
                 got_frame = 0;
             } else {
                 if(avctx->pkt_timebase.num && avctx->sample_rate) {
@@ -544,9 +541,12 @@ FF_ENABLE_DEPRECATION_WARNINGS
 static int decode_simple_receive_frame(AVCodecContext *avctx, AVFrame *frame)
 {
     int ret;
+    int64_t discarded_samples = 0;
 
     while (!frame->buf[0]) {
-        ret = decode_simple_internal(avctx, frame);
+        if (discarded_samples > avctx->max_samples)
+            return AVERROR(EAGAIN);
+        ret = decode_simple_internal(avctx, frame, &discarded_samples);
         if (ret < 0)
             return ret;
     }
@@ -572,6 +572,10 @@ static int decode_receive_frame_internal(AVCodecContext *avctx, AVFrame *frame)
         avci->draining_done = 1;
 
     if (!ret) {
+        frame->best_effort_timestamp = guess_correct_pts(avctx,
+                                                         frame->pts,
+                                                         frame->pkt_dts);
+
         /* the only case where decode data is not set should be decoders
          * that do not call ff_get_buffer() */
         av_assert0((frame->private_ref && frame->private_ref->size == sizeof(FrameDecodeData)) ||
@@ -1876,7 +1880,8 @@ int ff_get_buffer(AVCodecContext *avctx, AVFrame *frame, int flags)
     int ret;
 
     if (avctx->codec_type == AVMEDIA_TYPE_VIDEO) {
-        if ((ret = av_image_check_size2(FFALIGN(avctx->width, STRIDE_ALIGN), avctx->height, avctx->max_pixels, AV_PIX_FMT_NONE, 0, avctx)) < 0 || avctx->pix_fmt<0) {
+        if ((unsigned)avctx->width > INT_MAX - STRIDE_ALIGN ||
+            (ret = av_image_check_size2(FFALIGN(avctx->width, STRIDE_ALIGN), avctx->height, avctx->max_pixels, AV_PIX_FMT_NONE, 0, avctx)) < 0 || avctx->pix_fmt<0) {
             av_log(avctx, AV_LOG_ERROR, "video_get_buffer: image parameters invalid\n");
             ret = AVERROR(EINVAL);
             goto fail;

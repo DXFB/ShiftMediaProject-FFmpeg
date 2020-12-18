@@ -231,6 +231,7 @@
     <ClCompile Include="..\libavcodec\hevc_ps.c" />
     <ClCompile Include="..\libavcodec\hevc_sei.c" />
     <ClCompile Include="..\libavcodec\hevc_data.c" />
+    <ClCompile Include="..\libavcodec\dynamic_hdr10_plus.c" />
     <ClCompile Include="..\libavcodec\huffman.c" />
     <ClCompile Include="..\libavcodec\jrevdct.c" />
     <ClCompile Include="..\libavcodec\iirfilter.c" />
@@ -247,6 +248,7 @@
     <ClCompile Include="..\libavcodec\mdct_fixed_32.c" />
     <ClCompile Include="..\libavcodec\mpeg_er.c" />
     <ClCompile Include="..\libavcodec\mpegaudio.c" />
+    <ClCompile Include="..\libavcodec\mpegaudiodec_common.c" />
     <ClCompile Include="..\libavcodec\mpegaudiodsp.c" />
     <ClCompile Include="..\libavcodec\mpegaudiodsp_data.c" />
     <ClCompile Include="..\libavcodec\mpegaudiodsp_fixed.c" />
@@ -366,6 +368,7 @@
     <ClCompile Include="..\libavcodec\cyuv.c" />
     <ClCompile Include="..\libavcodec\aura.c" />
     <ClCompile Include="..\libavcodec\av1dec.c" />
+    <ClCompile Include="..\libavcodec\cuviddec.c" />
     <ClCompile Include="..\libavcodec\avrndec.c" />
     <ClCompile Include="..\libavcodec\mjpegdec.c" />
     <ClCompile Include="..\libavcodec\r210dec.c" />
@@ -410,6 +413,7 @@
     <ClCompile Include="..\libavcodec\cngenc.c" />
     <ClCompile Include="..\libavcodec\cook.c" />
     <ClCompile Include="..\libavcodec\cpia.c" />
+    <ClCompile Include="..\libavcodec\cri.c" />
     <ClCompile Include="..\libavcodec\cscd.c" />
     <ClCompile Include="..\libavcodec\dcadec.c" />
     <ClCompile Include="..\libavcodec\dca.c" />
@@ -530,7 +534,6 @@
     <ClCompile Include="..\libavcodec\h264_slice.c" />
     <ClCompile Include="..\libavcodec\h264data.c" />
     <ClCompile Include="..\libavcodec\amfenc_h264.c" />
-    <ClCompile Include="..\libavcodec\cuviddec.c" />
     <ClCompile Include="..\libavcodec\nvenc_h264.c" />
     <ClCompile Include="..\libavcodec\qsvdec_h2645.c" />
     <ClCompile Include="..\libavcodec\qsvenc_h264.c" />
@@ -628,6 +631,7 @@
     <ClCompile Include="..\libavcodec\msmpeg4dec.c" />
     <ClCompile Include="..\libavcodec\msmpeg4.c" />
     <ClCompile Include="..\libavcodec\msmpeg4enc.c" />
+    <ClCompile Include="..\libavcodec\msp2dec.c" />
     <ClCompile Include="..\libavcodec\msrle.c" />
     <ClCompile Include="..\libavcodec\mss1.c" />
     <ClCompile Include="..\libavcodec\mss12.c" />
@@ -731,13 +735,13 @@
     <ClCompile Include="..\libavcodec\siren.c" />
     <ClCompile Include="..\libavcodec\smacker.c" />
     <ClCompile Include="..\libavcodec\smc.c" />
-    <ClCompile Include="..\libavcodec\smvjpegdec.c" />
     <ClCompile Include="..\libavcodec\snowdec.c" />
     <ClCompile Include="..\libavcodec\snow.c" />
     <ClCompile Include="..\libavcodec\snow_dwt.c" />
     <ClCompile Include="..\libavcodec\snowenc.c" />
     <ClCompile Include="..\libavcodec\sonic.c" />
     <ClCompile Include="..\libavcodec\speedhq.c" />
+    <ClCompile Include="..\libavcodec\speedhqenc.c" />
     <ClCompile Include="..\libavcodec\sp5xdec.c" />
     <ClCompile Include="..\libavcodec\srtdec.c" />
     <ClCompile Include="..\libavcodec\srtenc.c" />
@@ -880,6 +884,7 @@
     <ClCompile Include="..\libavcodec\vima.c" />
     <ClCompile Include="..\libavcodec\dxva2.c" />
     <ClCompile Include="..\libavcodec\nvdec.c" />
+    <ClCompile Include="..\libavcodec\nvdec_av1.c" />
     <ClCompile Include="..\libavcodec\dxva2_h264.c" />
     <ClCompile Include="..\libavcodec\nvdec_h264.c" />
     <ClCompile Include="..\libavcodec\dxva2_hevc.c" />
@@ -916,6 +921,7 @@
     <ClCompile Include="..\libavcodec\av1_parser.c" />
     <ClCompile Include="..\libavcodec\av1_parse.c" />
     <ClCompile Include="..\libavcodec\avs2_parser.c" />
+    <ClCompile Include="..\libavcodec\avs3_parser.c" />
     <ClCompile Include="..\libavcodec\bmp_parser.c" />
     <ClCompile Include="..\libavcodec\cavs_parser.c" />
     <ClCompile Include="..\libavcodec\cook_parser.c" />
@@ -1461,7 +1467,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;_LIB;_DEBUG;DEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;_LIB;_DEBUG;DEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(OutDir)\include\opus;$(ProjectDir)\..\..\prebuilt\include\opus;.\;..\;$(OutDir)\include;$(ProjectDir)\..\..\prebuilt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <C99Support>true</C99Support>
@@ -1545,13 +1551,13 @@ cd $(ProjectDir)
     </NASM>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(OutDir)\include\opus;$(ProjectDir)\..\..\prebuilt\include\opus;.\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;_LIB;_DEBUG;DEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;_LIB;_DEBUG;DEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(OutDir)\include\opus;$(ProjectDir)\..\..\prebuilt\include\opus;.\;..\;$(OutDir)\include;$(ProjectDir)\..\..\prebuilt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <C99Support>true</C99Support>
@@ -1634,13 +1640,13 @@ cd $(ProjectDir)
     </NASM>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(OutDir)\include\opus;$(ProjectDir)\..\..\prebuilt\include\opus;.\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;_DEBUG;DEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;_DEBUG;DEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(OutDir)\include\opus;$(ProjectDir)\..\..\prebuilt\include\opus;.\;..\;$(OutDir)\include;$(ProjectDir)\..\..\prebuilt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <C99Support>true</C99Support>
@@ -1730,13 +1736,13 @@ cd $(ProjectDir)
     </NASM>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(OutDir)\include\opus;$(ProjectDir)\..\..\prebuilt\include\opus;.\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;_DEBUG;DEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;_DEBUG;DEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(OutDir)\include\opus;$(ProjectDir)\..\..\prebuilt\include\opus;.\;..\;$(OutDir)\include;$(ProjectDir)\..\..\prebuilt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <C99Support>true</C99Support>
@@ -1824,7 +1830,7 @@ cd $(ProjectDir)
     </NASM>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(OutDir)\include\opus;$(ProjectDir)\..\..\prebuilt\include\opus;.\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -1832,7 +1838,7 @@ cd $(ProjectDir)
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;_LIB;NDEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;_LIB;NDEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FloatingPointExceptions>false</FloatingPointExceptions>
@@ -1919,7 +1925,7 @@ cd $(ProjectDir)
     </NASM>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(OutDir)\include\opus;$(ProjectDir)\..\..\prebuilt\include\opus;.\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -1927,7 +1933,7 @@ cd $(ProjectDir)
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;_LIB;NDEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;_LIB;NDEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -2012,7 +2018,7 @@ cd $(ProjectDir)
     </NASM>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(OutDir)\include\opus;$(ProjectDir)\..\..\prebuilt\include\opus;.\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">
@@ -2020,7 +2026,7 @@ cd $(ProjectDir)
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;NDEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;NDEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -2113,7 +2119,7 @@ cd $(ProjectDir)
     </NASM>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(OutDir)\include\opus;$(ProjectDir)\..\..\prebuilt\include\opus;.\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|x64'">
@@ -2121,7 +2127,7 @@ cd $(ProjectDir)
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;NDEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;NDEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -2213,7 +2219,7 @@ cd $(ProjectDir)
     </NASM>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(OutDir)\include\opus;$(ProjectDir)\..\..\prebuilt\include\opus;.\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLLStaticDeps|Win32'">
@@ -2221,7 +2227,7 @@ cd $(ProjectDir)
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;NDEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;NDEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -2314,7 +2320,7 @@ cd $(ProjectDir)
     </NASM>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(OutDir)\include\opus;$(ProjectDir)\..\..\prebuilt\include\opus;.\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLLStaticDeps|x64'">
@@ -2322,7 +2328,7 @@ cd $(ProjectDir)
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;NDEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;WIN32;_WINDOWS;HAVE_AV_CONFIG_H;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;NDEBUG;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -2414,7 +2420,7 @@ cd $(ProjectDir)
     </NASM>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(OutDir)\include\opus;$(ProjectDir)\..\..\prebuilt\include\opus;.\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ILBC_STATIC_DEFINE;_MSC_VER;BUILDING_avcodec;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

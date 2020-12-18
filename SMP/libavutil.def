@@ -158,6 +158,8 @@ EXPORTS
     av_fifo_space
     av_file_map
     av_file_unmap
+    av_film_grain_params_alloc
+    av_film_grain_params_create_side_data
     av_find_best_pix_fmt_of_2
     av_find_info_tag
     av_find_nearest_q_idx
@@ -486,6 +488,7 @@ EXPORTS
     av_timecode_get_smpte
     av_timecode_get_smpte_from_framenum
     av_timecode_init
+    av_timecode_init_from_components
     av_timecode_init_from_string
     av_timecode_make_mpeg_tc_string
     av_timecode_make_smpte_tc_string

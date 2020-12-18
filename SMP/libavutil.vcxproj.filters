@@ -273,6 +273,9 @@
     <ClCompile Include="..\libavutil\video_enc_params.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavutil\film_grain_params.c">
+      <Filter>Source Files\libavutil</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavutil\hwcontext_cuda.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
@@ -582,6 +585,9 @@
       <Filter>Header Files\libavutil</Filter>
     </ClInclude>
     <ClInclude Include="..\libavutil\tx.h">
+      <Filter>Header Files\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libavutil\film_grain_params.h">
       <Filter>Header Files\libavutil</Filter>
     </ClInclude>
     <ClInclude Include="..\libavutil\lzo.h">

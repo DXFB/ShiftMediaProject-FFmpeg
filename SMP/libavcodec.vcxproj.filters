@@ -543,6 +543,9 @@
     <ClCompile Include="..\libavcodec\hevc_data.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\dynamic_hdr10_plus.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\huffman.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -589,6 +592,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\mpegaudio.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\mpegaudiodec_common.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\mpegaudiodsp.c">
@@ -948,6 +954,9 @@
     <ClCompile Include="..\libavcodec\av1dec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\cuviddec.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\avrndec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -1078,6 +1087,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\cpia.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\cri.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\cscd.c">
@@ -1440,9 +1452,6 @@
     <ClCompile Include="..\libavcodec\amfenc_h264.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
-    <ClCompile Include="..\libavcodec\cuviddec.c">
-      <Filter>Source Files\libavcodec</Filter>
-    </ClCompile>
     <ClCompile Include="..\libavcodec\nvenc_h264.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -1732,6 +1741,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\msmpeg4enc.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\msp2dec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\msrle.c">
@@ -2043,9 +2055,6 @@
     <ClCompile Include="..\libavcodec\smc.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
-    <ClCompile Include="..\libavcodec\smvjpegdec.c">
-      <Filter>Source Files\libavcodec</Filter>
-    </ClCompile>
     <ClCompile Include="..\libavcodec\snowdec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -2062,6 +2071,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\speedhq.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\speedhqenc.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\sp5xdec.c">
@@ -2490,6 +2502,9 @@
     <ClCompile Include="..\libavcodec\nvdec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\nvdec_av1.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\dxva2_h264.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -2596,6 +2611,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\avs2_parser.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\avs3_parser.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\bmp_parser.c">

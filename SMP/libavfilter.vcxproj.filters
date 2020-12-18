@@ -228,6 +228,9 @@
     <ClCompile Include="..\libavfilter\af_adelay.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\af_adenorm.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\af_aderivative.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -247,6 +250,9 @@
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\af_aformat.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\af_afreqshift.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\af_agate.c">
@@ -357,6 +363,9 @@
     <ClCompile Include="..\libavfilter\af_asubboost.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\af_asupercut.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\af_atempo.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -445,6 +454,9 @@
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\af_silenceremove.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\af_speechnorm.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\af_stereotools.c">

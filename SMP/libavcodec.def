@@ -195,7 +195,6 @@ EXPORTS
     avpicture_layout
     avpriv_ac3_parse_header
     avpriv_align_put_bits
-    avpriv_bprint_to_extradata
     avpriv_codec2_mode_bit_rate
     avpriv_codec2_mode_block_align
     avpriv_codec2_mode_frame_size
@@ -221,7 +220,6 @@ EXPORTS
     avpriv_packet_list_free
     avpriv_packet_list_get
     avpriv_packet_list_put
-    avpriv_put_string
     avpriv_split_xiph_headers
     avpriv_tak_parse_streaminfo
     avpriv_toupper4

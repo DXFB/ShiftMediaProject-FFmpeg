@@ -220,6 +220,9 @@
     <ClCompile Include="..\libavformat\ac3dec.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\acedec.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\acm.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
@@ -275,6 +278,9 @@
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\amr.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\amvenc.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\anm.c">
@@ -379,7 +385,10 @@
     <ClCompile Include="..\libavformat\voc.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
-    <ClCompile Include="..\libavformat\davs2.c">
+    <ClCompile Include="..\libavformat\avs2dec.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\avs3dec.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\bethsoftvid.c">
@@ -872,6 +881,9 @@
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\msnwc_tcp.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\mspdec.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\mtaf.c">

@@ -27,7 +27,7 @@
 #endif
 #define FFMPEG_CONFIGURATION "--enable-gpl --enable-version3 --enable-bzlib --enable-iconv --enable-lzma --enable-sdl2 --enable-zlib --enable-libmp3lame --enable-libvorbis --enable-libspeex --enable-libopus --enable-libilbc --enable-libtheora --enable-libx264 --enable-libx265 --enable-libxvid --enable-libvpx --enable-libgme --enable-libmodplug --enable-libsoxr --enable-libfreetype --enable-fontconfig --enable-libfribidi --enable-libass --enable-libxml2 --enable-gnutls --disable-schannel --enable-gcrypt --enable-libssh --enable-libcdio --enable-libbluray --enable-opengl --enable-libmfx --enable-ffnvcodec --enable-cuda --enable-amf --toolchain=msvc"
 #define FFMPEG_LICENSE "GPL version 3 or later"
-#define CONFIG_THIS_YEAR 2020
+#define CONFIG_THIS_YEAR 2021
 #define FFMPEG_DATADIR "."
 #define AVCONV_DATADIR "."
 #if defined(__INTEL_COMPILER)
@@ -280,6 +280,7 @@
 #define HAVE_ES2_GL_H 0
 #define HAVE_GSM_H 0
 #define HAVE_IO_H 1
+#define HAVE_LINUX_DMA_BUF_H 0
 #define HAVE_LINUX_PERF_EVENT_H 0
 #define HAVE_MACHINE_IOCTL_BT848_H 0
 #define HAVE_MACHINE_IOCTL_METEOR_H 0
@@ -2157,6 +2158,7 @@
 #define CONFIG_SHOWINFO_FILTER 1
 #define CONFIG_SHOWPALETTE_FILTER 1
 #define CONFIG_SHUFFLEFRAMES_FILTER 1
+#define CONFIG_SHUFFLEPIXELS_FILTER 1
 #define CONFIG_SHUFFLEPLANES_FILTER 1
 #define CONFIG_SIDEDATA_FILTER 1
 #define CONFIG_SIGNALSTATS_FILTER 1
@@ -2184,6 +2186,7 @@
 #define CONFIG_TINTERLACE_FILTER 1
 #define CONFIG_TLUT2_FILTER 1
 #define CONFIG_TMEDIAN_FILTER 1
+#define CONFIG_TMIDEQUALIZER_FILTER 1
 #define CONFIG_TMIX_FILTER 1
 #define CONFIG_TONEMAP_FILTER 1
 #define CONFIG_TONEMAP_OPENCL_FILTER 0

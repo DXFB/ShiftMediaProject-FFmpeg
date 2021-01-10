@@ -238,6 +238,7 @@
     <ClCompile Include="..\libavfilter\vf_chromashift.c" />
     <ClCompile Include="..\libavfilter\vf_ciescope.c" />
     <ClCompile Include="..\libavfilter\vf_codecview.c" />
+    <ClCompile Include="..\libavfilter\qp_table.c" />
     <ClCompile Include="..\libavfilter\vf_colorbalance.c" />
     <ClCompile Include="..\libavfilter\vf_colorchannelmixer.c" />
     <ClCompile Include="..\libavfilter\vf_colorkey.c" />
@@ -366,6 +367,7 @@
     <ClCompile Include="..\libavfilter\vf_showinfo.c" />
     <ClCompile Include="..\libavfilter\vf_showpalette.c" />
     <ClCompile Include="..\libavfilter\vf_shuffleframes.c" />
+    <ClCompile Include="..\libavfilter\vf_shufflepixels.c" />
     <ClCompile Include="..\libavfilter\vf_shuffleplanes.c" />
     <ClCompile Include="..\libavfilter\vf_signalstats.c" />
     <ClCompile Include="..\libavfilter\vf_signature.c" />
@@ -379,6 +381,7 @@
     <ClCompile Include="..\libavfilter\vf_thumbnail.c" />
     <ClCompile Include="..\libavfilter\vf_tile.c" />
     <ClCompile Include="..\libavfilter\vf_xmedian.c" />
+    <ClCompile Include="..\libavfilter\vf_tmidequalizer.c" />
     <ClCompile Include="..\libavfilter\vf_tonemap.c" />
     <ClCompile Include="..\libavfilter\vf_tpad.c" />
     <ClCompile Include="..\libavfilter\vf_unsharp.c" />
@@ -419,6 +422,8 @@
     <ClCompile Include="..\libavfilter\src_movie.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_interface.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_io_proc.c" />
+    <ClCompile Include="..\libavfilter\dnn\queue.c" />
+    <ClCompile Include="..\libavfilter\dnn\safe_queue.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layers.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_avgpool.c" />

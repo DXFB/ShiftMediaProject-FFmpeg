@@ -290,6 +290,7 @@
     <ClCompile Include="..\libavcodec\aacdec.c" />
     <ClCompile Include="..\libavcodec\aactab.c" />
     <ClCompile Include="..\libavcodec\aacsbr.c" />
+    <ClCompile Include="..\libavcodec\aacps_common.c" />
     <ClCompile Include="..\libavcodec\aacps_float.c" />
     <ClCompile Include="..\libavcodec\kbdwin.c" />
     <ClCompile Include="..\libavcodec\aacpsdsp_float.c" />
@@ -826,6 +827,7 @@
     <ClCompile Include="..\libavcodec\qsvenc_vp9.c" />
     <ClCompile Include="..\libavcodec\vqavideo.c" />
     <ClCompile Include="..\libavcodec\wavpack.c" />
+    <ClCompile Include="..\libavcodec\wavpackdata.c" />
     <ClCompile Include="..\libavcodec\wavpackenc.c" />
     <ClCompile Include="..\libavcodec\wcmv.c" />
     <ClCompile Include="..\libavcodec\webp.c" />

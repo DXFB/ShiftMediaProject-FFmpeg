@@ -25,6 +25,7 @@
  */
 
 #include "libavutil/imgutils.h"
+#include "libavutil/mem_internal.h"
 
 #include "avcodec.h"
 #include "hwconfig.h"
@@ -2965,7 +2966,7 @@ AVCodec ff_vp8_decoder = {
                              AV_CODEC_CAP_SLICE_THREADS,
     .flush                 = vp8_decode_flush,
     .update_thread_context = ONLY_IF_THREADS_ENABLED(vp8_decode_update_thread_context),
-    .hw_configs            = (const AVCodecHWConfigInternal*[]) {
+    .hw_configs            = (const AVCodecHWConfigInternal *const []) {
 #if CONFIG_VP8_VAAPI_HWACCEL
                                HWACCEL_VAAPI(vp8),
 #endif

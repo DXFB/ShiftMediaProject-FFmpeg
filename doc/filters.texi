@@ -3682,14 +3682,17 @@ Set output gain. Default is 1.
 This filter supports the all above options as @ref{commands}.
 
 @section crystalizer
-Simple algorithm to expand audio dynamic range.
+Simple algorithm for audio noise sharpening.
+
+This filter linearly increases differences betweeen each audio sample.
 
 The filter accepts the following options:
 
 @table @option
 @item i
-Sets the intensity of effect (default: 2.0). Must be in range between 0.0
+Sets the intensity of effect (default: 2.0). Must be in range between -10.0 to 0
 (unchanged sound) to 10.0 (maximum effect).
+To inverse filtering use negative value.
 
 @item c
 Enable clipping. By default is enabled.
@@ -7158,6 +7161,10 @@ Allowed range is 0 to 1. Default is 0.1.
 Set planes to filter. Default is first only.
 @end table
 
+@subsection Commands
+
+This filter supports the all above options as @ref{commands}.
+
 @section bitplanenoise
 
 Show and measure bit plane noise.
@@ -7665,6 +7672,9 @@ Set the sharpening strength. Default value is 0.
 Set planes to filter. Default value is to filter all
 planes except alpha plane.
 @end table
+
+@subsection Commands
+This filter supports same @ref{commands} as options.
 
 @section chromahold
 Remove all color information for all colors except for certain one.
@@ -9949,6 +9959,10 @@ Set the input name of the dnn network.
 @item output
 Set the output name of the dnn network.
 
+@item async
+use DNN async execution if set (default: set),
+roll back to sync execution if the backend does not support async.
+
 @end table
 
 @subsection Examples
@@ -11756,16 +11770,25 @@ It accepts the following values:
 fill pixels using outermost pixels
 
 @item mirror
-fill pixels using mirroring
+fill pixels using mirroring (half sample symmetric)
 
 @item fixed
 fill pixels with constant value
+
+@item reflect
+fill pixels using reflecting (whole sample symmetric)
+
+@item wrap
+fill pixels using wrapping
+
+@item fade
+fade pixels to constant value
 @end table
 
 Default is @var{smear}.
 
 @item color
-Set color for pixels in fixed mode. Default is @var{black}.
+Set color for pixels in fixed or fade mode. Default is @var{black}.
 @end table
 
 @subsection Commands
@@ -13955,6 +13978,10 @@ copied from first stream.
 By default value 0xf, all planes will be processed.
 @end table
 
+@subsection Commands
+
+This filter supports the all above options as @ref{commands}.
+
 @section maskedmax
 
 Merge the second and third input stream into output stream using absolute differences
@@ -13970,6 +13997,10 @@ Set which planes will be processed as bitmap, unprocessed planes will be
 copied from first stream.
 By default value 0xf, all planes will be processed.
 @end table
+
+@subsection Commands
+
+This filter supports the all above options as @ref{commands}.
 
 @section maskedmerge
 
@@ -14006,6 +14037,10 @@ copied from first stream.
 By default value 0xf, all planes will be processed.
 @end table
 
+@subsection Commands
+
+This filter supports the all above options as @ref{commands}.
+
 @section maskedthreshold
 Pick pixels comparing absolute difference of two video streams with fixed
 threshold.
@@ -14026,6 +14061,10 @@ Set which planes will be processed as bitmap, unprocessed planes will be
 copied from second stream.
 By default value 0xf, all planes will be processed.
 @end table
+
+@subsection Commands
+
+This filter supports the all above options as @ref{commands}.
 
 @section maskfun
 Create mask from input video.
@@ -17774,6 +17813,33 @@ ffmpeg -i INPUT -vf "shuffleframes=9 1 2 3 4 5 6 7 8 0" OUTPUT
 @end example
 @end itemize
 
+@section shufflepixels
+
+Reorder pixels in video frames.
+
+This filter accepts the following options:
+
+@table @option
+@item direction, d
+Set shuffle direction. Can be forward or inverse direction.
+Default direction is forward.
+
+@item mode, m
+Set shuffle mode. Can be horizontal, vertical or block mode.
+
+@item width, w
+@item height, h
+Set shuffle block_size. In case of horizontal shuffle mode only width
+part of size is used, and in case of vertical shuffle mode only height
+part of size is used.
+
+@item seed, s
+Set random seed used with shuffling pixels. Mainly useful to set to be able
+to reverse filtering process to get original input.
+For example, to reverse forward shuffle you need to use same parameters
+and exact same seed and to set direction to inverse.
+@end table
+
 @section shuffleplanes
 
 Reorder and/or duplicate video planes.
@@ -19251,6 +19317,32 @@ Set which planes to filter. Default value is @code{15}, by which all planes are 
 Set median percentile. Default value is @code{0.5}.
 Default value of @code{0.5} will pick always median values, while @code{0} will pick
 minimum values, and @code{1} maximum values.
+@end table
+
+@subsection Commands
+
+This filter supports all above options as @ref{commands}, excluding option @code{radius}.
+
+@section tmidequalizer
+
+Apply Temporal Midway Video Equalization effect.
+
+Midway Video Equalization adjusts a sequence of video frames to have the same
+histograms, while maintaining their dynamics as much as possible. It's
+useful for e.g. matching exposures from a video frames sequence.
+
+This filter accepts the following option:
+
+@table @option
+@item radius
+Set filtering radius. Default is @code{5}. Allowed range is from 1 to 127.
+
+@item sigma
+Set filtering sigma. Default is @code{0.5}. This controls strength of filtering.
+Setting this option to 0 effectively does nothing.
+
+@item planes
+Set which planes to process. Default is @code{15}, which is all available planes.
 @end table
 
 @section tmix
@@ -20839,6 +20931,35 @@ More-complex filter coefficient set.
 @end table
 Default value is @samp{complex}.
 
+@item mode
+The interlacing mode to adopt. It accepts one of the following values:
+
+@table @option
+@item frame
+Output one frame for each frame.
+@item field
+Output one frame for each field.
+@end table
+
+The default value is @code{field}.
+
+@item parity
+The picture field parity assumed for the input interlaced video. It accepts one
+of the following values:
+
+@table @option
+@item tff
+Assume the top field is first.
+@item bff
+Assume the bottom field is first.
+@item auto
+Enable automatic detection of field parity.
+@end table
+
+The default value is @code{auto}.
+If the interlacing is unknown or the decoder does not export this information,
+top field first will be assumed.
+
 @item deint
 Specify which frames to deinterlace. Accepts one of the following values:
 
@@ -20851,6 +20972,9 @@ Only deinterlace frames marked as interlaced.
 
 Default value is @samp{all}.
 @end table
+
+@subsection Commands
+This filter supports same @ref{commands} as options.
 
 @section waveform
 Video waveform monitor.
@@ -21196,6 +21320,10 @@ Set median percentile. Default value is @code{0.5}.
 Default value of @code{0.5} will pick always median values, while @code{0} will pick
 minimum values, and @code{1} maximum values.
 @end table
+
+@subsection Commands
+
+This filter supports all above options as @ref{commands}, excluding option @code{inputs}.
 
 @section xstack
 Stack video inputs into custom layout.

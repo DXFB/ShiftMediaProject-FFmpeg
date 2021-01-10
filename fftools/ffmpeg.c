@@ -136,6 +136,7 @@ static int nb_frames_dup = 0;
 static unsigned dup_warning = 1000;
 static int nb_frames_drop = 0;
 static int64_t decode_error_stat[2];
+static unsigned nb_output_dumped = 0;
 
 static int want_sdp = 1;
 
@@ -1685,6 +1686,7 @@ static void print_report(int is_last_report, int64_t timer_start, int64_t cur_ti
     double speed;
     int64_t pts = INT64_MIN + 1;
     static int64_t last_time = -1;
+    static int first_report = 1;
     static int qp_histogram[52];
     int hours, mins, secs, us;
     const char *hours_sign;
@@ -1697,9 +1699,9 @@ static void print_report(int is_last_report, int64_t timer_start, int64_t cur_ti
     if (!is_last_report) {
         if (last_time == -1) {
             last_time = cur_time;
-            return;
         }
-        if ((cur_time - last_time) < 500000)
+        if (((cur_time - last_time) < stats_period && !first_report) ||
+            (first_report && nb_output_dumped < nb_output_files))
             return;
         last_time = cur_time;
     }
@@ -1875,6 +1877,8 @@ static void print_report(int is_last_report, int64_t timer_start, int64_t cur_ti
                        "Error closing progress log, loss of information possible: %s\n", av_err2str(ret));
         }
     }
+
+    first_report = 0;
 
     if (is_last_report)
         print_final_stats(total_size);
@@ -3015,6 +3019,7 @@ static int check_init_output_file(OutputFile *of, int file_index)
     of->header_written = 1;
 
     av_dump_format(of->ctx, file_index, of->ctx->url, 1);
+    nb_output_dumped++;
 
     if (sdp_filename || want_sdp)
         print_sdp();

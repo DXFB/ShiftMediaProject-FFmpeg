@@ -32,6 +32,7 @@ static const AVCodecParser *parser_list[] = {
     &ff_dca_parser,
     &ff_dirac_parser,
     &ff_dnxhd_parser,
+    &ff_dolby_e_parser,
     &ff_dpx_parser,
     &ff_dvaudio_parser,
     &ff_dvbsub_parser,

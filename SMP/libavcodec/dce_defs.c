@@ -140,7 +140,6 @@ void ff_fdctdsp_init_ppc(FDCTDSPContext *c, AVCodecContext *avctx,
 #if !(ARCH_X86_64)
 void ff_fft15_avx(FFTComplex *out, FFTComplex *in, FFTComplex *exptab, ptrdiff_t stride) {return;}
 #endif
-void ff_fft_fixed_init_arm(FFTContext *s) {return;}
 void ff_fft_init_aarch64(FFTContext *s) {return;}
 void ff_fft_init_arm(FFTContext *s) {return;}
 void ff_fft_init_mips(FFTContext *s) {return;}

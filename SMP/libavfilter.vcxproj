@@ -246,6 +246,7 @@
     <ClCompile Include="..\libavfilter\vf_colormatrix.c" />
     <ClCompile Include="..\libavfilter\vf_colorspace.c" />
     <ClCompile Include="..\libavfilter\colorspace.c" />
+    <ClCompile Include="..\libavfilter\vf_colortemperature.c" />
     <ClCompile Include="..\libavfilter\vf_convolve.c" />
     <ClCompile Include="..\libavfilter\vf_copy.c" />
     <ClCompile Include="..\libavfilter\vf_cover_rect.c" />
@@ -278,6 +279,8 @@
     <ClCompile Include="..\libavfilter\vf_edgedetect.c" />
     <ClCompile Include="..\libavfilter\vf_elbg.c" />
     <ClCompile Include="..\libavfilter\vf_entropy.c" />
+    <ClCompile Include="..\libavfilter\vf_epx.c" />
+    <ClCompile Include="..\libavfilter\vf_estdif.c" />
     <ClCompile Include="..\libavfilter\vf_fade.c" />
     <ClCompile Include="..\libavfilter\vf_fftdnoiz.c" />
     <ClCompile Include="..\libavfilter\vf_fftfilt.c" />
@@ -364,6 +367,7 @@
     <ClCompile Include="..\libavfilter\vf_separatefields.c" />
     <ClCompile Include="..\libavfilter\vf_aspect.c" />
     <ClCompile Include="..\libavfilter\vf_setparams.c" />
+    <ClCompile Include="..\libavfilter\vf_shear.c" />
     <ClCompile Include="..\libavfilter\vf_showinfo.c" />
     <ClCompile Include="..\libavfilter\vf_showpalette.c" />
     <ClCompile Include="..\libavfilter\vf_shuffleframes.c" />

@@ -867,15 +867,6 @@ static void add_input_streams(OptionsContext *o, AVFormatContext *ic)
         case AVMEDIA_TYPE_VIDEO:
             if(!ist->dec)
                 ist->dec = avcodec_find_decoder(par->codec_id);
-#if FF_API_LOWRES
-            if (st->codec->lowres) {
-                ist->dec_ctx->lowres = st->codec->lowres;
-                ist->dec_ctx->width  = st->codec->width;
-                ist->dec_ctx->height = st->codec->height;
-                ist->dec_ctx->coded_width  = st->codec->coded_width;
-                ist->dec_ctx->coded_height = st->codec->coded_height;
-            }
-#endif
 
             // avformat_find_stream_info() doesn't set this for us anymore.
             ist->dec_ctx->framerate = st->avg_frame_rate;
@@ -3586,7 +3577,7 @@ const OptionDef options[] = {
     { "debug_ts",       OPT_BOOL | OPT_EXPERT,                       { &debug_ts },
         "print timestamp debugging info" },
     { "max_error_rate",  HAS_ARG | OPT_FLOAT,                        { &max_error_rate },
-        "ratio of errors (0.0: no errors, 1.0: 100% errors) above which ffmpeg returns an error instead of success.", "maximum error rate" },
+        "ratio of decoding errors (0.0: no errors, 1.0: 100% errors) above which ffmpeg returns an error instead of success.", "maximum error rate" },
     { "discard",        OPT_STRING | HAS_ARG | OPT_SPEC |
                         OPT_INPUT,                                   { .off = OFFSET(discard) },
         "discard", "" },

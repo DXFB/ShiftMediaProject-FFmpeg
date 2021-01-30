@@ -1446,6 +1446,7 @@ resync:
     if (avi->stream_index >= 0) {
         AVStream *st   = s->streams[avi->stream_index];
         AVIStream *ast = st->priv_data;
+        int dv_demux = CONFIG_DV_DEMUXER && avi->dv_demux;
         int size, err;
 
         if (get_subtitle_pkt(s, st, pkt))
@@ -1468,7 +1469,7 @@ resync:
             return err;
         size = err;
 
-        if (ast->has_pal && pkt->size < (unsigned)INT_MAX / 2) {
+        if (ast->has_pal && pkt->size < (unsigned)INT_MAX / 2 && !dv_demux) {
             uint8_t *pal;
             pal = av_packet_new_side_data(pkt,
                                           AV_PKT_DATA_PALETTE,
@@ -1482,7 +1483,7 @@ resync:
             }
         }
 
-        if (CONFIG_DV_DEMUXER && avi->dv_demux) {
+        if (CONFIG_DV_DEMUXER && dv_demux) {
             AVBufferRef *avbuf = pkt->buf;
             size = avpriv_dv_produce_packet(avi->dv_demux, pkt,
                                             pkt->data, pkt->size, pkt->pos);
@@ -1691,18 +1692,19 @@ static int check_stream_max_drift(AVFormatContext *s)
             AVIStream *ast = st->priv_data;
 
             if (idx[i] && min_dts != INT64_MAX / 2) {
-                int64_t dts;
+                int64_t dts, delta_dts;
                 dts = av_rescale_q(st->internal->index_entries[idx[i] - 1].timestamp /
                                    FFMAX(ast->sample_size, 1),
                                    st->time_base, AV_TIME_BASE_Q);
+                delta_dts = av_sat_sub64(dts, min_dts);
                 max_dts = FFMAX(max_dts, dts);
                 max_buffer = FFMAX(max_buffer,
-                                   av_rescale(dts - min_dts,
+                                   av_rescale(delta_dts,
                                               st->codecpar->bit_rate,
                                               AV_TIME_BASE));
             }
         }
-        if (max_dts - min_dts > 2 * AV_TIME_BASE ||
+        if (av_sat_sub64(max_dts, min_dts) > 2 * AV_TIME_BASE ||
             max_buffer > 1024 * 1024 * 8 * 8) {
             av_free(idx);
             return 1;

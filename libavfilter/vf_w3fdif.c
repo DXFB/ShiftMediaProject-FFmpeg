@@ -85,11 +85,15 @@ static int query_formats(AVFilterContext *ctx)
         AV_PIX_FMT_YUVA420P, AV_PIX_FMT_YUVA422P, AV_PIX_FMT_YUVA444P,
         AV_PIX_FMT_GBRP, AV_PIX_FMT_GBRAP,
         AV_PIX_FMT_GRAY8,
+        AV_PIX_FMT_GRAY9, AV_PIX_FMT_GRAY10, AV_PIX_FMT_GRAY12, AV_PIX_FMT_GRAY14, AV_PIX_FMT_GRAY16,
         AV_PIX_FMT_YUV420P9, AV_PIX_FMT_YUV422P9, AV_PIX_FMT_YUV444P9,
         AV_PIX_FMT_YUV420P10, AV_PIX_FMT_YUV422P10, AV_PIX_FMT_YUV444P10,
+        AV_PIX_FMT_YUV440P10,
         AV_PIX_FMT_YUV420P12, AV_PIX_FMT_YUV422P12, AV_PIX_FMT_YUV444P12,
+        AV_PIX_FMT_YUV440P12,
         AV_PIX_FMT_YUV420P14, AV_PIX_FMT_YUV422P14, AV_PIX_FMT_YUV444P14,
-        AV_PIX_FMT_GBRP9, AV_PIX_FMT_GBRP10, AV_PIX_FMT_GBRP12, AV_PIX_FMT_GBRP14,
+        AV_PIX_FMT_YUV420P16, AV_PIX_FMT_YUV422P16, AV_PIX_FMT_YUV444P16,
+        AV_PIX_FMT_GBRP9, AV_PIX_FMT_GBRP10, AV_PIX_FMT_GBRP12, AV_PIX_FMT_GBRP14, AV_PIX_FMT_GBRP16,
         AV_PIX_FMT_YUVA444P9, AV_PIX_FMT_YUVA444P10, AV_PIX_FMT_YUVA444P12, AV_PIX_FMT_YUVA444P16,
         AV_PIX_FMT_YUVA422P9, AV_PIX_FMT_YUVA422P10, AV_PIX_FMT_YUVA422P12, AV_PIX_FMT_YUVA422P16,
         AV_PIX_FMT_YUVA420P9, AV_PIX_FMT_YUVA420P10, AV_PIX_FMT_YUVA420P16,
@@ -355,17 +359,16 @@ static const int16_t coef_hf[2][5] = {{ -2048,  4096, -2048,     0,    0},
 
 typedef struct ThreadData {
     AVFrame *out, *cur, *adj;
-    int plane;
 } ThreadData;
 
-static int deinterlace_slice(AVFilterContext *ctx, void *arg, int jobnr, int nb_jobs)
+static int deinterlace_plane_slice(AVFilterContext *ctx, void *arg,
+                                   int jobnr, int nb_jobs, int plane)
 {
     W3FDIFContext *s = ctx->priv;
     ThreadData *td = arg;
     AVFrame *out = td->out;
     AVFrame *cur = td->cur;
     AVFrame *adj = td->adj;
-    const int plane = td->plane;
     const int filter = s->filter;
     uint8_t *in_line, *in_lines_cur[5], *in_lines_adj[5];
     uint8_t *out_line, *out_pixel;
@@ -381,7 +384,9 @@ static int deinterlace_slice(AVFilterContext *ctx, void *arg, int jobnr, int nb_
     const int start = (height * jobnr) / nb_jobs;
     const int end = (height * (jobnr+1)) / nb_jobs;
     const int max = s->max;
-    const int tff = (s->field == (s->parity == -1 ? cur->top_field_first == cur->interlaced_frame : s->parity == 0 ? !cur->interlaced_frame : cur->interlaced_frame));
+    const int interlaced = cur->interlaced_frame;
+    const int tff = s->field == (s->parity == -1 ? interlaced ? cur->top_field_first : 1 :
+                                 s->parity ^ 1);
     int j, y_in, y_out;
 
     /* copy unchanged the lines of the field */
@@ -464,13 +469,23 @@ static int deinterlace_slice(AVFilterContext *ctx, void *arg, int jobnr, int nb_
     return 0;
 }
 
+static int deinterlace_slice(AVFilterContext *ctx, void *arg,
+                             int jobnr, int nb_jobs)
+{
+    W3FDIFContext *s = ctx->priv;
+
+    for (int p = 0; p < s->nb_planes; p++)
+        deinterlace_plane_slice(ctx, arg, jobnr, nb_jobs, p);
+
+    return 0;
+}
+
 static int filter(AVFilterContext *ctx, int is_second)
 {
     W3FDIFContext *s = ctx->priv;
     AVFilterLink *outlink = ctx->outputs[0];
     AVFrame *out, *adj;
     ThreadData td;
-    int plane;
 
     out = ff_get_video_buffer(outlink, outlink->w, outlink->h);
     if (!out)
@@ -494,10 +509,7 @@ static int filter(AVFilterContext *ctx, int is_second)
 
     adj = s->field ? s->next : s->prev;
     td.out = out; td.cur = s->cur; td.adj = adj;
-    for (plane = 0; plane < s->nb_planes; plane++) {
-        td.plane = plane;
-        ctx->internal->execute(ctx, deinterlace_slice, &td, NULL, FFMIN(s->planeheight[plane], s->nb_threads));
-    }
+    ctx->internal->execute(ctx, deinterlace_slice, &td, NULL, FFMIN(s->planeheight[1], s->nb_threads));
 
     if (s->mode)
         s->field = !s->field;

@@ -101,7 +101,7 @@ static int is_relative(int64_t ts) {
  */
 static int64_t wrap_timestamp(const AVStream *st, int64_t timestamp)
 {
-    if (st->internal->pts_wrap_behavior != AV_PTS_WRAP_IGNORE &&
+    if (st->internal->pts_wrap_behavior != AV_PTS_WRAP_IGNORE && st->pts_wrap_bits < 64 &&
         st->internal->pts_wrap_reference != AV_NOPTS_VALUE && timestamp != AV_NOPTS_VALUE) {
         if (st->internal->pts_wrap_behavior == AV_PTS_WRAP_ADD_OFFSET &&
             timestamp < st->internal->pts_wrap_reference)
@@ -244,13 +244,16 @@ int av_format_get_probe_score(const AVFormatContext *s)
 int ffio_limit(AVIOContext *s, int size)
 {
     if (s->maxsize>= 0) {
-        int64_t remaining= s->maxsize - avio_tell(s);
+        int64_t pos = avio_tell(s);
+        int64_t remaining= s->maxsize - pos;
         if (remaining < size) {
             int64_t newsize = avio_size(s);
             if (!s->maxsize || s->maxsize<newsize)
                 s->maxsize = newsize - !newsize;
-            remaining= s->maxsize - avio_tell(s);
-            remaining= FFMAX(remaining, 0);
+            if (pos > s->maxsize && s->maxsize >= 0)
+                s->maxsize = AVERROR(EIO);
+            if (s->maxsize >= 0)
+                remaining = s->maxsize - pos;
         }
 
         if (s->maxsize >= 0 && remaining < size && size > 1) {
@@ -1103,6 +1106,7 @@ static void update_initial_timestamps(AVFormatContext *s, int stream_index,
         dts           == AV_NOPTS_VALUE ||
         st->cur_dts   == AV_NOPTS_VALUE ||
         st->cur_dts < INT_MIN + RELATIVE_TS_BASE ||
+        dts  < INT_MIN + (st->cur_dts - RELATIVE_TS_BASE) ||
         is_relative(dts))
         return;
 
@@ -1251,7 +1255,7 @@ static void compute_pkt_fields(AVFormatContext *s, AVStream *st,
         presentation_delayed = 1;
 
     if (pkt->pts != AV_NOPTS_VALUE && pkt->dts != AV_NOPTS_VALUE &&
-        st->pts_wrap_bits < 63 &&
+        st->pts_wrap_bits < 63 && pkt->dts > INT64_MIN + (1LL << (st->pts_wrap_bits - 1)) &&
         pkt->dts - (1LL << (st->pts_wrap_bits - 1)) > pkt->pts) {
         if (is_relative(st->cur_dts) || pkt->dts - (1LL<<(st->pts_wrap_bits - 1)) > st->cur_dts) {
             pkt->dts -= 1LL << st->pts_wrap_bits;
@@ -3860,8 +3864,10 @@ FF_ENABLE_DEPRECATION_WARNINGS
             if (   t == 0
                 && st->codec_info_nb_frames>30
                 && st->internal->info->fps_first_dts != AV_NOPTS_VALUE
-                && st->internal->info->fps_last_dts  != AV_NOPTS_VALUE)
-                t = FFMAX(t, av_rescale_q(st->internal->info->fps_last_dts - st->internal->info->fps_first_dts, st->time_base, AV_TIME_BASE_Q));
+                && st->internal->info->fps_last_dts  != AV_NOPTS_VALUE) {
+                int64_t dur = av_sat_sub64(st->internal->info->fps_last_dts, st->internal->info->fps_first_dts);
+                t = FFMAX(t, av_rescale_q(dur, st->time_base, AV_TIME_BASE_Q));
+            }
 
             if (analyzed_all_streams)                                limit = max_analyze_duration;
             else if (avctx->codec_type == AVMEDIA_TYPE_SUBTITLE) limit = max_subtitle_analyze_duration;
@@ -4610,9 +4616,14 @@ AVChapter *avpriv_new_chapter(AVFormatContext *s, int id, AVRational time_base,
         return NULL;
     }
 
-    for (i = 0; i < s->nb_chapters; i++)
-        if (s->chapters[i]->id == id)
-            chapter = s->chapters[i];
+    if (!s->nb_chapters) {
+        s->internal->chapter_ids_monotonic = 1;
+    } else if (!s->internal->chapter_ids_monotonic || s->chapters[s->nb_chapters-1]->id >= id) {
+        s->internal->chapter_ids_monotonic = 0;
+        for (i = 0; i < s->nb_chapters; i++)
+            if (s->chapters[i]->id == id)
+                chapter = s->chapters[i];
+    }
 
     if (!chapter) {
         chapter = av_mallocz(sizeof(AVChapter));
@@ -4700,8 +4711,11 @@ int av_get_frame_filename2(char *buf, int buf_size, const char *path, int number
         if (c == '%') {
             do {
                 nd = 0;
-                while (av_isdigit(*p))
+                while (av_isdigit(*p)) {
+                    if (nd >= INT_MAX / 10 - 255)
+                        goto fail;
                     nd = nd * 10 + *p++ - '0';
+                }
                 c = *p++;
             } while (av_isdigit(c));
 

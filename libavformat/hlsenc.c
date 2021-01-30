@@ -1564,6 +1564,10 @@ static int hls_window(AVFormatContext *s, int last, VariantStream *vs)
         sequence = 0;
     }
 
+    if (hls->flags & HLS_I_FRAMES_ONLY) {
+        hls->version = 4;
+    }
+
     if (hls->flags & HLS_INDEPENDENT_SEGMENTS) {
         hls->version = 6;
     }
@@ -3032,8 +3036,8 @@ static int hls_init(AVFormatContext *s)
 
                     r = strftime_expand(vs->fmp4_init_filename, &expanded);
                     if (r < 0) {
-                      av_log(s, AV_LOG_ERROR, "Could not get segment filename with strftime\n");
-                      return r;
+                        av_log(s, AV_LOG_ERROR, "Could not get segment filename with strftime\n");
+                        return r;
                     }
                     av_free(vs->fmp4_init_filename);
                     vs->fmp4_init_filename = expanded;

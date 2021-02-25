@@ -63,7 +63,6 @@
     <ClCompile Include="..\libavformat\allformats.c" />
     <ClCompile Include="..\libavformat\avio.c" />
     <ClCompile Include="..\libavformat\aviobuf.c" />
-    <ClCompile Include="..\libavformat\cutils.c" />
     <ClCompile Include="..\libavformat\dump.c" />
     <ClCompile Include="..\libavformat\format.c" />
     <ClCompile Include="..\libavformat\id3v1.c" />
@@ -72,7 +71,6 @@
     <ClCompile Include="..\libavformat\mux.c" />
     <ClCompile Include="..\libavformat\options.c" />
     <ClCompile Include="..\libavformat\os_support.c" />
-    <ClCompile Include="..\libavformat\qtpalette.c" />
     <ClCompile Include="..\libavformat\protocols.c" />
     <ClCompile Include="..\libavformat\riff.c" />
     <ClCompile Include="..\libavformat\sdp.c" />
@@ -80,6 +78,7 @@
     <ClCompile Include="..\libavformat\utils.c" />
     <ClCompile Include="..\libavformat\file_open.c" />
     <ClCompile Include="..\libavformat\isom.c" />
+    <ClCompile Include="..\libavformat\isom_tags.c" />
     <ClCompile Include="..\libavformat\network.c" />
     <ClCompile Include="..\libavformat\riffdec.c" />
     <ClCompile Include="..\libavformat\riffenc.c" />
@@ -137,6 +136,7 @@
     <ClCompile Include="..\libavformat\pcm.c" />
     <ClCompile Include="..\libavformat\afc.c" />
     <ClCompile Include="..\libavformat\aiffdec.c" />
+    <ClCompile Include="..\libavformat\aiff.c" />
     <ClCompile Include="..\libavformat\mov_chan.c" />
     <ClCompile Include="..\libavformat\replaygain.c" />
     <ClCompile Include="..\libavformat\aiffenc.c" />
@@ -176,13 +176,13 @@
     <ClCompile Include="..\libavformat\avr.c" />
     <ClCompile Include="..\libavformat\avs.c" />
     <ClCompile Include="..\libavformat\voc_packet.c" />
-    <ClCompile Include="..\libavformat\vocdec.c" />
     <ClCompile Include="..\libavformat\voc.c" />
     <ClCompile Include="..\libavformat\avs2dec.c" />
     <ClCompile Include="..\libavformat\avs3dec.c" />
     <ClCompile Include="..\libavformat\bethsoftvid.c" />
     <ClCompile Include="..\libavformat\bfi.c" />
     <ClCompile Include="..\libavformat\bink.c" />
+    <ClCompile Include="..\libavformat\binka.c" />
     <ClCompile Include="..\libavformat\bit.c" />
     <ClCompile Include="..\libavformat\bmv.c" />
     <ClCompile Include="..\libavformat\boadec.c" />
@@ -309,6 +309,7 @@
     <ClCompile Include="..\libavformat\m4vdec.c" />
     <ClCompile Include="..\libavformat\matroskadec.c" />
     <ClCompile Include="..\libavformat\matroska.c" />
+    <ClCompile Include="..\libavformat\qtpalette.c" />
     <ClCompile Include="..\libavformat\matroskaenc.c" />
     <ClCompile Include="..\libavformat\av1.c" />
     <ClCompile Include="..\libavformat\hevc.c" />
@@ -438,6 +439,7 @@
     <ClCompile Include="..\libavformat\serdec.c" />
     <ClCompile Include="..\libavformat\shortendec.c" />
     <ClCompile Include="..\libavformat\siff.c" />
+    <ClCompile Include="..\libavformat\imx.c" />
     <ClCompile Include="..\libavformat\smacker.c" />
     <ClCompile Include="..\libavformat\smjpegdec.c" />
     <ClCompile Include="..\libavformat\smjpeg.c" />
@@ -483,6 +485,7 @@
     <ClCompile Include="..\libavformat\vividas.c" />
     <ClCompile Include="..\libavformat\vivo.c" />
     <ClCompile Include="..\libavformat\sierravmd.c" />
+    <ClCompile Include="..\libavformat\vocdec.c" />
     <ClCompile Include="..\libavformat\vocenc.c" />
     <ClCompile Include="..\libavformat\vpk.c" />
     <ClCompile Include="..\libavformat\vplayerdec.c" />

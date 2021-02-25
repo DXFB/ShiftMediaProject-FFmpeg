@@ -115,6 +115,7 @@
     <ClCompile Include="..\libavfilter\video.c" />
     <ClCompile Include="..\libavfilter\pthread.c" />
     <ClCompile Include="..\libavfilter\qsvvpp.c" />
+    <ClCompile Include="..\libavfilter\dnn_filter_common.c" />
     <ClCompile Include="..\libavfilter\f_bench.c" />
     <ClCompile Include="..\libavfilter\af_sidechaincompress.c" />
     <ClCompile Include="..\libavfilter\af_acontrast.c" />
@@ -130,6 +131,7 @@
     <ClCompile Include="..\libavfilter\af_aecho.c" />
     <ClCompile Include="..\libavfilter\af_aemphasis.c" />
     <ClCompile Include="..\libavfilter\aeval.c" />
+    <ClCompile Include="..\libavfilter\af_aexciter.c" />
     <ClCompile Include="..\libavfilter\af_afftdn.c" />
     <ClCompile Include="..\libavfilter\af_afftfilt.c" />
     <ClCompile Include="..\libavfilter\af_aformat.c" />
@@ -241,6 +243,9 @@
     <ClCompile Include="..\libavfilter\qp_table.c" />
     <ClCompile Include="..\libavfilter\vf_colorbalance.c" />
     <ClCompile Include="..\libavfilter\vf_colorchannelmixer.c" />
+    <ClCompile Include="..\libavfilter\vf_colorcontrast.c" />
+    <ClCompile Include="..\libavfilter\vf_colorcorrect.c" />
+    <ClCompile Include="..\libavfilter\vf_colorize.c" />
     <ClCompile Include="..\libavfilter\vf_colorkey.c" />
     <ClCompile Include="..\libavfilter\vf_colorlevels.c" />
     <ClCompile Include="..\libavfilter\vf_colormatrix.c" />
@@ -281,6 +286,7 @@
     <ClCompile Include="..\libavfilter\vf_entropy.c" />
     <ClCompile Include="..\libavfilter\vf_epx.c" />
     <ClCompile Include="..\libavfilter\vf_estdif.c" />
+    <ClCompile Include="..\libavfilter\vf_exposure.c" />
     <ClCompile Include="..\libavfilter\vf_fade.c" />
     <ClCompile Include="..\libavfilter\vf_fftdnoiz.c" />
     <ClCompile Include="..\libavfilter\vf_fftfilt.c" />
@@ -330,6 +336,7 @@
     <ClCompile Include="..\libavfilter\vf_midequalizer.c" />
     <ClCompile Include="..\libavfilter\vf_minterpolate.c" />
     <ClCompile Include="..\libavfilter\vf_mix.c" />
+    <ClCompile Include="..\libavfilter\vf_monochrome.c" />
     <ClCompile Include="..\libavfilter\vf_mpdecimate.c" />
     <ClCompile Include="..\libavfilter\vf_nlmeans.c" />
     <ClCompile Include="..\libavfilter\vf_nnedi.c" />
@@ -396,6 +403,7 @@
     <ClCompile Include="..\libavfilter\vf_vflip.c" />
     <ClCompile Include="..\libavfilter\vf_vfrdet.c" />
     <ClCompile Include="..\libavfilter\vf_vibrance.c" />
+    <ClCompile Include="..\libavfilter\vf_vif.c" />
     <ClCompile Include="..\libavfilter\vf_vignette.c" />
     <ClCompile Include="..\libavfilter\vf_vmafmotion.c" />
     <ClCompile Include="..\libavfilter\vf_vpp_qsv.c" />

@@ -186,6 +186,7 @@ void ff_h264qpel_init_aarch64(H264QpelContext *c, int bit_depth) {return;}
 void ff_h264qpel_init_arm(H264QpelContext *c, int bit_depth) {return;}
 void ff_h264qpel_init_mips(H264QpelContext *c, int bit_depth) {return;}
 void ff_h264qpel_init_ppc(H264QpelContext *c, int bit_depth) {return;}
+void ff_hevc_dsp_init_aarch64(HEVCDSPContext *c, const int bit_depth) {return;}
 void ff_hevc_dsp_init_arm(HEVCDSPContext *c, const int bit_depth) {return;}
 void ff_hevc_dsp_init_mips(HEVCDSPContext *c, const int bit_depth) {return;}
 void ff_hevc_dsp_init_ppc(HEVCDSPContext *c, const int bit_depth) {return;}

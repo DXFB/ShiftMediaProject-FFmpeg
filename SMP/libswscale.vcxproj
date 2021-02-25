@@ -65,6 +65,7 @@
     <NASM Include="..\libswscale\x86\scale.asm" />
     <NASM Include="..\libswscale\x86\rgb_2_rgb.asm" />
     <NASM Include="..\libswscale\x86\yuv_2_rgb.asm" />
+    <NASM Include="..\libswscale\x86\yuv2yuvX.asm" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libswscale\alphablend.c" />

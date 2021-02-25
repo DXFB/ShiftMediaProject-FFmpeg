@@ -29,6 +29,7 @@ static const AVCodecParser *parser_list[] = {
     &ff_bmp_parser,
     &ff_cavsvideo_parser,
     &ff_cook_parser,
+    &ff_cri_parser,
     &ff_dca_parser,
     &ff_dirac_parser,
     &ff_dnxhd_parser,
@@ -68,5 +69,6 @@ static const AVCodecParser *parser_list[] = {
     &ff_vp8_parser,
     &ff_vp9_parser,
     &ff_webp_parser,
+    &ff_xbm_parser,
     &ff_xma_parser,
     NULL };

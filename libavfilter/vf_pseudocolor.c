@@ -78,6 +78,8 @@ enum Presets {
     PRESET_CIVIDIS,
     PRESET_RANGE1,
     PRESET_RANGE2,
+    PRESET_SHADOWS,
+    PRESET_HIGHLIGHTS,
     NB_PRESETS,
 };
 
@@ -86,7 +88,7 @@ typedef struct Curve {
 } Curve;
 
 typedef struct Fill {
-    float fill[3];
+    float fill[4];
 } Fill;
 
 typedef struct Range {
@@ -103,9 +105,13 @@ typedef struct Preset {
 static const Range full_range   = {0, 256};
 static const Range spec1_range[] = {{0, 16}, {16, 236}, {236, 256}};
 static const Range spec2_range[] = {{0, 16}, {16, 22}, {22, 226}, {226, 236}, {236, 256}};
+static const Range shadows_range[] = {{0, 32}, {32, 256}};
+static const Range highlights_range[] = {{0, 214}, {214, 224}, {224, 256}};
 
-static const Fill spec1_fills[] = {{0.5f, 0.f, .5f}, {-1.f, -1.f, -1.f}, {1.f, 0.f, 0.f}};
-static const Fill spec2_fills[] = {{0.5f, 0.f, .5f}, {0.f, 1.f, 1.f}, {-1.f, -1.f, -1.f}, {1.f, 1.f, 0.f}, {1.f, 0.f, 0.f}};
+static const Fill spec1_fills[] = {{{0.5f, 0.f, .5f, 1.f}}, {{-1.f, -1.f, -1.f, 1.f}}, {{1.f, 0.f, 0.f, 1.f}}};
+static const Fill spec2_fills[] = {{{0.5f, 0.f, .5f, 1.f}}, {{0.f, 1.f, 1.f, 1.f}}, {{-1.f, -1.f, -1.f, 1.f}}, {{1.f, 1.f, 0.f, 1.f}}, {{1.f, 0.f, 0.f, 1.f}}};
+static const Fill shadows_fills[] = {{{0.8f, 0.4f, .8f, 1.f}}, {{-1.f, -1.f, -1.f, 1.f}}};
+static const Fill highlights_fills[] = {{{-1.f, -1.f, -1.f, 1.f}}, {{1.f, 0.3f, 0.6f, 1.f}}, {{1.f, 0.2f, .5f, 1.f}}};
 
 static const Curve curves[] =
 {
@@ -151,11 +157,14 @@ static const Preset presets[] =
     [PRESET_CIVIDIS] = { 1, &full_range, &curves[CIVIDIS], NULL },
     [PRESET_RANGE1]  = { 3, spec1_range, NULL,             spec1_fills },
     [PRESET_RANGE2]  = { 5, spec2_range, NULL,             spec2_fills },
+    [PRESET_SHADOWS] = { 2, shadows_range, NULL,           shadows_fills },
+    [PRESET_HIGHLIGHTS] = { 3, highlights_range, NULL,     highlights_fills },
 };
 
 typedef struct PseudoColorContext {
     const AVClass *class;
     int preset;
+    float opacity;
     int max;
     int index;
     int nb_planes;
@@ -173,7 +182,8 @@ typedef struct PseudoColorContext {
                       ptrdiff_t ilinesize,
                       ptrdiff_t slinesize,
                       ptrdiff_t dlinesize,
-                      float *lut);
+                      float *lut,
+                      float opacity);
 } PseudoColorContext;
 
 #define OFFSET(x) offsetof(PseudoColorContext, x)
@@ -184,7 +194,9 @@ static const AVOption pseudocolor_options[] = {
     { "c1", "set component #1 expression", OFFSET(comp_expr_str[1]), AV_OPT_TYPE_STRING, {.str="val"},   .flags = FLAGS },
     { "c2", "set component #2 expression", OFFSET(comp_expr_str[2]), AV_OPT_TYPE_STRING, {.str="val"},   .flags = FLAGS },
     { "c3", "set component #3 expression", OFFSET(comp_expr_str[3]), AV_OPT_TYPE_STRING, {.str="val"},   .flags = FLAGS },
+    { "index", "set component as base",    OFFSET(index),            AV_OPT_TYPE_INT,    {.i64=0}, 0, 3, .flags = FLAGS },
     { "i",  "set component as base",       OFFSET(index),            AV_OPT_TYPE_INT,    {.i64=0}, 0, 3, .flags = FLAGS },
+    { "preset", "set preset",              OFFSET(preset),           AV_OPT_TYPE_INT,    {.i64=-1},-1, NB_PRESETS-1, .flags = FLAGS, "preset" },
     { "p",  "set preset",                  OFFSET(preset),           AV_OPT_TYPE_INT,    {.i64=-1},-1, NB_PRESETS-1, .flags = FLAGS, "preset" },
     { "none",       NULL,                  0,                        AV_OPT_TYPE_CONST,  {.i64=-1},             .flags = FLAGS, "preset" },
     { "magma",      NULL,                  0,                        AV_OPT_TYPE_CONST,  {.i64=PRESET_MAGMA},   .flags = FLAGS, "preset" },
@@ -195,6 +207,9 @@ static const AVOption pseudocolor_options[] = {
     { "cividis",    NULL,                  0,                        AV_OPT_TYPE_CONST,  {.i64=PRESET_CIVIDIS}, .flags = FLAGS, "preset" },
     { "range1",     NULL,                  0,                        AV_OPT_TYPE_CONST,  {.i64=PRESET_RANGE1},  .flags = FLAGS, "preset" },
     { "range2",     NULL,                  0,                        AV_OPT_TYPE_CONST,  {.i64=PRESET_RANGE2},  .flags = FLAGS, "preset" },
+    { "shadows",    NULL,                  0,                        AV_OPT_TYPE_CONST,  {.i64=PRESET_SHADOWS}, .flags = FLAGS, "preset" },
+    { "highlights", NULL,                  0,                        AV_OPT_TYPE_CONST,  {.i64=PRESET_HIGHLIGHTS},.flags=FLAGS, "preset" },
+    { "opacity", "set pseudocolor opacity",OFFSET(opacity),          AV_OPT_TYPE_FLOAT,  {.dbl=1}, 0, 1, .flags = FLAGS },
     { NULL }
 };
 
@@ -235,9 +250,14 @@ static int query_formats(AVFilterContext *ctx)
     return ff_set_common_formats(ctx, fmts_list);
 }
 
+static inline float lerpf(float v0, float v1, float f)
+{
+    return v0 + (v1 - v0) * f;
+}
+
 #define PCLIP(v, max, dst, src, x) \
     if (v >= 0 && v <= max) {      \
-        dst[x] = v;                \
+        dst[x] = lerpf(src[x], v, opacity);\
     } else {                       \
         dst[x] = src[x];           \
     }
@@ -249,7 +269,8 @@ static void pseudocolor_filter(int max, int width, int height,
                                ptrdiff_t ilinesize,
                                ptrdiff_t slinesize,
                                ptrdiff_t dlinesize,
-                               float *lut)
+                               float *lut,
+                               float opacity)
 {
     int x, y;
 
@@ -272,7 +293,8 @@ static void pseudocolor_filter_11(int max, int width, int height,
                                   ptrdiff_t ilinesize,
                                   ptrdiff_t slinesize,
                                   ptrdiff_t dlinesize,
-                                  float *lut)
+                                  float *lut,
+                                  float opacity)
 {
     int x, y;
 
@@ -294,7 +316,8 @@ static void pseudocolor_filter_11d(int max, int width, int height,
                                    ptrdiff_t ilinesize,
                                    ptrdiff_t slinesize,
                                    ptrdiff_t dlinesize,
-                                   float *lut)
+                                   float *lut,
+                                   float opacity)
 {
     int x, y;
 
@@ -316,7 +339,8 @@ static void pseudocolor_filter_10(int max, int width, int height,
                                   ptrdiff_t ilinesize,
                                   ptrdiff_t slinesize,
                                   ptrdiff_t dlinesize,
-                                  float *lut)
+                                  float *lut,
+                                  float opacity)
 {
     int x, y;
 
@@ -339,7 +363,8 @@ static void pseudocolor_filter_10d(int max, int width, int height,
                                    ptrdiff_t ilinesize,
                                    ptrdiff_t slinesize,
                                    ptrdiff_t dlinesize,
-                                   float *lut)
+                                   float *lut,
+                                   float opacity)
 {
     int x, y;
 
@@ -362,7 +387,8 @@ static void pseudocolor_filter_16(int max, int width, int height,
                                   ptrdiff_t ilinesize,
                                   ptrdiff_t slinesize,
                                   ptrdiff_t dlinesize,
-                                  float *lut)
+                                  float *lut,
+                                  float opacity)
 {
     const uint16_t *index = (const uint16_t *)iindex;
     const uint16_t *src = (const uint16_t *)ssrc;
@@ -388,7 +414,8 @@ static void pseudocolor_filter_16_10(int max, int width, int height,
                                      ptrdiff_t ilinesize,
                                      ptrdiff_t slinesize,
                                      ptrdiff_t dlinesize,
-                                     float *lut)
+                                     float *lut,
+                                     float opacity)
 {
     const uint16_t *index = (const uint16_t *)iindex;
     const uint16_t *src = (const uint16_t *)ssrc;
@@ -414,7 +441,8 @@ static void pseudocolor_filter_16_10d(int max, int width, int height,
                                       ptrdiff_t ilinesize,
                                       ptrdiff_t slinesize,
                                       ptrdiff_t dlinesize,
-                                      float *lut)
+                                      float *lut,
+                                      float opacity)
 {
     const uint16_t *index = (const uint16_t *)iindex;
     const uint16_t *src = (const uint16_t *)ssrc;
@@ -440,7 +468,8 @@ static void pseudocolor_filter_16_11(int max, int width, int height,
                                      ptrdiff_t ilinesize,
                                      ptrdiff_t slinesize,
                                      ptrdiff_t dlinesize,
-                                     float *lut)
+                                     float *lut,
+                                     float opacity)
 {
     const uint16_t *index = (const uint16_t *)iindex;
     const uint16_t *src = (const uint16_t *)ssrc;
@@ -469,7 +498,8 @@ static void pseudocolor_filter_16_11d(int max, int width, int height,
                                       ptrdiff_t ilinesize,
                                       ptrdiff_t slinesize,
                                       ptrdiff_t dlinesize,
-                                      float *lut)
+                                      float *lut,
+                                      float opacity)
 {
     const uint16_t *index = (const uint16_t *)iindex;
     const uint16_t *src = (const uint16_t *)ssrc;
@@ -597,11 +627,12 @@ static int config_input(AVFilterLink *inlink)
                     const Fill fill = presets[s->preset].fills[seg];
 
                     for (int j = 0; j < factor; j++) {
-                        double r, g, b;
+                        double r, g, b, a;
 
                         g = fill.fill[1];
                         b = fill.fill[2];
                         r = fill.fill[0];
+                        a = fill.fill[3];
 
                         if (g >= 0.f && b >= 0.f && r >= 0.f) {
                             g *= s->max;
@@ -622,6 +653,7 @@ static int config_input(AVFilterLink *inlink)
                         s->lut[0][i*factor+j] = g;
                         s->lut[1][i*factor+j] = b;
                         s->lut[2][i*factor+j] = r;
+                        s->lut[3][i*factor+j] = a * s->max;
                     }
                 } else {
                     const Curve curve = presets[s->preset].curves[seg];
@@ -647,6 +679,7 @@ static int config_input(AVFilterLink *inlink)
                         s->lut[0][i*factor+j] = g;
                         s->lut[1][i*factor+j] = b;
                         s->lut[2][i*factor+j] = r;
+                        s->lut[3][i*factor+j] = 1.f * s->max;
                     }
                 }
             }
@@ -785,7 +818,7 @@ static int filter_slice(AVFilterContext *ctx, void *arg, int jobnr, int nb_jobs)
 
         s->filter[plane](s->max, s->width[plane], slice_end - slice_start,
                          index, src, dst, ilinesize, slinesize,
-                         dlinesize, s->lut[plane]);
+                         dlinesize, s->lut[plane], s->opacity);
     }
 
     return 0;

@@ -112,7 +112,7 @@ static DNNReturnType get_output_native(void *model, const char *input_name, int 
 // layers_num,layer_type,layer_parameterss,layer_type,layer_parameters...
 // For CONV layer: activation_function, input_num, output_num, kernel_size, kernel, biases
 // For DEPTH_TO_SPACE layer: block_size
-DNNModel *ff_dnn_load_model_native(const char *model_filename, const char *options, AVFilterContext *filter_ctx)
+DNNModel *ff_dnn_load_model_native(const char *model_filename, DNNFunctionType func_type, const char *options, AVFilterContext *filter_ctx)
 {
     DNNModel *model = NULL;
     char header_expected[] = "FFMPEGDNNNATIVE";
@@ -256,6 +256,7 @@ DNNModel *ff_dnn_load_model_native(const char *model_filename, const char *optio
     model->get_input = &get_input_native;
     model->get_output = &get_output_native;
     model->filter_ctx = filter_ctx;
+    model->func_type = func_type;
 
     return model;
 
@@ -320,7 +321,7 @@ static DNNReturnType execute_model_native(const DNNModel *model, const char *inp
         if (native_model->model->pre_proc != NULL) {
             native_model->model->pre_proc(in_frame, &input, native_model->model->filter_ctx);
         } else {
-            ff_proc_from_frame_to_dnn(in_frame, &input, ctx);
+            ff_proc_from_frame_to_dnn(in_frame, &input, native_model->model->func_type, ctx);
         }
     }
 

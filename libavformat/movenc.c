@@ -2025,7 +2025,6 @@ static int mov_write_clli_tag(AVIOContext *pb, MOVTrack *track)
 
     side_data = av_stream_get_side_data(track->st, AV_PKT_DATA_CONTENT_LIGHT_LEVEL, NULL);
     if (!side_data) {
-        av_log(NULL, AV_LOG_VERBOSE, "Not writing 'clli' atom. No content light level info.\n");
         return 0;
     }
     content_light_metadata = (const AVContentLightMetadata*)side_data;
@@ -2052,7 +2051,6 @@ static int mov_write_mdcv_tag(AVIOContext *pb, MOVTrack *track)
     side_data = av_stream_get_side_data(track->st, AV_PKT_DATA_MASTERING_DISPLAY_METADATA, NULL);
     metadata = (const AVMasteringDisplayMetadata*)side_data;
     if (!metadata || !metadata->has_primaries || !metadata->has_luminance) {
-        av_log(NULL, AV_LOG_VERBOSE, "Not writing 'mdcv' atom. Missing mastering metadata.\n");
         return 0;
     }
 
@@ -5303,15 +5301,19 @@ static int mov_flush_fragment(AVFormatContext *s, int force)
     for (i = 0; i < s->nb_streams; i++) {
         MOVTrack *track = &mov->tracks[i];
         if (!track->end_reliable) {
-            AVPacket pkt;
-            if (!ff_interleaved_peek(s, i, &pkt, 1)) {
+            const AVPacket *pkt = ff_interleaved_peek(s, i);
+            if (pkt) {
+                int64_t offset, dts, pts;
+                ff_get_muxer_ts_offset(s, i, &offset);
+                pts = pkt->pts + offset;
+                dts = pkt->dts + offset;
                 if (track->dts_shift != AV_NOPTS_VALUE)
-                    pkt.dts += track->dts_shift;
-                track->track_duration = pkt.dts - track->start_dts;
-                if (pkt.pts != AV_NOPTS_VALUE)
-                    track->end_pts = pkt.pts;
+                    dts += track->dts_shift;
+                track->track_duration = dts - track->start_dts;
+                if (pts != AV_NOPTS_VALUE)
+                    track->end_pts = pts;
                 else
-                    track->end_pts = pkt.dts;
+                    track->end_pts = dts;
             }
         }
     }
@@ -7129,6 +7131,7 @@ static int mov_check_bitstream(struct AVFormatContext *s, const AVPacket *pkt)
     return ret;
 }
 
+#if CONFIG_TGP_MUXER || CONFIG_TG2_MUXER
 static const AVCodecTag codec_3gp_tags[] = {
     { AV_CODEC_ID_H263,     MKTAG('s','2','6','3') },
     { AV_CODEC_ID_H264,     MKTAG('a','v','c','1') },
@@ -7139,6 +7142,8 @@ static const AVCodecTag codec_3gp_tags[] = {
     { AV_CODEC_ID_MOV_TEXT, MKTAG('t','x','3','g') },
     { AV_CODEC_ID_NONE, 0 },
 };
+static const AVCodecTag *const codec_3gp_tags_list[] = { codec_3gp_tags, NULL };
+#endif
 
 static const AVCodecTag codec_mp4_tags[] = {
     { AV_CODEC_ID_MPEG4,           MKTAG('m', 'p', '4', 'v') },
@@ -7176,6 +7181,9 @@ static const AVCodecTag codec_mp4_tags[] = {
     { AV_CODEC_ID_MPEGH_3D_AUDIO,  MKTAG('m', 'h', 'm', '1') },
     { AV_CODEC_ID_NONE,               0 },
 };
+#if CONFIG_MP4_MUXER || CONFIG_PSP_MUXER
+static const AVCodecTag *const mp4_codec_tags_list[] = { codec_mp4_tags, NULL };
+#endif
 
 static const AVCodecTag codec_ism_tags[] = {
     { AV_CODEC_ID_WMAPRO      , MKTAG('w', 'm', 'a', ' ') },
@@ -7240,7 +7248,7 @@ AVOutputFormat ff_tgp_muxer = {
     .write_trailer     = mov_write_trailer,
     .deinit            = mov_free,
     .flags             = AVFMT_GLOBALHEADER | AVFMT_ALLOW_FLUSH | AVFMT_TS_NEGATIVE,
-    .codec_tag         = (const AVCodecTag* const []){ codec_3gp_tags, 0 },
+    .codec_tag         = codec_3gp_tags_list,
     .check_bitstream   = mov_check_bitstream,
     .priv_class        = &tgp_muxer_class,
 };
@@ -7262,7 +7270,7 @@ AVOutputFormat ff_mp4_muxer = {
     .write_trailer     = mov_write_trailer,
     .deinit            = mov_free,
     .flags             = AVFMT_GLOBALHEADER | AVFMT_ALLOW_FLUSH | AVFMT_TS_NEGATIVE,
-    .codec_tag         = (const AVCodecTag* const []){ codec_mp4_tags, 0 },
+    .codec_tag         = mp4_codec_tags_list,
     .check_bitstream   = mov_check_bitstream,
     .priv_class        = &mp4_muxer_class,
 };
@@ -7283,7 +7291,7 @@ AVOutputFormat ff_psp_muxer = {
     .write_trailer     = mov_write_trailer,
     .deinit            = mov_free,
     .flags             = AVFMT_GLOBALHEADER | AVFMT_ALLOW_FLUSH | AVFMT_TS_NEGATIVE,
-    .codec_tag         = (const AVCodecTag* const []){ codec_mp4_tags, 0 },
+    .codec_tag         = mp4_codec_tags_list,
     .check_bitstream   = mov_check_bitstream,
     .priv_class        = &psp_muxer_class,
 };
@@ -7303,7 +7311,7 @@ AVOutputFormat ff_tg2_muxer = {
     .write_trailer     = mov_write_trailer,
     .deinit            = mov_free,
     .flags             = AVFMT_GLOBALHEADER | AVFMT_ALLOW_FLUSH | AVFMT_TS_NEGATIVE,
-    .codec_tag         = (const AVCodecTag* const []){ codec_3gp_tags, 0 },
+    .codec_tag         = codec_3gp_tags_list,
     .check_bitstream   = mov_check_bitstream,
     .priv_class        = &tg2_muxer_class,
 };

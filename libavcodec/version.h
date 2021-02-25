@@ -28,8 +28,8 @@
 #include "libavutil/version.h"
 
 #define LIBAVCODEC_VERSION_MAJOR  58
-#define LIBAVCODEC_VERSION_MINOR 119
-#define LIBAVCODEC_VERSION_MICRO 100
+#define LIBAVCODEC_VERSION_MINOR 125
+#define LIBAVCODEC_VERSION_MICRO 101
 
 #define LIBAVCODEC_VERSION_INT  AV_VERSION_INT(LIBAVCODEC_VERSION_MAJOR, \
                                                LIBAVCODEC_VERSION_MINOR, \
@@ -51,9 +51,6 @@
  * at once through the bump. This improves the git bisect-ability of the change.
  */
 
-#ifndef FF_API_LOWRES
-#define FF_API_LOWRES            (LIBAVCODEC_VERSION_MAJOR < 59)
-#endif
 #ifndef FF_API_AVCTX_TIMEBASE
 #define FF_API_AVCTX_TIMEBASE    (LIBAVCODEC_VERSION_MAJOR < 59)
 #endif

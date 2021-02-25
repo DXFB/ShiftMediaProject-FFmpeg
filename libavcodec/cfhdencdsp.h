@@ -1,7 +1,4 @@
 /*
- * various simple utilities for libavformat
- * Copyright (c) 2000, 2001, 2002 Fabrice Bellard
- *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or
@@ -19,21 +16,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavutil/time_internal.h"
-#include "avformat.h"
-#include "internal.h"
+#ifndef AVCODEC_CFHDENCDSP_H
+#define AVCODEC_CFHDENCDSP_H
 
-#define ISLEAP(y) (((y) % 4 == 0) && (((y) % 100) != 0 || ((y) % 400) == 0))
-#define LEAPS_COUNT(y) ((y)/4 - (y)/100 + (y)/400)
+#include <stddef.h>
+#include <stdint.h>
 
-/* This is our own gmtime_r. It differs from its POSIX counterpart in a
-   couple of places, though. */
-struct tm *ff_brktimegm(time_t secs, struct tm *tm)
-{
-    tm = gmtime_r(&secs, tm);
+typedef struct CFHDEncDSPContext {
+    void (*horiz_filter)(int16_t *input, int16_t *low, int16_t *high,
+                         ptrdiff_t in_stride, ptrdiff_t low_stride,
+                         ptrdiff_t high_stride,
+                         int width, int height);
 
-    tm->tm_year += 1900; /* unlike gmtime_r we store complete year here */
-    tm->tm_mon  += 1;    /* unlike gmtime_r tm_mon is from 1 to 12 */
+    void (*vert_filter)(int16_t *input, int16_t *low, int16_t *high,
+                        ptrdiff_t in_stride, ptrdiff_t low_stride,
+                        ptrdiff_t high_stride,
+                        int width, int height);
+} CFHDEncDSPContext;
 
-    return tm;
-}
+void ff_cfhdencdsp_init(CFHDEncDSPContext *c);
+
+void ff_cfhdencdsp_init_x86(CFHDEncDSPContext *c);
+
+#endif /* AVCODEC_CFHDENCDSP_H */

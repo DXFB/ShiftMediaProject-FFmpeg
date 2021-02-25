@@ -1147,7 +1147,7 @@ static int mkv_write_track(AVFormatContext *s, MatroskaMuxContext *mkv,
         put_ebml_string(pb, MATROSKA_ID_TRACKNAME, tag->value);
     tag = av_dict_get(st->metadata, "language", NULL, 0);
     put_ebml_string(pb, MATROSKA_ID_TRACKLANGUAGE,
-                    tag && tag->value ? tag->value : "und");
+                    tag && tag->value[0] ? tag->value : "und");
 
     // The default value for TRACKFLAGDEFAULT is 1, so add element
     // if we need to clear it.
@@ -1191,6 +1191,13 @@ static int mkv_write_track(AVFormatContext *s, MatroskaMuxContext *mkv,
 
         put_ebml_string(pb, MATROSKA_ID_CODECID, codec_id);
     } else {
+        if (st->disposition & AV_DISPOSITION_COMMENT)
+            put_ebml_uint(pb, MATROSKA_ID_TRACKFLAGCOMMENTARY, 1);
+        if (st->disposition & AV_DISPOSITION_HEARING_IMPAIRED)
+            put_ebml_uint(pb, MATROSKA_ID_TRACKFLAGHEARINGIMPAIRED, 1);
+        if (st->disposition & AV_DISPOSITION_VISUAL_IMPAIRED)
+            put_ebml_uint(pb, MATROSKA_ID_TRACKFLAGVISUALIMPAIRED,  1);
+
         // look for a codec ID string specific to mkv to use,
         // if none are found, use AVI codes
         if (par->codec_id != AV_CODEC_ID_RAWVIDEO || par->codec_tag) {
@@ -1352,6 +1359,8 @@ static int mkv_write_track(AVFormatContext *s, MatroskaMuxContext *mkv,
             av_log(s, AV_LOG_ERROR, "Subtitle codec %d is not supported.\n", par->codec_id);
             return AVERROR(ENOSYS);
         }
+        if (mkv->mode != MODE_WEBM && st->disposition & AV_DISPOSITION_DESCRIPTIONS)
+            put_ebml_uint(pb, MATROSKA_ID_TRACKFLAGTEXTDESCRIPTIONS, 1);
 
         if (mkv->mode != MODE_WEBM || par->codec_id != AV_CODEC_ID_WEBVTT)
             native_id = MATROSKA_TRACK_TYPE_SUBTITLE;

@@ -61,6 +61,22 @@ version <next>:
 - shear filter
 - kirsch filter
 - colortemperature filter
+- colorcontrast filter
+- PFM encoder
+- colorcorrect filter
+- binka demuxer
+- XBM parser
+- xbm_pipe demuxer
+- colorize filter
+- CRI parser
+- aexciter audio filter
+- exposure video filter
+- monochrome video filter
+- setts bitstream filter
+- vif video filter
+- OpenEXR image encoder
+- Simbiosis IMX decoder
+- Simbiosis IMX demuxer
 
 
 version 4.3:

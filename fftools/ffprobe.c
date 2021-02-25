@@ -2168,8 +2168,6 @@ static void show_packet(WriterContext *w, InputFile *ifile, AVPacket *pkt, int p
     print_time("dts_time",        pkt->dts, &st->time_base);
     print_duration_ts("duration",        pkt->duration);
     print_duration_time("duration_time", pkt->duration, &st->time_base);
-    print_duration_ts("convergence_duration", pkt->convergence_duration);
-    print_duration_time("convergence_duration_time", pkt->convergence_duration, &st->time_base);
     print_val("size",             pkt->size, unit_byte_str);
     if (pkt->pos != -1) print_fmt    ("pos", "%"PRId64, pkt->pos);
     else                print_str_opt("pos", "N/A");
@@ -2633,10 +2631,6 @@ static int show_stream(WriterContext *w, AVFormatContext *fmt_ctx, int stream_id
     s = av_get_media_type_string(par->codec_type);
     if (s) print_str    ("codec_type", s);
     else   print_str_opt("codec_type", "unknown");
-#if FF_API_LAVF_AVCTX
-    if (dec_ctx)
-        print_q("codec_time_base", dec_ctx->time_base, '/');
-#endif
 
     /* print AVI/FourCC tag */
     print_str("codec_tag_string",    av_fourcc2str(par->codec_tag));
@@ -2646,13 +2640,11 @@ static int show_stream(WriterContext *w, AVFormatContext *fmt_ctx, int stream_id
     case AVMEDIA_TYPE_VIDEO:
         print_int("width",        par->width);
         print_int("height",       par->height);
-#if FF_API_LAVF_AVCTX
         if (dec_ctx) {
             print_int("coded_width",  dec_ctx->coded_width);
             print_int("coded_height", dec_ctx->coded_height);
             print_int("closed_captions", !!(dec_ctx->properties & FF_CODEC_PROPERTY_CLOSED_CAPTIONS));
         }
-#endif
         print_int("has_b_frames", par->video_delay);
         sar = av_guess_sample_aspect_ratio(fmt_ctx, stream, NULL);
         if (sar.num) {
@@ -2690,15 +2682,6 @@ static int show_stream(WriterContext *w, AVFormatContext *fmt_ctx, int stream_id
         else
             print_str_opt("field_order", "unknown");
 
-#if FF_API_PRIVATE_OPT
-        if (dec_ctx && dec_ctx->timecode_frame_start >= 0) {
-            char tcbuf[AV_TIMECODE_STR_SIZE];
-            av_timecode_make_mpeg_tc_string(tcbuf, dec_ctx->timecode_frame_start);
-            print_str("timecode", tcbuf);
-        } else {
-            print_str_opt("timecode", "N/A");
-        }
-#endif
         if (dec_ctx)
             print_int("refs", dec_ctx->refs);
         break;
@@ -2756,10 +2739,10 @@ static int show_stream(WriterContext *w, AVFormatContext *fmt_ctx, int stream_id
     print_time("duration",    stream->duration, &stream->time_base);
     if (par->bit_rate > 0)     print_val    ("bit_rate", par->bit_rate, unit_bit_per_second_str);
     else                       print_str_opt("bit_rate", "N/A");
-#if FF_API_LAVF_AVCTX
-    if (stream->codec->rc_max_rate > 0) print_val ("max_bit_rate", stream->codec->rc_max_rate, unit_bit_per_second_str);
-    else                                print_str_opt("max_bit_rate", "N/A");
-#endif
+    if (dec_ctx && dec_ctx->rc_max_rate > 0)
+        print_val ("max_bit_rate", dec_ctx->rc_max_rate, unit_bit_per_second_str);
+    else
+        print_str_opt("max_bit_rate", "N/A");
     if (dec_ctx && dec_ctx->bits_per_raw_sample > 0) print_fmt("bits_per_raw_sample", "%d", dec_ctx->bits_per_raw_sample);
     else                                             print_str_opt("bits_per_raw_sample", "N/A");
     if (stream->nb_frames) print_fmt    ("nb_frames", "%"PRId64, stream->nb_frames);
@@ -3051,12 +3034,6 @@ static int open_input_file(InputFile *ifile, const char *filename,
             }
 
             ist->dec_ctx->pkt_timebase = stream->time_base;
-            ist->dec_ctx->framerate = stream->avg_frame_rate;
-#if FF_API_LAVF_AVCTX
-            ist->dec_ctx->properties = stream->codec->properties;
-            ist->dec_ctx->coded_width = stream->codec->coded_width;
-            ist->dec_ctx->coded_height = stream->codec->coded_height;
-#endif
 
             if (avcodec_open2(ist->dec_ctx, codec, &opts) < 0) {
                 av_log(NULL, AV_LOG_WARNING, "Could not open codec for input stream %d\n",
@@ -3257,9 +3234,6 @@ static void ffprobe_show_pixel_formats(WriterContext *w)
             PRINT_PIX_FMT_FLAG(HWACCEL,   "hwaccel");
             PRINT_PIX_FMT_FLAG(PLANAR,    "planar");
             PRINT_PIX_FMT_FLAG(RGB,       "rgb");
-#if FF_API_PSEUDOPAL
-            PRINT_PIX_FMT_FLAG(PSEUDOPAL, "pseudopal");
-#endif
             PRINT_PIX_FMT_FLAG(ALPHA,     "alpha");
             writer_print_section_footer(w);
         }

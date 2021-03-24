@@ -13,7 +13,7 @@ Intel compiler can be used to add in the required C99 capability.
 *** Using the Default Supplied Projects ***
 
 The supplied project files are created using default configuration options as used by the ShiftMediaProject.
-These projects use Visual Studio 2013/2015 and require certain additional dependencies to be built and available at compile time.
+These projects use Visual Studio and require certain additional dependencies to be built and available at compile time.
 Required project dependencies include:
     bzlib
     iconv

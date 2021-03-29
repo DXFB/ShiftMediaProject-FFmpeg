@@ -73,8 +73,8 @@ struct AVFormatInternal {
      * not decoded, for example to get the codec parameters in MPEG
      * streams.
      */
-    struct AVPacketList *packet_buffer;
-    struct AVPacketList *packet_buffer_end;
+    struct PacketList *packet_buffer;
+    struct PacketList *packet_buffer_end;
 
     /* av_seek_frame() support */
     int64_t data_offset; /**< offset of the first packet */
@@ -85,13 +85,31 @@ struct AVFormatInternal {
      * be identified, as parsing cannot be done without knowing the
      * codec.
      */
-    struct AVPacketList *raw_packet_buffer;
-    struct AVPacketList *raw_packet_buffer_end;
+    struct PacketList *raw_packet_buffer;
+    struct PacketList *raw_packet_buffer_end;
     /**
      * Packets split by the parser get queued here.
      */
-    struct AVPacketList *parse_queue;
-    struct AVPacketList *parse_queue_end;
+    struct PacketList *parse_queue;
+    struct PacketList *parse_queue_end;
+    /**
+     * The generic code uses this as a temporary packet
+     * to parse packets; it may also be used for other means
+     * for short periods that are guaranteed not to overlap
+     * with calls to av_read_frame() (or ff_read_packet())
+     * or with each other.
+     * It may be used by demuxers as a replacement for
+     * stack packets (unless they call one of the aforementioned
+     * functions with their own AVFormatContext).
+     * Every user has to ensure that this packet is blank
+     * after using it.
+     */
+    AVPacket *parse_pkt;
+
+    /**
+     * Used to hold temporary packets.
+     */
+    AVPacket *pkt;
     /**
      * Remaining size available for raw_packet_buffer, in bytes.
      */
@@ -184,7 +202,6 @@ struct AVStreamInternal {
      * supported) */
     struct {
         AVBSFContext *bsf;
-        AVPacket     *pkt;
         int inited;
     } extract_extradata;
 
@@ -347,7 +364,7 @@ struct AVStreamInternal {
     /**
      * last packet in packet_buffer for this stream when muxing.
      */
-    struct AVPacketList *last_in_packet_buffer;
+    struct PacketList *last_in_packet_buffer;
 };
 
 #ifdef __GNUC__
@@ -408,6 +425,14 @@ uint64_t ff_ntp_time(void);
  * @return the formatted NTP time stamp
  */
 uint64_t ff_get_formatted_ntp_time(uint64_t ntp_time_us);
+
+/**
+ * Parse the NTP time in micro seconds (since NTP epoch).
+ *
+ * @param ntp_ts NTP time stamp formatted as per the RFC-5905.
+ * @return the time in micro seconds (since NTP epoch)
+ */
+uint64_t ff_parse_ntp_time(uint64_t ntp_ts);
 
 /**
  * Append the media-specific SDP fragment for the media stream c
@@ -554,7 +579,11 @@ void ff_configure_buffers_for_index(AVFormatContext *s, int64_t time_tolerance);
  *
  * @return AVChapter or NULL on error
  */
+#if FF_API_CHAPTER_ID_INT
 AVChapter *avpriv_new_chapter(AVFormatContext *s, int id, AVRational time_base,
+#else
+AVChapter *avpriv_new_chapter(AVFormatContext *s, int64_t id, AVRational time_base,
+#endif
                               int64_t start, int64_t end, const char *title);
 
 /**

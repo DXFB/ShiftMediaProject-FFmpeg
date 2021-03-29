@@ -120,6 +120,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
 }
 #endif
 
+#if FF_API_COLORSPACE_NAME
 const char *av_get_colorspace_name(enum AVColorSpace val)
 {
     static const char * const name[] = {
@@ -135,7 +136,7 @@ const char *av_get_colorspace_name(enum AVColorSpace val)
         return NULL;
     return name[val];
 }
-
+#endif
 static void get_frame_defaults(AVFrame *frame)
 {
     if (frame->extended_data != frame->data)
@@ -725,7 +726,7 @@ AVFrameSideData *av_frame_new_side_data_from_buf(AVFrame *frame,
 
 AVFrameSideData *av_frame_new_side_data(AVFrame *frame,
                                         enum AVFrameSideDataType type,
-                                        int size)
+                                        buffer_size_t size)
 {
     AVFrameSideData *ret;
     AVBufferRef *buf = av_buffer_alloc(size);

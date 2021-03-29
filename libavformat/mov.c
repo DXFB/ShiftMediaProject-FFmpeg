@@ -404,7 +404,7 @@ retry:
     if (c->itunes_metadata && atom.size > 8) {
         int data_size = avio_rb32(pb);
         int tag = avio_rl32(pb);
-        if (tag == MKTAG('d','a','t','a') && data_size <= atom.size) {
+        if (tag == MKTAG('d','a','t','a') && data_size <= atom.size && data_size >= 16) {
             data_type = avio_rb32(pb); // type
             avio_rb32(pb); // unknown
             str_size = data_size - 16;
@@ -1279,6 +1279,10 @@ static int64_t get_frag_time(MOVFragmentIndex *frag_index,
 
     if (track_id >= 0) {
         frag_stream_info = get_frag_stream_info(frag_index, index, track_id);
+        if (frag_stream_info->sidx_pts != AV_NOPTS_VALUE)
+            return frag_stream_info->sidx_pts;
+        if (frag_stream_info->first_tfra_pts != AV_NOPTS_VALUE)
+            return frag_stream_info->first_tfra_pts;
         return frag_stream_info->sidx_pts;
     }
 
@@ -2259,7 +2263,7 @@ static void mov_parse_stsd_audio(MOVContext *c, AVIOContext *pb,
     }
 
     bits_per_sample = av_get_bits_per_sample(st->codecpar->codec_id);
-    if (bits_per_sample) {
+    if (bits_per_sample && (bits_per_sample >> 3) * (uint64_t)st->codecpar->channels <= INT_MAX) {
         st->codecpar->bits_per_coded_sample = bits_per_sample;
         sc->sample_size = (bits_per_sample >> 3) * st->codecpar->channels;
     }
@@ -5047,6 +5051,7 @@ static int mov_read_sidx(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     int64_t stream_size = avio_size(pb);
     int64_t offset = av_sat_add64(avio_tell(pb), atom.size), pts, timestamp;
     uint8_t version, is_complete;
+    int64_t offadd;
     unsigned i, j, track_id, item_count;
     AVStream *st = NULL;
     AVStream *ref_st = NULL;
@@ -5084,11 +5089,15 @@ static int mov_read_sidx(MOVContext *c, AVIOContext *pb, MOVAtom atom)
 
     if (version == 0) {
         pts = avio_rb32(pb);
-        offset += avio_rb32(pb);
+        offadd= avio_rb32(pb);
     } else {
         pts = avio_rb64(pb);
-        offset += avio_rb64(pb);
+        offadd= avio_rb64(pb);
     }
+    if (av_sat_add64(offset, offadd) != offset + (uint64_t)offadd)
+        return AVERROR_INVALIDDATA;
+
+    offset += (uint64_t)offadd;
 
     avio_rb16(pb); // reserved
 
@@ -5111,6 +5120,8 @@ static int mov_read_sidx(MOVContext *c, AVIOContext *pb, MOVAtom atom)
         if (frag_stream_info)
             frag_stream_info->sidx_pts = timestamp;
 
+        if (av_sat_add64(offset, size) != offset + size)
+            return AVERROR_INVALIDDATA;
         offset += size;
         pts += duration;
     }
@@ -6375,7 +6386,8 @@ static int mov_read_pssh(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     AVStream *st;
     uint8_t *side_data, *extra_data, *old_side_data;
     size_t side_data_size;
-    int ret = 0, old_side_data_size;
+    buffer_size_t old_side_data_size;
+    int ret = 0;
     unsigned int version, kid_count, extra_data_size, alloc_size = 0;
 
     if (c->fc->nb_streams < 1)
@@ -7109,7 +7121,7 @@ static int mov_probe(const AVProbeData *p)
         if ((offset + 8) > (unsigned int)p->buf_size)
             break;
         size = AV_RB32(p->buf + offset);
-        if (size == 1 && offset + 16 > (unsigned int)p->buf_size) {
+        if (size == 1 && offset + 16 <= (unsigned int)p->buf_size) {
             size = AV_RB64(p->buf+offset + 8);
             minsize = 16;
         } else if (size == 0) {
@@ -7935,6 +7947,8 @@ static int mov_read_packet(AVFormatContext *s, AVPacket *pkt)
                    sc->ffindex, sample->pos);
             if (should_retry(sc->pb, ret64)) {
                 mov_current_sample_dec(sc);
+            } else if (ret64 < 0) {
+                return (int)ret64;
             }
             return AVERROR_INVALIDDATA;
         }

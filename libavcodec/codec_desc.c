@@ -1849,6 +1849,13 @@ static const AVCodecDescriptor codec_descriptors[] = {
         .long_name = NULL_IF_CONFIG_SMALL("Simbiosis Interactive IMX Video"),
         .props     = AV_CODEC_PROP_LOSSY,
     },
+    {
+        .id        = AV_CODEC_ID_SGA_VIDEO,
+        .type      = AVMEDIA_TYPE_VIDEO,
+        .name      = "sga",
+        .long_name = NULL_IF_CONFIG_SMALL("Digital Pictures SGA Video"),
+        .props     = AV_CODEC_PROP_LOSSY,
+    },
 
     /* various PCM "codecs" */
     {
@@ -2095,6 +2102,13 @@ static const AVCodecDescriptor codec_descriptors[] = {
         .name      = "pcm_vidc",
         .long_name = NULL_IF_CONFIG_SMALL("PCM Archimedes VIDC"),
         .props     = AV_CODEC_PROP_INTRA_ONLY | AV_CODEC_PROP_LOSSY,
+    },
+    {
+        .id        = AV_CODEC_ID_PCM_SGA,
+        .type      = AVMEDIA_TYPE_AUDIO,
+        .name      = "pcm_sga",
+        .long_name = NULL_IF_CONFIG_SMALL("PCM SGA"),
+        .props     = AV_CODEC_PROP_INTRA_ONLY | AV_CODEC_PROP_LOSSLESS,
     },
 
     /* various ADPCM codecs */

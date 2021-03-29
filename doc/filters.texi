@@ -9818,12 +9818,6 @@ specified.
 Specify the width and height of the logo to clear. They must be
 specified.
 
-@item band, t
-Specify the thickness of the fuzzy edge of the rectangle (added to
-@var{w} and @var{h}). The default value is 1. This option is
-deprecated, setting higher values should no longer be necessary and
-is not recommended.
-
 @item show
 When set to 1, a green rectangle is drawn on the screen to simplify
 finding the right @var{x}, @var{y}, @var{w}, and @var{h} parameters.
@@ -9841,9 +9835,9 @@ compute the interpolated pixel values inside the rectangle.
 @itemize
 @item
 Set a rectangle covering the area with top left corner coordinates 0,0
-and size 100x77, and a band of size 10:
+and size 100x77:
 @example
-delogo=x=0:y=0:w=100:h=77:band=10
+delogo=x=0:y=0:w=100:h=77
 @end example
 
 @end itemize
@@ -11128,7 +11122,7 @@ will try to use a good random seed on a best effort basis.
 
 @item pal8
 Set pal8 output pixel format. This option does not work with codebook
-length greater than 256.
+length greater than 256. Default is disabled.
 @end table
 
 @section entropy
@@ -13382,6 +13376,28 @@ By default value is 0.
 
 The @code{hysteresis} filter also supports the @ref{framesync} options.
 
+@section identity
+
+Obtain the identity score between two input videos.
+
+This filter takes two input videos.
+
+Both input videos must have the same resolution and pixel format for
+this filter to work correctly. Also it assumes that both inputs
+have the same number of frames, which are compared one by one.
+
+The obtained per component, average, min and max identity score is printed through
+the logging system.
+
+The filter stores the calculated identity scores of each frame in frame metadata.
+
+In the below example the input file @file{main.mpg} being processed is compared
+with the reference file @file{ref.mpg}.
+
+@example
+ffmpeg -i main.mpg -i ref.mpg -lavfi identity -f null -
+@end example
+
 @section idet
 
 Detect video interlacing type.
@@ -14779,7 +14795,7 @@ Mix several video input streams into one video stream.
 A description of the accepted options follows.
 
 @table @option
-@item nb_inputs
+@item inputs
 The number of inputs. If unspecified, it defaults to 2.
 
 @item weights
@@ -14881,6 +14897,27 @@ Default value for @option{hi} is 64*12, default value for @option{lo} is
 64*5, and default value for @option{frac} is 0.33.
 @end table
 
+@section msad
+
+Obtain the MSAD (Mean Sum of Absolute Differences) between two input videos.
+
+This filter takes two input videos.
+
+Both input videos must have the same resolution and pixel format for
+this filter to work correctly. Also it assumes that both inputs
+have the same number of frames, which are compared one by one.
+
+The obtained per component, average, min and max MSAD is printed through
+the logging system.
+
+The filter stores the calculated MSAD of each frame in frame metadata.
+
+In the below example the input file @file{main.mpg} being processed is compared
+with the reference file @file{ref.mpg}.
+
+@example
+ffmpeg -i main.mpg -i ref.mpg -lavfi msad -f null -
+@end example
 
 @section negate
 
@@ -22127,7 +22164,7 @@ Set the x and y expression. Default is 0.
 @item d
 Set the duration expression in number of frames.
 This sets for how many number of frames effect will last for
-single input image.
+single input image. Default is 90.
 
 @item s
 Set the output image size, default is 'hd720'.

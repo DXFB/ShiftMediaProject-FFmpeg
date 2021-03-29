@@ -1,5 +1,6 @@
 /*
- * copyright (C) 2006 Corey Hickey
+ * TTML subtitle encoder shared functionality
+ * Copyright (c) 2020 24i
  *
  * This file is part of FFmpeg.
  *
@@ -18,19 +19,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVCODEC_LIBXVID_H
-#define AVCODEC_LIBXVID_H
+#ifndef AVCODEC_TTMLENC_H
+#define AVCODEC_TTMLENC_H
 
-/**
- * @file
- * common functions for use with the Xvid wrappers
- */
+#define TTMLENC_EXTRADATA_SIGNATURE "lavc-ttmlenc"
+#define TTMLENC_EXTRADATA_SIGNATURE_SIZE (sizeof(TTMLENC_EXTRADATA_SIGNATURE) - 1)
 
-struct MpegEncContext;
-
-/* rate control */
-int ff_xvid_rate_control_init(struct MpegEncContext *s);
-void ff_xvid_rate_control_uninit(struct MpegEncContext *s);
-float ff_xvid_rate_estimate_qscale(struct MpegEncContext *s, int dry_run);
-
-#endif /* AVCODEC_LIBXVID_H */
+#endif /* AVCODEC_TTMLENC_H */

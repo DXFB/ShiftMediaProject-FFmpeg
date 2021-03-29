@@ -2788,6 +2788,9 @@ static int mxf_read_identification_metadata(void *arg, AVIOContext *pb, int tag,
     case 0x3C02:
         SET_STR_METADATA(pb, "product_name", str);
         break;
+    case 0x3C03:
+        SET_VERSION_METADATA(pb, "product_version_num", major, minor, tertiary, patch, release, str);
+        break;
     case 0x3C04:
         SET_STR_METADATA(pb, "product_version", str);
         break;
@@ -2798,7 +2801,7 @@ static int mxf_read_identification_metadata(void *arg, AVIOContext *pb, int tag,
         SET_TS_METADATA(pb, "modification_date", ts, str);
         break;
     case 0x3C07:
-        SET_VERSION_METADATA(pb, "toolkit_version", major, minor, tertiary, patch, release, str);
+        SET_VERSION_METADATA(pb, "toolkit_version_num", major, minor, tertiary, patch, release, str);
         break;
     case 0x3C08:
         SET_STR_METADATA(pb, "application_platform", str);
@@ -2886,21 +2889,32 @@ static int mxf_metadataset_init(MXFMetadataSet *ctx, enum MXFMetadataSetType typ
 static int mxf_read_local_tags(MXFContext *mxf, KLVPacket *klv, MXFMetadataReadFunc *read_child, int ctx_size, enum MXFMetadataSetType type)
 {
     AVIOContext *pb = mxf->fc->pb;
-    MXFMetadataSet *ctx = ctx_size ? av_mallocz(ctx_size) : mxf;
     uint64_t klv_end = avio_tell(pb) + klv->length;
+    MXFMetadataSet *meta;
+    void *ctx;
 
-    if (!ctx)
-        return AVERROR(ENOMEM);
-    if (ctx_size)
-        mxf_metadataset_init(ctx, type);
+    if (ctx_size) {
+        meta = av_mallocz(ctx_size);
+        if (!meta)
+            return AVERROR(ENOMEM);
+        ctx  = meta;
+        mxf_metadataset_init(meta, type);
+    } else {
+        meta = NULL;
+        ctx  = mxf;
+    }
     while (avio_tell(pb) + 4 < klv_end && !avio_feof(pb)) {
         int ret;
         int tag = avio_rb16(pb);
         int size = avio_rb16(pb); /* KLV specified by 0x53 */
         int64_t next = avio_tell(pb);
         UID uid = {0};
-        if (next < 0 || next > INT64_MAX - size)
+        if (next < 0 || next > INT64_MAX - size) {
+            if (meta) {
+                mxf_free_metadataset(&meta, 1);
+            }
             return next < 0 ? next : AVERROR_INVALIDDATA;
+        }
         next += size;
 
         av_log(mxf->fc, AV_LOG_TRACE, "local tag %#04x size %d\n", tag, size);
@@ -2919,19 +2933,20 @@ static int mxf_read_local_tags(MXFContext *mxf, KLVPacket *klv, MXFMetadataReadF
                 }
             }
         }
-        if (ctx_size && tag == 0x3C0A) {
-            avio_read(pb, ctx->uid, 16);
+        if (meta && tag == 0x3C0A) {
+            avio_read(pb, meta->uid, 16);
         } else if ((ret = read_child(ctx, pb, tag, size, uid, -1)) < 0) {
-            if (ctx_size)
-                mxf_free_metadataset(&ctx, 1);
+            if (meta) {
+                mxf_free_metadataset(&meta, 1);
+            }
             return ret;
         }
 
         /* Accept the 64k local set limit being exceeded (Avid). Don't accept
          * it extending past the end of the KLV though (zzuf5.mxf). */
         if (avio_tell(pb) > klv_end) {
-            if (ctx_size) {
-                mxf_free_metadataset(&ctx, 1);
+            if (meta) {
+                mxf_free_metadataset(&meta, 1);
             }
 
             av_log(mxf->fc, AV_LOG_ERROR,
@@ -2941,7 +2956,7 @@ static int mxf_read_local_tags(MXFContext *mxf, KLVPacket *klv, MXFMetadataReadF
         } else if (avio_tell(pb) <= next)   /* only seek forward, else this can loop for a long time */
             avio_seek(pb, next, SEEK_SET);
     }
-    return ctx_size ? mxf_add_metadata_set(mxf, &ctx) : 0;
+    return meta ? mxf_add_metadata_set(mxf, &meta) : 0;
 }
 
 /**

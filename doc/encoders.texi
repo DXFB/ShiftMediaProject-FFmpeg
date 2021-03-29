@@ -1268,6 +1268,44 @@ disabled
 A description of some of the currently available video encoders
 follows.
 
+@section GIF
+
+GIF image/animation encoder.
+
+@subsection Options
+
+@table @option
+@item gifflags @var{integer}
+Sets the flags used for GIF encoding.
+
+@table @option
+@item offsetting
+Enables picture offsetting.
+
+Default is enabled.
+
+@item transdiff
+Enables transparency detection between frames.
+
+Default is enabled.
+
+@end table
+
+@item gifimage @var{integer}
+Enables encoding one full GIF image per frame, rather than an animated GIF.
+
+Default value is @option{0}.
+
+@item global_palette @var{integer}
+Writes a palette to the global GIF header where feasible.
+
+If disabled, every frame will always have a palette written, even if there
+is a global palette supplied.
+
+Default value is @option{1}.
+
+@end table
+
 @section Hap
 
 Vidvox Hap video encoder.
@@ -2267,9 +2305,7 @@ pixel formats as input instead of YUV.
 @subsection Supported Pixel Formats
 
 x264 supports 8- to 10-bit color spaces. The exact bit depth is controlled at
-x264's configure time. FFmpeg only supports one bit depth in one particular
-build. In other words, it is not possible to build one FFmpeg with multiple
-versions of x264 with different bit depths.
+x264's configure time.
 
 @subsection Options
 

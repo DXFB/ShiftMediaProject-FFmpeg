@@ -254,6 +254,7 @@ typedef struct MatroskaTrack {
     uint64_t flag_hearingimpaired;
     uint64_t flag_visualimpaired;
     uint64_t flag_textdescriptions;
+    CountedElement flag_original;
     uint64_t seek_preroll;
     MatroskaTrackVideo video;
     MatroskaTrackAudio audio;
@@ -380,9 +381,13 @@ typedef struct MatroskaDemuxContext {
     /* byte position of the segment inside the stream */
     int64_t segment_start;
 
+    /* This packet coincides with AVFormatInternal.parse_pkt
+     * and is not owned by us. */
+    AVPacket *pkt;
+
     /* the packet queue */
-    AVPacketList *queue;
-    AVPacketList *queue_end;
+    PacketList *queue;
+    PacketList *queue_end;
 
     int done;
 
@@ -413,7 +418,7 @@ typedef struct MatroskaDemuxContext {
 // incomplete type (6.7.2 in C90, 6.9.2 in C99).
 // Removing the sizes breaks MSVC.
 static EbmlSyntax ebml_syntax[3], matroska_segment[9], matroska_track_video_color[15], matroska_track_video[19],
-                  matroska_track[31], matroska_track_encoding[6], matroska_track_encodings[2],
+                  matroska_track[32], matroska_track_encoding[6], matroska_track_encodings[2],
                   matroska_track_combine_planes[2], matroska_track_operation[2], matroska_tracks[2],
                   matroska_attachments[2], matroska_chapter_entry[9], matroska_chapter[6], matroska_chapters[2],
                   matroska_index_entry[3], matroska_index[2], matroska_tag[3], matroska_tags[2], matroska_seekhead[2],
@@ -581,6 +586,7 @@ static EbmlSyntax matroska_track[] = {
     { MATROSKA_ID_TRACKFLAGHEARINGIMPAIRED, EBML_UINT, 0, 0, offsetof(MatroskaTrack, flag_hearingimpaired), { .u = 0 } },
     { MATROSKA_ID_TRACKFLAGVISUALIMPAIRED, EBML_UINT, 0, 0, offsetof(MatroskaTrack, flag_visualimpaired), { .u = 0 } },
     { MATROSKA_ID_TRACKFLAGTEXTDESCRIPTIONS, EBML_UINT, 0, 0, offsetof(MatroskaTrack, flag_textdescriptions), { .u = 0 } },
+    { MATROSKA_ID_TRACKFLAGORIGINAL,     EBML_UINT,  1, 0, offsetof(MatroskaTrack, flag_original), {.u = 0 } },
     { MATROSKA_ID_TRACKVIDEO,            EBML_NEST,  0, 0, offsetof(MatroskaTrack, video),        { .n = matroska_track_video } },
     { MATROSKA_ID_TRACKAUDIO,            EBML_NEST,  0, 0, offsetof(MatroskaTrack, audio),        { .n = matroska_track_audio } },
     { MATROSKA_ID_TRACKOPERATION,        EBML_NEST,  0, 0, offsetof(MatroskaTrack, operation),    { .n = matroska_track_operation } },
@@ -2470,8 +2476,7 @@ static int matroska_parse_tracks(AVFormatContext *s)
                                  encodings[0].compression.settings.size);
 
         for (j = 0; ff_mkv_codec_tags[j].id != AV_CODEC_ID_NONE; j++) {
-            if (!strncmp(ff_mkv_codec_tags[j].str, track->codec_id,
-                         strlen(ff_mkv_codec_tags[j].str))) {
+            if (av_strstart(track->codec_id, ff_mkv_codec_tags[j].str, NULL)) {
                 codec_id = ff_mkv_codec_tags[j].id;
                 break;
             }
@@ -2756,6 +2761,9 @@ static int matroska_parse_tracks(AVFormatContext *s)
             st->disposition |= AV_DISPOSITION_HEARING_IMPAIRED;
         if (track->flag_visualimpaired)
             st->disposition |= AV_DISPOSITION_VISUAL_IMPAIRED;
+        if (track->flag_original.count > 0)
+            st->disposition |= track->flag_original.el.u ? AV_DISPOSITION_ORIGINAL
+                                                         : AV_DISPOSITION_DUB;
 
         if (!st->codecpar->extradata) {
             if (extradata) {
@@ -2939,6 +2947,8 @@ static int matroska_read_header(AVFormatContext *s)
     }
     ebml_free(ebml_syntax, &ebml);
 
+    matroska->pkt = s->internal->parse_pkt;
+
     /* The next thing is a segment. */
     pos = avio_tell(matroska->ctx->pb);
     res = ebml_parse(matroska, matroska_segments, matroska);
@@ -2949,6 +2959,8 @@ static int matroska_read_header(AVFormatContext *s)
             goto fail;
         pos = avio_tell(matroska->ctx->pb);
         res = ebml_parse(matroska, matroska_segment, matroska);
+        if (res == AVERROR(EIO)) // EOF is translated to EIO, this exists the loop on EOF
+            goto fail;
     }
     /* Set data_offset as it might be needed later by seek_frame_generic. */
     if (matroska->current_id == MATROSKA_ID_CLUSTER)
@@ -2986,8 +2998,7 @@ static int matroska_read_header(AVFormatContext *s)
             st->codecpar->codec_id   = AV_CODEC_ID_NONE;
 
             for (i = 0; mkv_image_mime_tags[i].id != AV_CODEC_ID_NONE; i++) {
-                if (!strncmp(mkv_image_mime_tags[i].str, attachments[j].mime,
-                             strlen(mkv_image_mime_tags[i].str))) {
+                if (av_strstart(attachments[j].mime, mkv_image_mime_tags[i].str, NULL)) {
                     st->codecpar->codec_id = mkv_image_mime_tags[i].id;
                     break;
                 }
@@ -3001,7 +3012,7 @@ static int matroska_read_header(AVFormatContext *s)
                 st->disposition         |= AV_DISPOSITION_ATTACHED_PIC;
                 st->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
 
-                av_init_packet(pkt);
+                av_packet_unref(pkt);
                 pkt->buf          = attachments[j].bin.buf;
                 attachments[j].bin.buf = NULL;
                 pkt->data         = attachments[j].bin.data;
@@ -3016,8 +3027,7 @@ static int matroska_read_header(AVFormatContext *s)
                        attachments[j].bin.size);
 
                 for (i = 0; mkv_mime_tags[i].id != AV_CODEC_ID_NONE; i++) {
-                    if (!strncmp(mkv_mime_tags[i].str, attachments[j].mime,
-                                strlen(mkv_mime_tags[i].str))) {
+                    if (av_strstart(attachments[j].mime, mkv_mime_tags[i].str, NULL)) {
                         st->codecpar->codec_id = mkv_mime_tags[i].id;
                         break;
                     }
@@ -3234,7 +3244,7 @@ static int matroska_parse_rm_audio(MatroskaDemuxContext *matroska,
 
     while (track->audio.pkt_cnt) {
         int ret;
-        AVPacket pktl, *pkt = &pktl;
+        AVPacket *pkt = matroska->pkt;
 
         ret = av_new_packet(pkt, a);
         if (ret < 0) {
@@ -3371,7 +3381,7 @@ static int matroska_parse_webvtt(MatroskaDemuxContext *matroska,
                                  uint64_t duration,
                                  int64_t pos)
 {
-    AVPacket pktl, *pkt = &pktl;
+    AVPacket *pkt = matroska->pkt;
     uint8_t *id, *settings, *text, *buf;
     int id_len, settings_len, text_len;
     uint8_t *p, *q;
@@ -3488,7 +3498,7 @@ static int matroska_parse_frame(MatroskaDemuxContext *matroska,
 {
     uint8_t *pkt_data = data;
     int res = 0;
-    AVPacket pktl, *pkt = &pktl;
+    AVPacket *pkt = matroska->pkt;
 
     if (st->codecpar->codec_id == AV_CODEC_ID_WAVPACK) {
         res = matroska_parse_wavpack(track, &pkt_data, &pkt_size);
@@ -3518,7 +3528,6 @@ static int matroska_parse_frame(MatroskaDemuxContext *matroska,
     if (!pkt_size && !additional_size)
         goto no_output;
 
-    av_init_packet(pkt);
     if (!buf)
         pkt->buf = av_buffer_create(pkt_data, pkt_size + AV_INPUT_BUFFER_PADDING_SIZE,
                                     NULL, NULL, 0);
@@ -4317,7 +4326,7 @@ static const AVClass webm_dash_class = {
 AVInputFormat ff_matroska_demuxer = {
     .name           = "matroska,webm",
     .long_name      = NULL_IF_CONFIG_SMALL("Matroska / WebM"),
-    .extensions     = "mkv,mk3d,mka,mks",
+    .extensions     = "mkv,mk3d,mka,mks,webm",
     .priv_data_size = sizeof(MatroskaDemuxContext),
     .read_probe     = matroska_probe,
     .read_header    = matroska_read_header,

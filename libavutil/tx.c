@@ -91,7 +91,7 @@ int ff_tx_gen_compound_mapping(AVTXContext *s)
     return 0;
 }
 
-int ff_tx_gen_ptwo_revtab(AVTXContext *s)
+int ff_tx_gen_ptwo_revtab(AVTXContext *s, int invert_lookup)
 {
     const int m = s->m, inv = s->inv;
 
@@ -101,7 +101,10 @@ int ff_tx_gen_ptwo_revtab(AVTXContext *s)
     /* Default */
     for (int i = 0; i < m; i++) {
         int k = -split_radix_permutation(i, m, inv) & (m - 1);
-        s->revtab[k] = i;
+        if (invert_lookup)
+            s->revtab[i] = k;
+        else
+            s->revtab[k] = i;
     }
 
     return 0;
@@ -114,8 +117,7 @@ int ff_tx_gen_ptwo_inplace_revtab_idx(AVTXContext *s)
     if (!(s->inplace_idx = av_malloc(s->m*sizeof(*s->inplace_idx))))
         return AVERROR(ENOMEM);
 
-    for (int d = 1; d < s->m; d++) {
-        int src = d, start_src = src;
+    for (int src = 1; src < s->m; src++) {
         int dst = s->revtab[src];
         int found = 0;
 
@@ -123,7 +125,6 @@ int ff_tx_gen_ptwo_inplace_revtab_idx(AVTXContext *s)
             continue;
 
         do {
-            src = dst;
             for (int j = 0; j < nb_inplace_idx; j++) {
                 if (dst == s->inplace_idx[j]) {
                     found = 1;
@@ -131,10 +132,10 @@ int ff_tx_gen_ptwo_inplace_revtab_idx(AVTXContext *s)
                 }
             }
             dst = s->revtab[dst];
-        } while (dst != start_src && !found);
+        } while (dst != src && !found);
 
         if (!found)
-            s->inplace_idx[nb_inplace_idx++] = start_src;
+            s->inplace_idx[nb_inplace_idx++] = src;
     }
 
     s->inplace_idx[nb_inplace_idx++] = 0;

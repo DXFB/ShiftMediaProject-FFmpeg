@@ -29,6 +29,7 @@ HEADERS = ac3_parser.h                                                  \
 OBJS = ac3_parser.o                                                     \
        adts_parser.o                                                    \
        allcodecs.o                                                      \
+       avcodec.o                                                        \
        avdct.o                                                          \
        avpacket.o                                                       \
        avpicture.o                                                      \
@@ -37,6 +38,7 @@ OBJS = ac3_parser.o                                                     \
        bitstream_filters.o                                              \
        bsf.o                                                            \
        codec_desc.o                                                     \
+       codec_par.o                                                      \
        d3d11va.o                                                        \
        decode.o                                                         \
        dirac.o                                                          \
@@ -609,6 +611,7 @@ OBJS-$(CONFIG_SANM_DECODER)            += sanm.o
 OBJS-$(CONFIG_SCPR_DECODER)            += scpr.o
 OBJS-$(CONFIG_SCREENPRESSO_DECODER)    += screenpresso.o
 OBJS-$(CONFIG_SDX2_DPCM_DECODER)       += dpcm.o
+OBJS-$(CONFIG_SGA_DECODER)             += sga.o
 OBJS-$(CONFIG_SGI_DECODER)             += sgidec.o
 OBJS-$(CONFIG_SGI_ENCODER)             += sgienc.o rle.o
 OBJS-$(CONFIG_SGIRLE_DECODER)          += sgirledec.o
@@ -671,6 +674,7 @@ OBJS-$(CONFIG_TSCC_DECODER)            += tscc.o msrledec.o
 OBJS-$(CONFIG_TSCC2_DECODER)           += tscc2.o
 OBJS-$(CONFIG_TTA_DECODER)             += tta.o ttadata.o ttadsp.o
 OBJS-$(CONFIG_TTA_ENCODER)             += ttaenc.o ttaencdsp.o ttadata.o
+OBJS-$(CONFIG_TTML_ENCODER)            += ttmlenc.o ass_split.o
 OBJS-$(CONFIG_TWINVQ_DECODER)          += twinvqdec.o twinvq.o metasound_data.o
 OBJS-$(CONFIG_TXD_DECODER)             += txd.o
 OBJS-$(CONFIG_ULTI_DECODER)            += ulti.o
@@ -830,6 +834,7 @@ OBJS-$(CONFIG_PCM_S64BE_DECODER)          += pcm.o
 OBJS-$(CONFIG_PCM_S64BE_ENCODER)          += pcm.o
 OBJS-$(CONFIG_PCM_S64LE_DECODER)          += pcm.o
 OBJS-$(CONFIG_PCM_S64LE_ENCODER)          += pcm.o
+OBJS-$(CONFIG_PCM_SGA_DECODER)            += pcm.o
 OBJS-$(CONFIG_PCM_U8_DECODER)             += pcm.o
 OBJS-$(CONFIG_PCM_U8_ENCODER)             += pcm.o
 OBJS-$(CONFIG_PCM_U16BE_DECODER)          += pcm.o
@@ -1202,7 +1207,6 @@ SKIPHEADERS-$(CONFIG_MEDIAFOUNDATION)  += mf_utils.h
 SKIPHEADERS-$(CONFIG_NVDEC)            += nvdec.h
 SKIPHEADERS-$(CONFIG_NVENC)            += nvenc.h
 SKIPHEADERS-$(CONFIG_QSV)              += qsv.h qsv_internal.h
-SKIPHEADERS-$(CONFIG_QSVDEC)           += qsvdec.h
 SKIPHEADERS-$(CONFIG_QSVENC)           += qsvenc.h
 SKIPHEADERS-$(CONFIG_XVMC)             += xvmc.h
 SKIPHEADERS-$(CONFIG_VAAPI)            += vaapi_decode.h vaapi_hevc.h vaapi_encode.h
@@ -1217,7 +1221,6 @@ TESTPROGS = avpacket                                                    \
             imgconvert                                                  \
             jpeg2000dwt                                                 \
             mathops                                                    \
-            options                                                     \
             utils                                                       \
 
 TESTPROGS-$(CONFIG_CABAC)                 += cabac

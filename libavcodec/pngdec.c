@@ -1080,10 +1080,6 @@ static int handle_p_frame_apng(AVCodecContext *avctx, PNGDecContext *s,
         return AVERROR_PATCHWELCOME;
     }
 
-    buffer = av_malloc_array(s->image_linesize, s->height);
-    if (!buffer)
-        return AVERROR(ENOMEM);
-
     ff_thread_await_progress(&s->last_picture, INT_MAX, 0);
 
     // need to reset a rectangle to background:
@@ -1099,7 +1095,9 @@ static int handle_p_frame_apng(AVCodecContext *avctx, PNGDecContext *s,
         }
     }
 
-    memcpy(buffer, s->last_picture.f->data[0], s->image_linesize * s->height);
+    buffer = av_memdup(s->last_picture.f->data[0], s->image_linesize * s->height);
+    if (!buffer)
+        return AVERROR(ENOMEM);
 
     // Perform blending
     if (s->blend_op == APNG_BLEND_OP_SOURCE) {
@@ -1179,7 +1177,7 @@ static int handle_p_frame_apng(AVCodecContext *avctx, PNGDecContext *s,
 }
 
 static int decode_frame_common(AVCodecContext *avctx, PNGDecContext *s,
-                               AVFrame *p, AVPacket *avpkt)
+                               AVFrame *p, const AVPacket *avpkt)
 {
     const AVCRC *crc_tab = av_crc_get_table(AV_CRC_32_IEEE_LE);
     AVDictionary **metadatap = NULL;

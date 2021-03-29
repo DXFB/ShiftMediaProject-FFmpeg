@@ -220,7 +220,11 @@ enum AVActiveFormatDescription {
 typedef struct AVFrameSideData {
     enum AVFrameSideDataType type;
     uint8_t *data;
+#if FF_API_BUFFER_SIZE_T
     int      size;
+#else
+    size_t   size;
+#endif
     AVDictionary *metadata;
     AVBufferRef *buf;
 } AVFrameSideData;
@@ -750,12 +754,15 @@ attribute_deprecated
 void    av_frame_set_color_range(AVFrame *frame, enum AVColorRange val);
 #endif
 
+#if FF_API_COLORSPACE_NAME
 /**
  * Get the name of a colorspace.
  * @return a static string identifying the colorspace; can be NULL.
+ * @deprecated use av_color_space_name()
  */
+attribute_deprecated
 const char *av_get_colorspace_name(enum AVColorSpace val);
-
+#endif
 /**
  * Allocate an AVFrame and set its fields to default values.  The resulting
  * struct must be freed using av_frame_free().
@@ -913,7 +920,11 @@ AVBufferRef *av_frame_get_plane_buffer(AVFrame *frame, int plane);
  */
 AVFrameSideData *av_frame_new_side_data(AVFrame *frame,
                                         enum AVFrameSideDataType type,
+#if FF_API_BUFFER_SIZE_T
                                         int size);
+#else
+                                        size_t size);
+#endif
 
 /**
  * Add a new side data to a frame from an existing AVBufferRef

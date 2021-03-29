@@ -1184,7 +1184,11 @@ typedef struct AVProgram {
                                          change dynamically at runtime. */
 
 typedef struct AVChapter {
+#if FF_API_CHAPTER_ID_INT
     int id;                 ///< unique ID to identify the chapter
+#else
+    int64_t id;             ///< unique ID to identify the chapter
+#endif
     AVRational time_base;   ///< time base in which the start/end timestamps are specified
     int64_t start, end;     ///< chapter start/end time in time_base units
     AVDictionary *metadata;
@@ -1379,7 +1383,9 @@ typedef struct AVFormatContext {
 #define AVFMT_FLAG_MP4A_LATM    0x8000 ///< Deprecated, does nothing.
 #endif
 #define AVFMT_FLAG_SORT_DTS    0x10000 ///< try to interleave outputted packets by dts (using this flag can slow demuxing down)
-#define AVFMT_FLAG_PRIV_OPT    0x20000 ///< Enable use of private options by delaying codec open (this could be made default once all code is converted)
+#if FF_API_LAVF_PRIV_OPT
+#define AVFMT_FLAG_PRIV_OPT    0x20000 ///< Enable use of private options by delaying codec open (deprecated, will do nothing once av_demuxer_open() is removed)
+#endif
 #if FF_API_LAVF_KEEPSIDE_FLAG
 #define AVFMT_FLAG_KEEP_SIDE_DATA 0x40000 ///< Deprecated, does nothing.
 #endif
@@ -2081,7 +2087,11 @@ int av_stream_add_side_data(AVStream *st, enum AVPacketSideDataType type,
  * @return pointer to fresh allocated data or NULL otherwise
  */
 uint8_t *av_stream_new_side_data(AVStream *stream,
+#if FF_API_BUFFER_SIZE_T
                                  enum AVPacketSideDataType type, int size);
+#else
+                                 enum AVPacketSideDataType type, size_t size);
+#endif
 /**
  * Get side information from stream.
  *
@@ -2092,7 +2102,11 @@ uint8_t *av_stream_new_side_data(AVStream *stream,
  * @return pointer to data if present or NULL otherwise
  */
 uint8_t *av_stream_get_side_data(const AVStream *stream,
+#if FF_API_BUFFER_SIZE_T
                                  enum AVPacketSideDataType type, int *size);
+#else
+                                 enum AVPacketSideDataType type, size_t *size);
+#endif
 
 AVProgram *av_new_program(AVFormatContext *s, int id);
 
@@ -2210,8 +2224,13 @@ int av_probe_input_buffer(AVIOContext *pb, ff_const59 AVInputFormat **fmt,
  */
 int avformat_open_input(AVFormatContext **ps, const char *url, ff_const59 AVInputFormat *fmt, AVDictionary **options);
 
+#if FF_API_DEMUXER_OPEN
+/**
+ * @deprecated Use an AVDictionary to pass options to a demuxer.
+ */
 attribute_deprecated
 int av_demuxer_open(AVFormatContext *ic);
+#endif
 
 /**
  * Read packets of a media file to get stream information. This

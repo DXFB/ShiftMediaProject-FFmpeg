@@ -371,7 +371,7 @@ static int h264_metadata_handle_display_orientation(AVBSFContext *bsf,
         H264RawSEIDisplayOrientation *disp =
             &ctx->display_orientation_payload;
         uint8_t *data;
-        int size;
+        buffer_size_t size;
         int write = 0;
 
         data = av_packet_get_side_data(pkt, AV_PKT_DATA_DISPLAYMATRIX, &size);
@@ -462,7 +462,7 @@ static int h264_metadata_update_fragment(AVBSFContext *bsf, AVPacket *pkt,
     int err, i, has_sps, seek_point;
 
     // If an AUD is present, it must be the first NAL unit.
-    if (au->units[0].type == H264_NAL_AUD) {
+    if (au->nb_units && au->units[0].type == H264_NAL_AUD) {
         if (ctx->aud == BSF_ELEMENT_REMOVE)
             ff_cbs_delete_unit(au, 0);
     } else {

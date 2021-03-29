@@ -52,7 +52,7 @@ static const AVCodecTag swf_audio_codec_tags[] = {
     { AV_CODEC_ID_ADPCM_SWF,  0x01 },
     { AV_CODEC_ID_MP3,        0x02 },
     { AV_CODEC_ID_PCM_S16LE,  0x03 },
-//  { AV_CODEC_ID_NELLYMOSER, 0x06 },
+    { AV_CODEC_ID_NELLYMOSER, 0x06 },
     { AV_CODEC_ID_NONE,          0 },
 };
 
@@ -376,6 +376,9 @@ static int swf_read_packet(AVFormatContext *s, AVPacket *pkt)
 
             ff_dlog(s, "bitmap: ch=%d fmt=%d %dx%d (linesize=%d) len=%d->%ld pal=%d\n",
                     ch_id, bmp_fmt, width, height, linesize, len, out_len, colormapsize);
+
+            if (len * 17373LL < out_len)
+                goto bitmap_end_skip;
 
             zbuf = av_malloc(len);
             if (!zbuf) {

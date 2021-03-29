@@ -1,5 +1,7 @@
 /*
  * MOFLEX demuxer
+ * Copyright (c) 2015-2016 Florian Nouwt
+ * Copyright (c) 2017 Adib Surani
  * Copyright (c) 2020 Paul B Mahol
  *
  * This file is part of FFmpeg.
@@ -367,10 +369,7 @@ static int moflex_read_seek(AVFormatContext *s, int stream_index,
 static int moflex_read_close(AVFormatContext *s)
 {
     for (int i = 0; i < s->nb_streams; i++) {
-        AVPacket *packet = s->streams[i]->priv_data;
-
-        av_packet_free(&packet);
-        s->streams[i]->priv_data = 0;
+        av_packet_free((AVPacket **)&s->streams[i]->priv_data);
     }
 
     return 0;

@@ -77,6 +77,12 @@ version <next>:
 - OpenEXR image encoder
 - Simbiosis IMX decoder
 - Simbiosis IMX demuxer
+- Digital Pictures SGA demuxer and decoders
+- TTML subtitle encoder and muxer
+- identity video filter
+- msad video filter
+- gophers protocol
+- RIST protocol via librist
 
 
 version 4.3:

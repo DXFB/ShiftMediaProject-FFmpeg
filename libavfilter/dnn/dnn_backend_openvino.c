@@ -141,12 +141,14 @@ static DNNReturnType fill_model_input_ov(OVModel *ov_model, RequestItem *request
     status |= ie_blob_get_dims(input_blob, &dims);
     status |= ie_blob_get_precision(input_blob, &precision);
     if (status != OK) {
+        ie_blob_free(&input_blob);
         av_log(ctx, AV_LOG_ERROR, "Failed to get input blob dims/precision\n");
         return DNN_ERROR;
     }
 
     status = ie_blob_get_buffer(input_blob, &blob_buffer);
     if (status != OK) {
+        ie_blob_free(&input_blob);
         av_log(ctx, AV_LOG_ERROR, "Failed to get input blob buffer\n");
         return DNN_ERROR;
     }
@@ -211,6 +213,7 @@ static void infer_completion_callback(void *args)
 
     status = ie_blob_get_buffer(output_blob, &blob_buffer);
     if (status != OK) {
+        ie_blob_free(&output_blob);
         av_log(ctx, AV_LOG_ERROR, "Failed to access output memory\n");
         return;
     }
@@ -218,6 +221,7 @@ static void infer_completion_callback(void *args)
     status |= ie_blob_get_dims(output_blob, &dims);
     status |= ie_blob_get_precision(output_blob, &precision);
     if (status != OK) {
+        ie_blob_free(&output_blob);
         av_log(ctx, AV_LOG_ERROR, "Failed to get dims or precision of output\n");
         return;
     }
@@ -307,7 +311,7 @@ static DNNReturnType init_model_ov(OVModel *ov_model, const char *input_name, co
         status = ie_network_set_input_precision(ov_model->network, input_name, U8);
         if (status != OK) {
             av_log(ctx, AV_LOG_ERROR, "Failed to set input precision as U8 for %s\n", input_name);
-            return DNN_ERROR;
+            goto err;
         }
     }
 
@@ -349,25 +353,23 @@ static DNNReturnType init_model_ov(OVModel *ov_model, const char *input_name, co
             goto err;
         }
 
-        status = ie_exec_network_create_infer_request(ov_model->exe_network, &item->infer_request);
-        if (status != OK) {
-            av_freep(&item);
-            goto err;
-        }
-
-        item->tasks = av_malloc_array(ctx->options.batch_size, sizeof(*item->tasks));
-        if (!item->tasks) {
-            av_freep(&item);
-            goto err;
-        }
-        item->task_count = 0;
-
         item->callback.completeCallBackFunc = infer_completion_callback;
         item->callback.args = item;
         if (ff_safe_queue_push_back(ov_model->request_queue, item) < 0) {
             av_freep(&item);
             goto err;
         }
+
+        status = ie_exec_network_create_infer_request(ov_model->exe_network, &item->infer_request);
+        if (status != OK) {
+            goto err;
+        }
+
+        item->tasks = av_malloc_array(ctx->options.batch_size, sizeof(*item->tasks));
+        if (!item->tasks) {
+            goto err;
+        }
+        item->task_count = 0;
     }
 
     ov_model->task_queue = ff_queue_create();
@@ -485,24 +487,11 @@ static DNNReturnType get_output_ov(void *model, const char *input_name, int inpu
     OVContext *ctx = &ov_model->ctx;
     TaskItem task;
     RequestItem request;
-    AVFrame *in_frame = av_frame_alloc();
+    AVFrame *in_frame = NULL;
     AVFrame *out_frame = NULL;
     TaskItem *ptask = &task;
     IEStatusCode status;
     input_shapes_t input_shapes;
-
-    if (!in_frame) {
-        av_log(ctx, AV_LOG_ERROR, "Failed to allocate memory for input frame\n");
-        return DNN_ERROR;
-    }
-    out_frame = av_frame_alloc();
-    if (!out_frame) {
-        av_log(ctx, AV_LOG_ERROR, "Failed to allocate memory for output frame\n");
-        av_frame_free(&in_frame);
-        return DNN_ERROR;
-    }
-    in_frame->width = input_width;
-    in_frame->height = input_height;
 
     if (ctx->options.input_resizable) {
         status = ie_network_get_input_shapes(ov_model->network, &input_shapes);
@@ -521,6 +510,21 @@ static DNNReturnType get_output_ov(void *model, const char *input_name, int inpu
             av_log(ctx, AV_LOG_ERROR, "Failed init OpenVINO exectuable network or inference request\n");
             return DNN_ERROR;
         }
+    }
+
+    in_frame = av_frame_alloc();
+    if (!in_frame) {
+        av_log(ctx, AV_LOG_ERROR, "Failed to allocate memory for input frame\n");
+        return DNN_ERROR;
+    }
+    in_frame->width = input_width;
+    in_frame->height = input_height;
+
+    out_frame = av_frame_alloc();
+    if (!out_frame) {
+        av_log(ctx, AV_LOG_ERROR, "Failed to allocate memory for output frame\n");
+        av_frame_free(&in_frame);
+        return DNN_ERROR;
     }
 
     task.done = 0;
@@ -674,17 +678,17 @@ DNNReturnType ff_dnn_execute_model_async_ov(const DNNModel *model, const char *i
         return DNN_ERROR;
     }
 
-    task = av_malloc(sizeof(*task));
-    if (!task) {
-        av_log(ctx, AV_LOG_ERROR, "unable to alloc memory for task item.\n");
-        return DNN_ERROR;
-    }
-
     if (!ov_model->exe_network) {
         if (init_model_ov(ov_model, input_name, output_names[0]) != DNN_SUCCESS) {
             av_log(ctx, AV_LOG_ERROR, "Failed init OpenVINO exectuable network or inference request\n");
             return DNN_ERROR;
         }
+    }
+
+    task = av_malloc(sizeof(*task));
+    if (!task) {
+        av_log(ctx, AV_LOG_ERROR, "unable to alloc memory for task item.\n");
+        return DNN_ERROR;
     }
 
     task->done = 0;

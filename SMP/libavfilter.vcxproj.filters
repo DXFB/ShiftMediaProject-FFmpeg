@@ -804,6 +804,9 @@
     <ClCompile Include="..\libavfilter\vf_hysteresis.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_identity.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_il.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>

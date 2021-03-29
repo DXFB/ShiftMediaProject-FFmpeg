@@ -437,6 +437,7 @@
     <ClCompile Include="..\libavformat\segafilmenc.c" />
     <ClCompile Include="..\libavformat\segment.c" />
     <ClCompile Include="..\libavformat\serdec.c" />
+    <ClCompile Include="..\libavformat\sga.c" />
     <ClCompile Include="..\libavformat\shortendec.c" />
     <ClCompile Include="..\libavformat\siff.c" />
     <ClCompile Include="..\libavformat\imx.c" />
@@ -473,6 +474,7 @@
     <ClCompile Include="..\libavformat\tmv.c" />
     <ClCompile Include="..\libavformat\tta.c" />
     <ClCompile Include="..\libavformat\ttaenc.c" />
+    <ClCompile Include="..\libavformat\ttmlenc.c" />
     <ClCompile Include="..\libavformat\tty.c" />
     <ClCompile Include="..\libavformat\ty.c" />
     <ClCompile Include="..\libavformat\txd.c" />

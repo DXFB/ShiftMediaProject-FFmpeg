@@ -196,6 +196,9 @@
     <NASM Include="..\libavcodec\x86\cavsidct.asm">
       <Filter>Source Files\libavcodec\x86</Filter>
     </NASM>
+    <NASM Include="..\libavcodec\x86\cfhdencdsp.asm">
+      <Filter>Source Files\libavcodec\x86</Filter>
+    </NASM>
     <NASM Include="..\libavcodec\x86\cfhddsp.asm">
       <Filter>Source Files\libavcodec\x86</Filter>
     </NASM>
@@ -324,6 +327,9 @@
     <ClCompile Include="..\libavcodec\allcodecs.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\avcodec.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\avdct.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -346,6 +352,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\codec_desc.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\codec_par.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\d3d11va.c">
@@ -1051,9 +1060,6 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\cfhdenc.c">
-      <Filter>Source Files\libavcodec</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavcodec\cfhdencdsp.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\cinepak.c">
@@ -2031,6 +2037,9 @@
     <ClCompile Include="..\libavcodec\screenpresso.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\sga.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\sgidec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -2188,6 +2197,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\ttaenc.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\ttmlenc.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\twinvqdec.c">
@@ -3015,6 +3027,9 @@
     <ClCompile Include="..\libavcodec\x86\cfhddsp_init.c">
       <Filter>Source Files\libavcodec\x86</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\x86\cfhdencdsp_init.c">
+      <Filter>Source Files\libavcodec\x86</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\x86\dcadsp_init.c">
       <Filter>Source Files\libavcodec\x86</Filter>
     </ClCompile>
@@ -3196,6 +3211,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\cfhddsp.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\cfhdencdsp.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\dcadsp.c">

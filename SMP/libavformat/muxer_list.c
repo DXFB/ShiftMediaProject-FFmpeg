@@ -173,6 +173,7 @@ static const AVOutputFormat *muxer_list[] = {
     &ff_mkvtimestamp_v2_muxer,
     &ff_truehd_muxer,
     &ff_tta_muxer,
+    &ff_ttml_muxer,
     &ff_uncodedframecrc_muxer,
     &ff_vc1_muxer,
     &ff_vc1t_muxer,

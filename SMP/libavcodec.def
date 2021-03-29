@@ -142,6 +142,7 @@ EXPORTS
     avcodec_default_execute
     avcodec_default_execute2
     avcodec_default_get_buffer2
+    avcodec_default_get_encode_buffer
     avcodec_default_get_format
     avcodec_descriptor_get
     avcodec_descriptor_get_by_name

@@ -114,6 +114,7 @@
     <NASM Include="..\libavcodec\x86\alacdsp.asm" />
     <NASM Include="..\libavcodec\x86\pngdsp.asm" />
     <NASM Include="..\libavcodec\x86\cavsidct.asm" />
+    <NASM Include="..\libavcodec\x86\cfhdencdsp.asm" />
     <NASM Include="..\libavcodec\x86\cfhddsp.asm" />
     <NASM Include="..\libavcodec\x86\dcadsp.asm" />
     <NASM Include="..\libavcodec\x86\synth_filter.asm" />
@@ -158,6 +159,7 @@
     <ClCompile Include="..\libavcodec\ac3_parser.c" />
     <ClCompile Include="..\libavcodec\adts_parser.c" />
     <ClCompile Include="..\libavcodec\allcodecs.c" />
+    <ClCompile Include="..\libavcodec\avcodec.c" />
     <ClCompile Include="..\libavcodec\avdct.c" />
     <ClCompile Include="..\libavcodec\avpacket.c" />
     <ClCompile Include="..\libavcodec\avpicture.c" />
@@ -166,6 +168,7 @@
     <ClCompile Include="..\libavcodec\bitstream_filters.c" />
     <ClCompile Include="..\libavcodec\bsf.c" />
     <ClCompile Include="..\libavcodec\codec_desc.c" />
+    <ClCompile Include="..\libavcodec\codec_par.c" />
     <ClCompile Include="..\libavcodec\d3d11va.c" />
     <ClCompile Include="..\libavcodec\decode.c" />
     <ClCompile Include="..\libavcodec\dirac.c" />
@@ -401,7 +404,6 @@
     <ClCompile Include="..\libavcodec\cfhd.c" />
     <ClCompile Include="..\libavcodec\cfhddata.c" />
     <ClCompile Include="..\libavcodec\cfhdenc.c" />
-    <ClCompile Include="..\libavcodec\cfhdencdsp.c" />
     <ClCompile Include="..\libavcodec\cinepak.c" />
     <ClCompile Include="..\libavcodec\cinepakenc.c" />
     <ClCompile Include="..\libavcodec\clearvideo.c" />
@@ -727,6 +729,7 @@
     <ClCompile Include="..\libavcodec\sanm.c" />
     <ClCompile Include="..\libavcodec\scpr.c" />
     <ClCompile Include="..\libavcodec\screenpresso.c" />
+    <ClCompile Include="..\libavcodec\sga.c" />
     <ClCompile Include="..\libavcodec\sgidec.c" />
     <ClCompile Include="..\libavcodec\sgienc.c" />
     <ClCompile Include="..\libavcodec\rle.c" />
@@ -780,6 +783,7 @@
     <ClCompile Include="..\libavcodec\tta.c" />
     <ClCompile Include="..\libavcodec\ttadata.c" />
     <ClCompile Include="..\libavcodec\ttaenc.c" />
+    <ClCompile Include="..\libavcodec\ttmlenc.c" />
     <ClCompile Include="..\libavcodec\twinvqdec.c" />
     <ClCompile Include="..\libavcodec\txd.c" />
     <ClCompile Include="..\libavcodec\ulti.c" />
@@ -1055,6 +1059,7 @@
     <ClCompile Include="..\libavcodec\x86\alacdsp_init.c" />
     <ClCompile Include="..\libavcodec\x86\pngdsp_init.c" />
     <ClCompile Include="..\libavcodec\x86\cfhddsp_init.c" />
+    <ClCompile Include="..\libavcodec\x86\cfhdencdsp_init.c" />
     <ClCompile Include="..\libavcodec\x86\dcadsp_init.c" />
     <ClCompile Include="..\libavcodec\x86\synth_filter_init.c" />
     <ClCompile Include="..\libavcodec\x86\dnxhdenc_init.c" />
@@ -1169,6 +1174,9 @@
     </ClCompile>
     <ClCompile Include="..\libavcodec\cfhddsp.c">
       <ObjectFileName>$(IntDir)\libavcodec_cfhddsp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\cfhdencdsp.c">
+      <ObjectFileName>$(IntDir)\libavcodec_cfhdencdsp.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\libavcodec\dcadsp.c">
       <ObjectFileName>$(IntDir)\libavcodec_dcadsp.obj</ObjectFileName>

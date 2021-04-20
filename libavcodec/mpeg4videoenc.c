@@ -1314,7 +1314,7 @@ static av_cold int encode_init(AVCodecContext *avctx)
 
 //            ff_mpeg4_stuffing(&s->pb); ?
         flush_put_bits(&s->pb);
-        s->avctx->extradata_size = (put_bits_count(&s->pb) + 7) >> 3;
+        s->avctx->extradata_size = put_bytes_output(&s->pb);
     }
     return 0;
 }
@@ -1375,7 +1375,14 @@ void ff_mpeg4_encode_video_packet_header(MpegEncContext *s)
 static const AVOption options[] = {
     { "data_partitioning", "Use data partitioning.",      OFFSET(data_partitioning), AV_OPT_TYPE_BOOL, { .i64 = 0 }, 0, 1, VE },
     { "alternate_scan",    "Enable alternate scantable.", OFFSET(alternate_scan),    AV_OPT_TYPE_BOOL, { .i64 = 0 }, 0, 1, VE },
+    { "mpeg_quant",        "Use MPEG quantizers instead of H.263",
+      OFFSET(mpeg_quant), AV_OPT_TYPE_INT, {.i64 = 0 }, 0, 1, VE },
+    FF_MPV_COMMON_BFRAME_OPTS
     FF_MPV_COMMON_OPTS
+#if FF_API_MPEGVIDEO_OPTS
+    FF_MPV_DEPRECATED_A53_CC_OPT
+    FF_MPV_DEPRECATED_MATRIX_OPT
+#endif
     FF_MPEG4_PROFILE_OPTS
     { NULL },
 };

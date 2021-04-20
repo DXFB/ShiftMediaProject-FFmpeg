@@ -434,7 +434,6 @@ static void get_attachment(AVFormatContext *s, AVIOContext *pb, int length)
     char description[1024];
     unsigned int filesize;
     AVStream *st;
-    int ret;
     int64_t pos = avio_tell(pb);
 
     avio_get_str16le(pb, INT_MAX, mime, sizeof(mime));
@@ -447,19 +446,12 @@ static void get_attachment(AVFormatContext *s, AVIOContext *pb, int length)
     if (!filesize)
         goto done;
 
-    st = avformat_new_stream(s, NULL);
-    if (!st)
+    if (ff_add_attached_pic(s, NULL, pb, NULL, filesize) < 0)
         goto done;
+    st = s->streams[s->nb_streams - 1];
     av_dict_set(&st->metadata, "title", description, 0);
-    st->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
     st->codecpar->codec_id   = AV_CODEC_ID_MJPEG;
     st->id = -1;
-    ret = av_get_packet(pb, &st->attached_pic, filesize);
-    if (ret < 0)
-        goto done;
-    st->attached_pic.stream_index = st->index;
-    st->attached_pic.flags       |= AV_PKT_FLAG_KEY;
-    st->disposition              |= AV_DISPOSITION_ATTACHED_PIC;
 done:
     avio_seek(pb, pos + length, SEEK_SET);
 }
@@ -817,6 +809,8 @@ static int parse_chunks(AVFormatContext *s, int mode, int64_t seekts, int *len_p
                 avio_skip(pb, 12);
                 ff_get_guid(pb, &formattype);
                 size = avio_rl32(pb);
+                if (size < 0 || size > INT_MAX - 92)
+                    return AVERROR_INVALIDDATA;
                 parse_media_type(s, 0, sid, mediatype, subtype, formattype, size);
                 consumed += 92 + size;
             }
@@ -831,6 +825,8 @@ static int parse_chunks(AVFormatContext *s, int mode, int64_t seekts, int *len_p
                 avio_skip(pb, 12);
                 ff_get_guid(pb, &formattype);
                 size = avio_rl32(pb);
+                if (size < 0 || size > INT_MAX - 76)
+                    return AVERROR_INVALIDDATA;
                 parse_media_type(s, s->streams[stream_index], sid, mediatype, subtype, formattype, size);
                 consumed += 76 + size;
             }

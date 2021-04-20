@@ -384,7 +384,7 @@ av_cold int ff_vc1_decode_init_alloc_tables(VC1Context *v)
     if (s->avctx->codec_id == AV_CODEC_ID_WMV3IMAGE || s->avctx->codec_id == AV_CODEC_ID_VC1IMAGE) {
         for (i = 0; i < 4; i++)
             if (!(v->sr_rows[i >> 1][i & 1] = av_malloc(v->output_width)))
-                return AVERROR(ENOMEM);
+                goto error;
     }
 
     ret = ff_intrax8_common_init(s->avctx, &v->x8, &s->idsp,
@@ -434,8 +434,7 @@ static av_cold int vc1_decode_init(AVCodecContext *avctx)
         return AVERROR_INVALIDDATA;
     v->s.avctx = avctx;
 
-    if ((ret = ff_vc1_init_common(v)) < 0)
-        return ret;
+    ff_vc1_init_common(v);
 
     if (avctx->codec_id == AV_CODEC_ID_WMV3 || avctx->codec_id == AV_CODEC_ID_WMV3IMAGE) {
         int count = 0;
@@ -594,8 +593,6 @@ av_cold int ff_vc1_decode_end(AVCodecContext *avctx)
 
     for (i = 0; i < 4; i++)
         av_freep(&v->sr_rows[i >> 1][i & 1]);
-    av_freep(&v->hrd_rate);
-    av_freep(&v->hrd_buffer);
     ff_mpv_common_end(&v->s);
     av_freep(&v->mv_type_mb_plane);
     av_freep(&v->direct_mb_plane);

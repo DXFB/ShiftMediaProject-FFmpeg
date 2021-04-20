@@ -579,7 +579,7 @@ static int mov_write_eac3_tag(AVFormatContext *s, AVIOContext *pb, MOVTrack *tra
         }
     }
     flush_put_bits(&pbc);
-    size = put_bits_count(&pbc) >> 3;
+    size = put_bytes_output(&pbc);
 
     avio_wb32(pb, size + 8);
     ffio_wfourcc(pb, "dec3");
@@ -797,6 +797,7 @@ static int mov_write_dfla_tag(AVIOContext *pb, MOVTrack *track)
 static int mov_write_dops_tag(AVFormatContext *s, AVIOContext *pb, MOVTrack *track)
 {
     int64_t pos = avio_tell(pb);
+    int channels, channel_map;
     avio_wb32(pb, 0);
     ffio_wfourcc(pb, "dOps");
     avio_w8(pb, 0); /* Version */
@@ -807,12 +808,22 @@ static int mov_write_dops_tag(AVFormatContext *s, AVIOContext *pb, MOVTrack *tra
     /* extradata contains an Ogg OpusHead, other than byte-ordering and
        OpusHead's preceeding magic/version, OpusSpecificBox is currently
        identical. */
-    avio_w8(pb, AV_RB8(track->par->extradata + 9)); /* OuputChannelCount */
+    channels = AV_RB8(track->par->extradata + 9);
+    channel_map = AV_RB8(track->par->extradata + 18);
+
+    avio_w8(pb, channels); /* OuputChannelCount */
     avio_wb16(pb, AV_RL16(track->par->extradata + 10)); /* PreSkip */
     avio_wb32(pb, AV_RL32(track->par->extradata + 12)); /* InputSampleRate */
     avio_wb16(pb, AV_RL16(track->par->extradata + 16)); /* OutputGain */
+    avio_w8(pb, channel_map); /* ChannelMappingFamily */
     /* Write the rest of the header out without byte-swapping. */
-    avio_write(pb, track->par->extradata + 18, track->par->extradata_size - 18);
+    if (channel_map) {
+        if (track->par->extradata_size < 21 + channels) {
+            av_log(s, AV_LOG_ERROR, "invalid extradata size\n");
+            return AVERROR_INVALIDDATA;
+        }
+        avio_write(pb, track->par->extradata + 19, 2 + channels); /* ChannelMappingTable */
+    }
 
     return update_size(pb, pos);
 }
@@ -2353,8 +2364,8 @@ static int mov_write_tmcd_tag(AVIOContext *pb, MOVTrack *track)
         return AVERROR(EINVAL);
 #endif
     } else {
-        frame_duration = av_rescale(track->timescale, track->st->avg_frame_rate.num, track->st->avg_frame_rate.den);
-        nb_frames      = ROUNDED_DIV(track->st->avg_frame_rate.den, track->st->avg_frame_rate.num);
+        frame_duration = av_rescale(track->timescale, track->st->avg_frame_rate.den, track->st->avg_frame_rate.num);
+        nb_frames      = ROUNDED_DIV(track->st->avg_frame_rate.num, track->st->avg_frame_rate.den);
     }
 
     if (nb_frames > 255) {
@@ -6234,7 +6245,7 @@ static int mov_create_timecode_track(AVFormatContext *s, int index, int src_inde
         return AVERROR(ENOMEM);
     track->par->codec_type = AVMEDIA_TYPE_DATA;
     track->par->codec_tag  = track->tag;
-    track->st->avg_frame_rate = av_inv_q(rate);
+    track->st->avg_frame_rate = rate;
 
     /* the tmcd track just contains one packet with the frame number */
     pkt->data = data;

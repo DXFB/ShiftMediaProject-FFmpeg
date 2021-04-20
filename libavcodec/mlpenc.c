@@ -1067,7 +1067,7 @@ static uint8_t *write_substrs(MLPEncodeContext *ctx, uint8_t *buf, int buf_size,
         RestartHeader  *rh = &ctx->restart_header [substr];
         int substr_restart_frame = restart_frame;
         uint8_t parity, checksum;
-        PutBitContext pb, tmpb;
+        PutBitContext pb;
         int params_changed;
 
         ctx->cur_restart_header = rh;
@@ -1117,22 +1117,22 @@ static uint8_t *write_substrs(MLPEncodeContext *ctx, uint8_t *buf, int buf_size,
             put_bits(&pb, 32, END_OF_STREAM);
         }
 
-        /* Data must be flushed for the checksum and parity to be correct. */
-        tmpb = pb;
-        flush_put_bits(&tmpb);
+        /* Data must be flushed for the checksum and parity to be correct;
+         * notice that we already are word-aligned here. */
+        flush_put_bits(&pb);
 
-        parity   = ff_mlp_calculate_parity(buf, put_bits_count(&pb) >> 3) ^ 0xa9;
-        checksum = ff_mlp_checksum8       (buf, put_bits_count(&pb) >> 3);
+        parity   = ff_mlp_calculate_parity(buf, put_bytes_output(&pb)) ^ 0xa9;
+        checksum = ff_mlp_checksum8       (buf, put_bytes_output(&pb));
 
         put_bits(&pb, 8, parity  );
         put_bits(&pb, 8, checksum);
 
         flush_put_bits(&pb);
 
-        end += put_bits_count(&pb) >> 3;
+        end += put_bytes_output(&pb);
         substream_data_len[substr] = end;
 
-        buf += put_bits_count(&pb) >> 3;
+        buf += put_bytes_output(&pb);
     }
 
     ctx->major_cur_subblock_index += ctx->major_filter_state_subblock + 1;

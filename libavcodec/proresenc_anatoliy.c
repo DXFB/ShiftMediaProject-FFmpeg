@@ -460,7 +460,7 @@ static av_always_inline int encode_alpha_slice_data(AVCodecContext *avctx, int8_
     if (run)
         put_alpha_run(&pb, run);
     flush_put_bits(&pb);
-    *a_data_size = put_bits_count(&pb) >> 3;
+    *a_data_size = put_bytes_output(&pb);
 
     if (put_bits_left(&pb) < 0) {
         av_log(avctx, AV_LOG_ERROR,
@@ -957,6 +957,7 @@ AVCodec ff_prores_aw_encoder = {
     .capabilities   = AV_CODEC_CAP_FRAME_THREADS,
     .priv_class     = &proresaw_enc_class,
     .profiles       = NULL_IF_CONFIG_SMALL(ff_prores_profiles),
+    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
 };
 
 AVCodec ff_prores_encoder = {
@@ -972,4 +973,5 @@ AVCodec ff_prores_encoder = {
     .capabilities   = AV_CODEC_CAP_FRAME_THREADS,
     .priv_class     = &prores_enc_class,
     .profiles       = NULL_IF_CONFIG_SMALL(ff_prores_profiles),
+    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
 };

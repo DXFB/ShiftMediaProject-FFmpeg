@@ -195,6 +195,8 @@ static void put_ebml_size_unknown(AVIOContext *pb, int bytes)
 {
     av_assert0(bytes <= 8);
     avio_w8(pb, 0x1ff >> bytes);
+    if (av_builtin_constant_p(bytes) && bytes == 1)
+        return;
     ffio_fill(pb, 0xff, bytes - 1);
 }
 
@@ -585,7 +587,7 @@ static int mkv_assemble_cues(AVStream **streams, AVIOContext *dyn_cp,
             put_ebml_uint(cuepoint, MATROSKA_ID_CUETRACK           , tracks[idx].track_num);
             put_ebml_uint(cuepoint, MATROSKA_ID_CUECLUSTERPOSITION , entry->cluster_pos);
             put_ebml_uint(cuepoint, MATROSKA_ID_CUERELATIVEPOSITION, entry->relative_pos);
-            if (entry->duration != -1)
+            if (entry->duration > 0)
                 put_ebml_uint(cuepoint, MATROSKA_ID_CUEDURATION    , entry->duration);
             end_ebml_master(cuepoint, track_positions);
         } while (++entry < end && entry->pts == pts);
@@ -1768,6 +1770,7 @@ static int mkv_write_attachments(AVFormatContext *s)
             put_ebml_string(dyn_cp, MATROSKA_ID_FILEDESC, t->value);
         if (!(t = av_dict_get(st->metadata, "filename", NULL, 0))) {
             av_log(s, AV_LOG_ERROR, "Attachment stream %d has no filename tag.\n", i);
+            ffio_free_dyn_buf(&dyn_cp);
             return AVERROR(EINVAL);
         }
         put_ebml_string(dyn_cp, MATROSKA_ID_FILENAME, t->value);
@@ -2143,7 +2146,7 @@ static int mkv_write_vtt_blocks(AVFormatContext *s, AVIOContext *pb, const AVPac
     mkv_track *track = &mkv->tracks[pkt->stream_index];
     ebml_master blockgroup;
     buffer_size_t id_size, settings_size;
-    int size;
+    int size, id_size_int, settings_size_int;
     const char *id, *settings;
     int64_t ts = track->write_dts ? pkt->dts : pkt->pts;
     const int flags = 0;
@@ -2155,6 +2158,10 @@ static int mkv_write_vtt_blocks(AVFormatContext *s, AVIOContext *pb, const AVPac
     settings = av_packet_get_side_data(pkt, AV_PKT_DATA_WEBVTT_SETTINGS,
                                        &settings_size);
     settings = settings ? settings : "";
+
+    if (id_size > INT_MAX - 2 || settings_size > INT_MAX - id_size - 2 ||
+        pkt->size > INT_MAX - settings_size - id_size - 2)
+        return AVERROR(EINVAL);
 
     size = id_size + 1 + settings_size + 1 + pkt->size;
 
@@ -2175,12 +2182,15 @@ static int mkv_write_vtt_blocks(AVFormatContext *s, AVIOContext *pb, const AVPac
     put_ebml_num(pb, track->track_num, track->track_num_size);
     avio_wb16(pb, ts - mkv->cluster_pts);
     avio_w8(pb, flags);
-    avio_printf(pb, "%.*s\n%.*s\n%.*s", id_size, id, settings_size, settings, pkt->size, pkt->data);
+
+    id_size_int       = id_size;
+    settings_size_int = settings_size;
+    avio_printf(pb, "%.*s\n%.*s\n%.*s", id_size_int, id, settings_size_int, settings, pkt->size, pkt->data);
 
     put_ebml_uint(pb, MATROSKA_ID_BLOCKDURATION, pkt->duration);
     end_ebml_master(pb, blockgroup);
 
-    return pkt->duration;
+    return 0;
 }
 
 static int mkv_end_cluster(AVFormatContext *s)
@@ -2300,7 +2310,7 @@ static int mkv_write_packet_internal(AVFormatContext *s, const AVPacket *pkt)
     AVCodecParameters *par  = s->streams[pkt->stream_index]->codecpar;
     mkv_track *track        = &mkv->tracks[pkt->stream_index];
     int keyframe            = !!(pkt->flags & AV_PKT_FLAG_KEY);
-    int duration            = pkt->duration;
+    int64_t duration        = pkt->duration;
     int ret;
     int64_t ts = track->write_dts ? pkt->dts : pkt->pts;
     int64_t relative_packet_pos;
@@ -2337,21 +2347,26 @@ static int mkv_write_packet_internal(AVFormatContext *s, const AVPacket *pkt)
 
     relative_packet_pos = avio_tell(pb);
 
-    if (par->codec_type != AVMEDIA_TYPE_SUBTITLE) {
+    if (par->codec_type != AVMEDIA_TYPE_SUBTITLE ||
+        (par->codec_id != AV_CODEC_ID_WEBVTT && duration <= 0)) {
         ret = mkv_write_block(s, pb, MATROSKA_ID_SIMPLEBLOCK, pkt, keyframe);
         if (ret < 0)
             return ret;
         if (keyframe && IS_SEEKABLE(s->pb, mkv) &&
-            (par->codec_type == AVMEDIA_TYPE_VIDEO || !mkv->have_video && !track->has_cue)) {
+            (par->codec_type == AVMEDIA_TYPE_VIDEO    ||
+             par->codec_type == AVMEDIA_TYPE_SUBTITLE ||
+             !mkv->have_video && !track->has_cue)) {
             ret = mkv_add_cuepoint(mkv, pkt->stream_index, ts,
-                                   mkv->cluster_pos, relative_packet_pos, -1);
+                                   mkv->cluster_pos, relative_packet_pos, 0);
             if (ret < 0)
                 return ret;
             track->has_cue = 1;
         }
     } else {
         if (par->codec_id == AV_CODEC_ID_WEBVTT) {
-            duration = mkv_write_vtt_blocks(s, pb, pkt);
+            ret = mkv_write_vtt_blocks(s, pb, pkt);
+            if (ret < 0)
+                return ret;
         } else {
             ebml_master blockgroup = start_ebml_master(pb, MATROSKA_ID_BLOCKGROUP,
                                                        mkv_blockgroup_size(pkt->size,

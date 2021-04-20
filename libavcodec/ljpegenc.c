@@ -86,7 +86,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
         const int modified_predictor = y ? s->pred : 1;
         uint8_t *ptr = frame->data[0] + (linesize * y);
 
-        if (pb->buf_end - pb->buf - (put_bits_count(pb) >> 3) < width * 4 * 4) {
+        if (put_bytes_left(pb, 0) < width * 4 * 4) {
             av_log(avctx, AV_LOG_ERROR, "encoded frame too large\n");
             return -1;
         }
@@ -211,7 +211,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
 #endif
 
     for (mb_y = 0; mb_y < mb_height; mb_y++) {
-        if (pb->buf_end - pb->buf - (put_bits_count(pb) >> 3) <
+        if (put_bytes_left(pb, 0) <
             mb_width * 4 * 3 * s->hsample[0] * s->vsample[0]) {
             av_log(avctx, AV_LOG_ERROR, "encoded frame too large\n");
             return -1;
@@ -289,18 +289,11 @@ static av_cold int ljpeg_encode_close(AVCodecContext *avctx)
 
 static av_cold int ljpeg_encode_init(AVCodecContext *avctx)
 {
+    int ret = ff_mjpeg_encode_check_pix_fmt(avctx);
     LJpegEncContext *s = avctx->priv_data;
 
-    if ((avctx->pix_fmt == AV_PIX_FMT_YUV420P ||
-         avctx->pix_fmt == AV_PIX_FMT_YUV422P ||
-         avctx->pix_fmt == AV_PIX_FMT_YUV444P ||
-         avctx->color_range == AVCOL_RANGE_MPEG) &&
-        avctx->strict_std_compliance > FF_COMPLIANCE_UNOFFICIAL) {
-        av_log(avctx, AV_LOG_ERROR,
-               "Limited range YUV is non-standard, set strict_std_compliance to "
-               "at least unofficial to use it.\n");
-        return AVERROR(EINVAL);
-    }
+    if (ret < 0)
+        return ret;
 
 #if FF_API_CODED_FRAME
 FF_DISABLE_DEPRECATION_WARNINGS

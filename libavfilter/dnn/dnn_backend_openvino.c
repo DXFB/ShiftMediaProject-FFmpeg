@@ -166,8 +166,8 @@ static DNNReturnType fill_model_input_ov(OVModel *ov_model, RequestItem *request
     for (int i = 0; i < request->task_count; ++i) {
         task = request->tasks[i];
         if (task->do_ioproc) {
-            if (ov_model->model->pre_proc != NULL) {
-                ov_model->model->pre_proc(task->in_frame, &input, ov_model->model->filter_ctx);
+            if (ov_model->model->frame_pre_proc != NULL) {
+                ov_model->model->frame_pre_proc(task->in_frame, &input, ov_model->model->filter_ctx);
             } else {
                 ff_proc_from_frame_to_dnn(task->in_frame, &input, ov_model->model->func_type, ctx);
             }
@@ -236,16 +236,32 @@ static void infer_completion_callback(void *args)
     av_assert0(request->task_count >= 1);
     for (int i = 0; i < request->task_count; ++i) {
         task = request->tasks[i];
-        if (task->do_ioproc) {
-            if (task->ov_model->model->post_proc != NULL) {
-                task->ov_model->model->post_proc(task->out_frame, &output, task->ov_model->model->filter_ctx);
+
+        switch (task->ov_model->model->func_type) {
+        case DFT_PROCESS_FRAME:
+            if (task->do_ioproc) {
+                if (task->ov_model->model->frame_post_proc != NULL) {
+                    task->ov_model->model->frame_post_proc(task->out_frame, &output, task->ov_model->model->filter_ctx);
+                } else {
+                    ff_proc_from_dnn_to_frame(task->out_frame, &output, ctx);
+                }
             } else {
-                ff_proc_from_dnn_to_frame(task->out_frame, &output, ctx);
+                task->out_frame->width = output.width;
+                task->out_frame->height = output.height;
             }
-        } else {
-            task->out_frame->width = output.width;
-            task->out_frame->height = output.height;
+            break;
+        case DFT_ANALYTICS_DETECT:
+            if (!task->ov_model->model->detect_post_proc) {
+                av_log(ctx, AV_LOG_ERROR, "detect filter needs to provide post proc\n");
+                return;
+            }
+            task->ov_model->model->detect_post_proc(task->out_frame, &output, 1, task->ov_model->model->filter_ctx);
+            break;
+        default:
+            av_assert0(!"should not reach here");
+            break;
         }
+
         task->done = 1;
         output.data = (uint8_t *)output.data
                       + output.width * output.height * output.channels * get_datatype_size(output.dt);
@@ -492,6 +508,11 @@ static DNNReturnType get_output_ov(void *model, const char *input_name, int inpu
     TaskItem *ptask = &task;
     IEStatusCode status;
     input_shapes_t input_shapes;
+
+    if (ov_model->model->func_type != DFT_PROCESS_FRAME) {
+        av_log(ctx, AV_LOG_ERROR, "Get output dim only when processing frame.\n");
+        return DNN_ERROR;
+    }
 
     if (ctx->options.input_resizable) {
         status = ie_network_get_input_shapes(ov_model->network, &input_shapes);

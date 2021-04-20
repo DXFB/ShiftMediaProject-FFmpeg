@@ -925,10 +925,10 @@ static void fill_in_adpcm_bufer(DCAEncContext *c)
              * But there are no proper value in decoder history, so likely result will be no good.
              * Bitstream has "Predictor history flag switch", but this flag disables history for all subbands
              */
-            samples[0] = c->adpcm_history[ch][band][0] << 7;
-            samples[1] = c->adpcm_history[ch][band][1] << 7;
-            samples[2] = c->adpcm_history[ch][band][2] << 7;
-            samples[3] = c->adpcm_history[ch][band][3] << 7;
+            samples[0] = c->adpcm_history[ch][band][0] * (1 << 7);
+            samples[1] = c->adpcm_history[ch][band][1] * (1 << 7);
+            samples[2] = c->adpcm_history[ch][band][2] * (1 << 7);
+            samples[3] = c->adpcm_history[ch][band][3] * (1 << 7);
         }
      }
 }
@@ -1213,8 +1213,8 @@ static int encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
     flush_put_bits(&c->pb);
 
     avpkt->pts      = frame->pts;
+    avpkt->size     = put_bytes_output(&c->pb);
     avpkt->duration = ff_samples_to_time_base(avctx, frame->nb_samples);
-    avpkt->size     = put_bits_count(&c->pb) >> 3;
     *got_packet_ptr = 1;
     return 0;
 }

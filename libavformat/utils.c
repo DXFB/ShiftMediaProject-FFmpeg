@@ -474,6 +474,41 @@ int avformat_queue_attached_pictures(AVFormatContext *s)
     return 0;
 }
 
+int ff_add_attached_pic(AVFormatContext *s, AVStream *st0, AVIOContext *pb,
+                        AVBufferRef **buf, int size)
+{
+    AVStream *st = st0;
+    AVPacket *pkt;
+    int ret;
+
+    if (!st && !(st = avformat_new_stream(s, NULL)))
+        return AVERROR(ENOMEM);
+    pkt = &st->attached_pic;
+    if (buf) {
+        av_assert1(*buf);
+        av_packet_unref(pkt);
+        pkt->buf  = *buf;
+        pkt->data = (*buf)->data;
+        pkt->size = (*buf)->size - AV_INPUT_BUFFER_PADDING_SIZE;
+        *buf = NULL;
+    } else {
+        ret = av_get_packet(pb, pkt, size);
+        if (ret < 0)
+            goto fail;
+    }
+    st->disposition         |= AV_DISPOSITION_ATTACHED_PIC;
+    st->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
+
+    pkt->stream_index = st->index;
+    pkt->flags       |= AV_PKT_FLAG_KEY;
+
+    return 0;
+fail:
+    if (!st0)
+        ff_free_stream(s, st);
+    return ret;
+}
+
 static int update_stream_avctx(AVFormatContext *s)
 {
     int i, ret;
@@ -1275,7 +1310,7 @@ static void compute_pkt_fields(AVFormatContext *s, AVStream *st,
         presentation_delayed = 1;
 
     if (pkt->pts != AV_NOPTS_VALUE && pkt->dts != AV_NOPTS_VALUE &&
-        st->pts_wrap_bits < 63 && pkt->dts > INT64_MIN + (1LL << (st->pts_wrap_bits - 1)) &&
+        st->pts_wrap_bits < 63 && pkt->dts > INT64_MIN + (1LL << st->pts_wrap_bits) &&
         pkt->dts - (1LL << (st->pts_wrap_bits - 1)) > pkt->pts) {
         if (is_relative(st->cur_dts) || pkt->dts - (1LL<<(st->pts_wrap_bits - 1)) > st->cur_dts) {
             pkt->dts -= 1LL << st->pts_wrap_bits;
@@ -2127,6 +2162,33 @@ int av_index_search_timestamp(AVStream *st, int64_t wanted_timestamp, int flags)
 {
     return ff_index_search_timestamp(st->internal->index_entries, st->internal->nb_index_entries,
                                      wanted_timestamp, flags);
+}
+
+int avformat_index_get_entries_count(const AVStream *st)
+{
+    return st->internal->nb_index_entries;
+}
+
+const AVIndexEntry *avformat_index_get_entry(const AVStream *st, int idx)
+{
+    if (idx < 0 || idx >= st->internal->nb_index_entries)
+        return NULL;
+
+    return &st->internal->index_entries[idx];
+}
+
+const AVIndexEntry *avformat_index_get_entry_from_timestamp(const AVStream *st,
+                                                            int64_t wanted_timestamp,
+                                                            int flags)
+{
+    int idx = ff_index_search_timestamp(st->internal->index_entries,
+                                        st->internal->nb_index_entries,
+                                        wanted_timestamp, flags);
+
+    if (idx < 0)
+        return NULL;
+
+    return &st->internal->index_entries[idx];
 }
 
 static int64_t ff_read_timestamp(AVFormatContext *s, int stream_index, int64_t *ppos, int64_t pos_limit,
@@ -3409,7 +3471,8 @@ void ff_rfps_calculate(AVFormatContext *ic)
         // the check for tb_unreliable() is not completely correct, since this is not about handling
         // an unreliable/inexact time base, but a time base that is finer than necessary, as e.g.
         // ipmovie.c produces.
-        if (tb_unreliable(st->internal->avctx) && st->internal->info->duration_count > 15 && st->internal->info->duration_gcd > FFMAX(1, st->time_base.den/(500LL*st->time_base.num)) && !st->r_frame_rate.num)
+        if (tb_unreliable(st->internal->avctx) && st->internal->info->duration_count > 15 && st->internal->info->duration_gcd > FFMAX(1, st->time_base.den/(500LL*st->time_base.num)) && !st->r_frame_rate.num &&
+            st->internal->info->duration_gcd < INT64_MAX / st->time_base.num)
             av_reduce(&st->r_frame_rate.num, &st->r_frame_rate.den, st->time_base.den, st->time_base.num * st->internal->info->duration_gcd, INT_MAX);
         if (st->internal->info->duration_count>1 && !st->r_frame_rate.num
             && tb_unreliable(st->internal->avctx)) {
@@ -3684,16 +3747,10 @@ FF_ENABLE_DEPRECATION_WARNINGS
         if (ic->codec_whitelist)
             av_dict_set(options ? &options[i] : &thread_opt, "codec_whitelist", ic->codec_whitelist, 0);
 
-        /* Ensure that subtitle_header is properly set. */
-        if (st->codecpar->codec_type == AVMEDIA_TYPE_SUBTITLE
-            && codec && !avctx->codec) {
-            if (avcodec_open2(avctx, codec, options ? &options[i] : &thread_opt) < 0)
-                av_log(ic, AV_LOG_WARNING,
-                       "Failed to open codec in %s\n",__FUNCTION__);
-        }
-
         // Try to just open decoders, in case this is enough to get parameters.
-        if (!has_codec_parameters(st, NULL) && st->internal->request_probe <= 0) {
+        // Also ensure that subtitle_header is properly set.
+        if (!has_codec_parameters(st, NULL) && st->internal->request_probe <= 0 ||
+            st->codecpar->codec_type == AVMEDIA_TYPE_SUBTITLE) {
             if (codec && !avctx->codec)
                 if (avcodec_open2(avctx, codec, options ? &options[i] : &thread_opt) < 0)
                     av_log(ic, AV_LOG_WARNING,
@@ -4589,7 +4646,7 @@ fail:
 AVProgram *av_new_program(AVFormatContext *ac, int id)
 {
     AVProgram *program = NULL;
-    int i;
+    int i, ret;
 
     av_log(ac, AV_LOG_TRACE, "new_program: id=0x%04x\n", id);
 
@@ -4601,7 +4658,11 @@ AVProgram *av_new_program(AVFormatContext *ac, int id)
         program = av_mallocz(sizeof(AVProgram));
         if (!program)
             return NULL;
-        dynarray_add(&ac->programs, &ac->nb_programs, program);
+        ret = av_dynarray_add_nofree(&ac->programs, &ac->nb_programs, program);
+        if (ret < 0) {
+            av_free(program);
+            return NULL;
+        }
         program->discard = AVDISCARD_NONE;
         program->pmt_version = -1;
         program->id = id;
@@ -4621,7 +4682,7 @@ AVChapter *avpriv_new_chapter(AVFormatContext *s, int64_t id, AVRational time_ba
                               int64_t start, int64_t end, const char *title)
 {
     AVChapter *chapter = NULL;
-    int i;
+    int i, ret;
 
     if (end != AV_NOPTS_VALUE && start > end) {
         av_log(s, AV_LOG_ERROR, "Chapter end time %"PRId64" before start %"PRId64"\n", end, start);
@@ -4641,7 +4702,11 @@ AVChapter *avpriv_new_chapter(AVFormatContext *s, int64_t id, AVRational time_ba
         chapter = av_mallocz(sizeof(AVChapter));
         if (!chapter)
             return NULL;
-        dynarray_add(&s->chapters, &s->nb_chapters, chapter);
+        ret = av_dynarray_add_nofree(&s->chapters, &s->nb_chapters, chapter);
+        if (ret < 0) {
+            av_free(chapter);
+            return NULL;
+        }
     }
     av_dict_set(&chapter->metadata, "title", title, 0);
     chapter->id        = id;
@@ -5820,9 +5885,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
         && 121LL*dec_ctx->time_base.num > dec_ctx->time_base.den) {
         enc_ctx->time_base = dec_ctx->time_base;
     }
-
-    if (ost->avg_frame_rate.num)
-        enc_ctx->time_base = av_inv_q(ost->avg_frame_rate);
 
     av_reduce(&enc_ctx->time_base.num, &enc_ctx->time_base.den,
               enc_ctx->time_base.num, enc_ctx->time_base.den, INT_MAX);

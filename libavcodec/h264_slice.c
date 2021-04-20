@@ -304,9 +304,8 @@ int ff_h264_update_thread_context(AVCodecContext *dst,
     if (dst == src)
         return 0;
 
-    // We can't fail if SPS isn't set at it breaks current skip_frame code
-    //if (!h1->ps.sps)
-    //    return AVERROR_INVALIDDATA;
+    if (inited && !h1->ps.sps)
+        return AVERROR_INVALIDDATA;
 
     if (inited &&
         (h->width                 != h1->width                 ||
@@ -463,6 +462,18 @@ int ff_h264_update_thread_context(AVCodecContext *dst,
     h->recovery_frame        = h1->recovery_frame;
 
     return err;
+}
+
+int ff_h264_update_thread_context_for_user(AVCodecContext *dst,
+                                           const AVCodecContext *src)
+{
+    H264Context *h = dst->priv_data;
+    const H264Context *h1 = src->priv_data;
+
+    h->is_avc = h1->is_avc;
+    h->nal_length_size = h1->nal_length_size;
+
+    return 0;
 }
 
 static int h264_frame_start(H264Context *h)

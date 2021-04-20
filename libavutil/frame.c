@@ -469,7 +469,7 @@ int av_frame_ref(AVFrame *dst, const AVFrame *src)
         if (ret < 0)
             goto fail;
 
-        return ret;
+        return 0;
     }
 
     /* ref the buffers */
@@ -853,6 +853,7 @@ const char *av_frame_side_data_name(enum AVFrameSideDataType type)
     case AV_FRAME_DATA_VIDEO_ENC_PARAMS:            return "Video encoding parameters";
     case AV_FRAME_DATA_SEI_UNREGISTERED:            return "H.26[45] User Data Unregistered SEI message";
     case AV_FRAME_DATA_FILM_GRAIN_PARAMS:           return "Film grain parameters";
+    case AV_FRAME_DATA_DETECTION_BBOXES:            return "Bounding boxes for object detection and classification";
     }
     return NULL;
 }

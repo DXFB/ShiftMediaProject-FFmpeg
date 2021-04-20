@@ -687,7 +687,7 @@ static av_cold int sonic_encode_init(AVCodecContext *avctx)
     put_bits(&pb, 1, 0); // XXX FIXME: no custom tap quant table
 
     flush_put_bits(&pb);
-    avctx->extradata_size = put_bits_count(&pb)/8;
+    avctx->extradata_size = put_bytes_output(&pb);
 
     av_log(avctx, AV_LOG_INFO, "Sonic: ver: %d.%d ls: %d dr: %d taps: %d block: %d frame: %d downsamp: %d\n",
         s->version, s->minor_version, s->lossless, s->decorrelation, s->num_taps, s->block_align, s->frame_size, s->downsampling);
@@ -831,8 +831,6 @@ static int sonic_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
         if ((ret = intlist_write(&c, state, s->coded_samples[ch], s->block_align, 1)) < 0)
             return ret;
     }
-
-//    av_log(avctx, AV_LOG_DEBUG, "used bytes: %d\n", (put_bits_count(&pb)+7)/8);
 
     avpkt->size = ff_rac_terminate(&c, 0);
     *got_packet_ptr = 1;

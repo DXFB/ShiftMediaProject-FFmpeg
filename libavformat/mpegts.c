@@ -2026,10 +2026,12 @@ int ff_parse_mpeg2_descriptor(AVFormatContext *fc, AVStream *st, int stream_type
                     return AVERROR_INVALIDDATA;
                 if (channel_config_code <= 0x8) {
                     st->codecpar->extradata[9]  = channels = channel_config_code ? channel_config_code : 2;
+                    AV_WL32(&st->codecpar->extradata[12], 48000);
                     st->codecpar->extradata[18] = channel_config_code ? (channels > 2) : /* Dual Mono */ 255;
                     st->codecpar->extradata[19] = opus_stream_cnt[channel_config_code];
                     st->codecpar->extradata[20] = opus_coupled_stream_cnt[channel_config_code];
                     memcpy(&st->codecpar->extradata[21], opus_channel_map[channels - 1], channels);
+                    st->codecpar->extradata_size = st->codecpar->extradata[18] ? 21 + channels : 19;
                 } else {
                     avpriv_request_sample(fc, "Opus in MPEG-TS - channel_config_code > 0x8");
                 }

@@ -167,7 +167,7 @@ static inline int encode_mb(ASV1Context *a, int16_t block[6][64])
 {
     int i;
 
-    av_assert0(a->pb.buf_end - a->pb.buf - (put_bits_count(&a->pb) >> 3) >= MAX_MB_SIZE);
+    av_assert0(put_bytes_left(&a->pb, 0) >= MAX_MB_SIZE);
 
     if (a->avctx->codec_id == AV_CODEC_ID_ASV1) {
         for (i = 0; i < 6; i++)
@@ -290,7 +290,7 @@ static int encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     else
         flush_put_bits_le(&a->pb);
     AV_WN32(put_bits_ptr(&a->pb), 0);
-    size = (put_bits_count(&a->pb) + 31) / 32;
+    size = (put_bytes_output(&a->pb) + 3) / 4;
 
     if (avctx->codec_id == AV_CODEC_ID_ASV1) {
         a->bbdsp.bswap_buf((uint32_t *) pkt->data,

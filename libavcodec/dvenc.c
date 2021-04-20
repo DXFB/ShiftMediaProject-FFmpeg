@@ -976,16 +976,8 @@ static int dv_encode_video_segment(AVCodecContext *avctx, void *arg)
     }
 
     for (j = 0; j < 5 * s->sys->bpm; j++) {
-        int pos;
-        int size = pbs[j].size_in_bits >> 3;
         flush_put_bits(&pbs[j]);
-        pos = put_bits_count(&pbs[j]) >> 3;
-        if (pos > size) {
-            av_log(avctx, AV_LOG_ERROR,
-                   "bitstream written beyond buffer size\n");
-            return -1;
-        }
-        memset(pbs[j].buf + pos, 0xff, size - pos);
+        memset(put_bits_ptr(&pbs[j]), 0xff, put_bytes_left(&pbs[j], 0));
     }
 
     if (DV_PROFILE_IS_HD(s->sys))

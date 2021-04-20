@@ -3144,15 +3144,23 @@ static int init_output_stream_streamcopy(OutputStream *ost)
 
     if (!ost->frame_rate.num)
         ost->frame_rate = ist->framerate;
-    ost->st->avg_frame_rate = ost->frame_rate;
+
+    if (ost->frame_rate.num)
+        ost->st->avg_frame_rate = ost->frame_rate;
+    else
+        ost->st->avg_frame_rate = ist->st->avg_frame_rate;
 
     ret = avformat_transfer_internal_stream_timing_info(of->ctx->oformat, ost->st, ist->st, copy_tb);
     if (ret < 0)
         return ret;
 
     // copy timebase while removing common factors
-    if (ost->st->time_base.num <= 0 || ost->st->time_base.den <= 0)
-        ost->st->time_base = av_add_q(av_stream_get_codec_timebase(ost->st), (AVRational){0, 1});
+    if (ost->st->time_base.num <= 0 || ost->st->time_base.den <= 0) {
+        if (ost->frame_rate.num)
+            ost->st->time_base = av_inv_q(ost->frame_rate);
+        else
+            ost->st->time_base = av_add_q(av_stream_get_codec_timebase(ost->st), (AVRational){0, 1});
+    }
 
     // copy estimated duration as a hint to the muxer
     if (ost->st->duration <= 0 && ist->st->duration > 0)

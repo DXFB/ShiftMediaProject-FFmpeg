@@ -144,19 +144,24 @@ static av_cold int encode_init(AVCodecContext *avctx)
 {
     int ret;
     MpegEncContext *s = avctx->priv_data;
+    int max_size = avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO ? 16383 : 4095;
 
-    if ((ret = ff_mpv_encode_init(avctx)) < 0)
-        return ret;
+    if (avctx->width > max_size || avctx->height > max_size) {
+        av_log(avctx, AV_LOG_ERROR, "%s does not support resolutions above %dx%d\n",
+               CONFIG_SMALL ? avctx->codec->name : avctx->codec->long_name,
+               max_size, max_size);
+        return AVERROR(EINVAL);
+    }
+    if ((avctx->width & 0xFFF) == 0 && (avctx->height & 0xFFF) == 1) {
+        av_log(avctx, AV_LOG_ERROR, "Width / Height is invalid for MPEG2\n");
+        return AVERROR(EINVAL);
+    }
 
-    if (find_frame_rate_index(s) < 0) {
-        if (s->strict_std_compliance > FF_COMPLIANCE_EXPERIMENTAL) {
-            av_log(avctx, AV_LOG_ERROR, "MPEG-1/2 does not support %d/%d fps\n",
-                   avctx->time_base.den, avctx->time_base.num);
+    if (avctx->strict_std_compliance > FF_COMPLIANCE_UNOFFICIAL) {
+        if ((avctx->width & 0xFFF) == 0 || (avctx->height & 0xFFF) == 0) {
+            av_log(avctx, AV_LOG_ERROR, "Width or Height are not allowed to be multiples of 4096\n"
+                                        "add '-strict %d' if you want to use them anyway.\n", FF_COMPLIANCE_UNOFFICIAL);
             return AVERROR(EINVAL);
-        } else {
-            av_log(avctx, AV_LOG_INFO,
-                   "MPEG-1/2 does not support %d/%d fps, there may be AV sync issues\n",
-                   avctx->time_base.den, avctx->time_base.num);
         }
     }
 
@@ -166,9 +171,9 @@ static av_cold int encode_init(AVCodecContext *avctx)
             return AVERROR(EINVAL);
         }
         /* Main or 4:2:2 */
-        avctx->profile = s->chroma_format == CHROMA_420 ? FF_PROFILE_MPEG2_MAIN : FF_PROFILE_MPEG2_422;
+        avctx->profile = avctx->pix_fmt == AV_PIX_FMT_YUV420P ? FF_PROFILE_MPEG2_MAIN
+                                                              : FF_PROFILE_MPEG2_422;
     }
-
     if (avctx->level == FF_LEVEL_UNKNOWN) {
         if (avctx->profile == FF_PROFILE_MPEG2_422) {   /* 4:2:2 */
             if (avctx->width <= 720 && avctx->height <= 608)
@@ -176,7 +181,8 @@ static av_cold int encode_init(AVCodecContext *avctx)
             else
                 avctx->level = 2;                   /* High */
         } else {
-            if (avctx->profile != FF_PROFILE_MPEG2_HIGH && s->chroma_format != CHROMA_420) {
+            if (avctx->profile != FF_PROFILE_MPEG2_HIGH &&
+                avctx->pix_fmt != AV_PIX_FMT_YUV420P) {
                 av_log(avctx, AV_LOG_ERROR,
                        "Only High(1) and 4:2:2(0) profiles support 4:2:2 color sampling\n");
                 return AVERROR(EINVAL);
@@ -190,16 +196,18 @@ static av_cold int encode_init(AVCodecContext *avctx)
         }
     }
 
-    if ((avctx->width & 0xFFF) == 0 && (avctx->height & 0xFFF) == 1) {
-        av_log(avctx, AV_LOG_ERROR, "Width / Height is invalid for MPEG2\n");
-        return AVERROR(EINVAL);
-    }
+    if ((ret = ff_mpv_encode_init(avctx)) < 0)
+        return ret;
 
-    if (s->strict_std_compliance > FF_COMPLIANCE_UNOFFICIAL) {
-        if ((avctx->width & 0xFFF) == 0 || (avctx->height & 0xFFF) == 0) {
-            av_log(avctx, AV_LOG_ERROR, "Width or Height are not allowed to be multiples of 4096\n"
-                                        "add '-strict %d' if you want to use them anyway.\n", FF_COMPLIANCE_UNOFFICIAL);
+    if (find_frame_rate_index(s) < 0) {
+        if (s->strict_std_compliance > FF_COMPLIANCE_EXPERIMENTAL) {
+            av_log(avctx, AV_LOG_ERROR, "MPEG-1/2 does not support %d/%d fps\n",
+                   avctx->time_base.den, avctx->time_base.num);
             return AVERROR(EINVAL);
+        } else {
+            av_log(avctx, AV_LOG_INFO,
+                   "MPEG-1/2 does not support %d/%d fps, there may be AV sync issues\n",
+                   avctx->time_base.den, avctx->time_base.num);
         }
     }
 
@@ -439,7 +447,7 @@ void ff_mpeg1_encode_picture_header(MpegEncContext *s, int picture_number)
              (s->picture_number - s->gop_picture_number) & 0x3ff);
     put_bits(&s->pb, 3, s->pict_type);
 
-    s->vbv_delay_ptr = s->pb.buf + put_bits_count(&s->pb) / 8;
+    s->vbv_delay_ptr = s->pb.buf + put_bytes_count(&s->pb, 0);
     put_bits(&s->pb, 16, 0xFFFF);               /* vbv_delay */
 
     // RAL: Forward f_code also needed for B-frames
@@ -1140,10 +1148,16 @@ av_cold void ff_mpeg1_encode_init(MpegEncContext *s)
       OFFSET(scan_offset),         AV_OPT_TYPE_BOOL, { .i64 = 0 }, 0, 1, VE }, \
     { "timecode_frame_start", "GOP timecode frame start number, in non-drop-frame format", \
       OFFSET(timecode_frame_start), AV_OPT_TYPE_INT64, {.i64 = -1 }, -1, INT64_MAX, VE}, \
+    FF_MPV_COMMON_BFRAME_OPTS
 
 static const AVOption mpeg1_options[] = {
     COMMON_OPTS
     FF_MPV_COMMON_OPTS
+#if FF_API_MPEGVIDEO_OPTS
+    FF_MPV_DEPRECATED_MPEG_QUANT_OPT
+    FF_MPV_DEPRECATED_A53_CC_OPT
+    FF_MPV_DEPRECATED_MATRIX_OPT
+#endif
     { NULL },
 };
 
@@ -1153,6 +1167,7 @@ static const AVOption mpeg2_options[] = {
       OFFSET(intra_vlc_format),    AV_OPT_TYPE_BOOL, { .i64 = 0 }, 0, 1, VE },
     { "non_linear_quant", "Use nonlinear quantizer.",    OFFSET(q_scale_type),   AV_OPT_TYPE_BOOL, { .i64 = 0 }, 0, 1, VE },
     { "alternate_scan",   "Enable alternate scantable.", OFFSET(alternate_scan), AV_OPT_TYPE_BOOL, { .i64 = 0 }, 0, 1, VE },
+    { "a53cc", "Use A53 Closed Captions (if available)", OFFSET(a53_cc),         AV_OPT_TYPE_BOOL, { .i64 = 1 }, 0, 1, VE },
     { "seq_disp_ext",     "Write sequence_display_extension blocks.", OFFSET(seq_disp_ext), AV_OPT_TYPE_INT, { .i64 = -1 }, -1, 1, VE, "seq_disp_ext" },
     {     "auto",   NULL, 0, AV_OPT_TYPE_CONST,  {.i64 = -1},  0, 0, VE, "seq_disp_ext" },
     {     "never",  NULL, 0, AV_OPT_TYPE_CONST,  {.i64 = 0 },  0, 0, VE, "seq_disp_ext" },
@@ -1171,6 +1186,11 @@ static const AVOption mpeg2_options[] = {
     { LEVEL("low",     10) },
 #undef LEVEL
     FF_MPV_COMMON_OPTS
+#if FF_API_MPEGVIDEO_OPTS
+    { "mpeg_quant",       "Deprecated, does nothing", OFFSET(mpeg_quant),
+      AV_OPT_TYPE_INT, {.i64 = 1 }, 0, 1, VE | AV_OPT_FLAG_DEPRECATED },
+    FF_MPV_DEPRECATED_MATRIX_OPT
+#endif
     FF_MPEG2_PROFILE_OPTS
     { NULL },
 };

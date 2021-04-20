@@ -276,6 +276,7 @@
     <ClCompile Include="..\libavfilter\vf_despill.c" />
     <ClCompile Include="..\libavfilter\vf_detelecine.c" />
     <ClCompile Include="..\libavfilter\vf_displace.c" />
+    <ClCompile Include="..\libavfilter\vf_dnn_detect.c" />
     <ClCompile Include="..\libavfilter\vf_dnn_processing.c" />
     <ClCompile Include="..\libavfilter\vf_weave.c" />
     <ClCompile Include="..\libavfilter\vf_drawbox.c" />

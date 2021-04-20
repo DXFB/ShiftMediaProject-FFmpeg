@@ -94,6 +94,9 @@ EXPORTS
     avformat_get_mov_video_tags
     avformat_get_riff_audio_tags
     avformat_get_riff_video_tags
+    avformat_index_get_entries_count
+    avformat_index_get_entry
+    avformat_index_get_entry_from_timestamp
     avformat_init_output
     avformat_license
     avformat_match_stream_specifier

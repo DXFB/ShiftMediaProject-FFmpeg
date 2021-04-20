@@ -86,6 +86,7 @@
     <ClCompile Include="..\libavutil\cpu.c" />
     <ClCompile Include="..\libavutil\crc.c" />
     <ClCompile Include="..\libavutil\des.c" />
+    <ClCompile Include="..\libavutil\detection_bbox.c" />
     <ClCompile Include="..\libavutil\dict.c" />
     <ClCompile Include="..\libavutil\display.c" />
     <ClCompile Include="..\libavutil\dovi_meta.c" />
@@ -194,6 +195,7 @@
     <ClInclude Include="..\libavutil\cpu.h" />
     <ClInclude Include="..\libavutil\crc.h" />
     <ClInclude Include="..\libavutil\des.h" />
+    <ClInclude Include="..\libavutil\detection_bbox.h" />
     <ClInclude Include="..\libavutil\dict.h" />
     <ClInclude Include="..\libavutil\display.h" />
     <ClInclude Include="..\libavutil\dovi_meta.h" />
@@ -504,6 +506,7 @@ copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\display.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dovi_meta.h "$(OutDir)"\include\libavutil
@@ -656,6 +659,7 @@ copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\display.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dovi_meta.h "$(OutDir)"\include\libavutil
@@ -815,6 +819,7 @@ copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\display.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dovi_meta.h "$(OutDir)"\include\libavutil
@@ -972,6 +977,7 @@ copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\display.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dovi_meta.h "$(OutDir)"\include\libavutil
@@ -1130,6 +1136,7 @@ copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\display.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dovi_meta.h "$(OutDir)"\include\libavutil
@@ -1286,6 +1293,7 @@ copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\display.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dovi_meta.h "$(OutDir)"\include\libavutil
@@ -1450,6 +1458,7 @@ copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\display.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dovi_meta.h "$(OutDir)"\include\libavutil
@@ -1613,6 +1622,7 @@ copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\display.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dovi_meta.h "$(OutDir)"\include\libavutil
@@ -1777,6 +1787,7 @@ copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\display.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dovi_meta.h "$(OutDir)"\include\libavutil
@@ -1940,6 +1951,7 @@ copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\display.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dovi_meta.h "$(OutDir)"\include\libavutil

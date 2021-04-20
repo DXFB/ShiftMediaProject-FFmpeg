@@ -203,6 +203,7 @@ static const AVFilter *filter_list[] = {
     &ff_vf_detelecine,
     &ff_vf_dilation,
     &ff_vf_displace,
+    &ff_vf_dnn_detect,
     &ff_vf_dnn_processing,
     &ff_vf_doubleweave,
     &ff_vf_drawbox,

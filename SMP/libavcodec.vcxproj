@@ -342,7 +342,6 @@
     <ClCompile Include="..\libavcodec\amrwbdec.c" />
     <ClCompile Include="..\libavcodec\mjpegenc.c" />
     <ClCompile Include="..\libavcodec\mjpegenc_common.c" />
-    <ClCompile Include="..\libavcodec\mjpegenc_huffman.c" />
     <ClCompile Include="..\libavcodec\anm.c" />
     <ClCompile Include="..\libavcodec\ansi.c" />
     <ClCompile Include="..\libavcodec\cga_data.c" />
@@ -608,6 +607,7 @@
     <ClCompile Include="..\libavcodec\microdvddec.c" />
     <ClCompile Include="..\libavcodec\mimic.c" />
     <ClCompile Include="..\libavcodec\mjpegdec.c" />
+    <ClCompile Include="..\libavcodec\mjpegenc_huffman.c" />
     <ClCompile Include="..\libavcodec\mjpegbdec.c" />
     <ClCompile Include="..\libavcodec\qsvenc_jpeg.c" />
     <ClCompile Include="..\libavcodec\mlpdec.c" />

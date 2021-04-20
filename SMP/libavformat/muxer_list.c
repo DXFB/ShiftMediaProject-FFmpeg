@@ -157,7 +157,6 @@ static const AVOutputFormat *muxer_list[] = {
     &ff_segafilm_muxer,
     &ff_segment_muxer,
     &ff_stream_segment_muxer,
-    &ff_singlejpeg_muxer,
     &ff_smjpeg_muxer,
     &ff_smoothstreaming_muxer,
     &ff_sox_muxer,

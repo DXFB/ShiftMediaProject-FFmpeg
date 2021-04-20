@@ -102,6 +102,8 @@ EXPORTS
     av_des_crypt
     av_des_init
     av_des_mac
+    av_detection_bbox_alloc
+    av_detection_bbox_create_side_data
     av_dict_copy
     av_dict_count
     av_dict_free

@@ -236,7 +236,7 @@ static void free_shm_buffer(void *opaque, uint8_t *data)
     shmdt(data);
 }
 
-static AVBufferRef *allocate_shm_buffer(void *opaque, buffer_size_t size)
+static AVBufferRef *allocate_shm_buffer(void *opaque, size_t size)
 {
     xcb_connection_t *conn = opaque;
     xcb_shm_seg_t segment;
@@ -900,7 +900,7 @@ static av_cold int xcbgrab_read_header(AVFormatContext *s)
     return 0;
 }
 
-AVInputFormat ff_xcbgrab_demuxer = {
+const AVInputFormat ff_xcbgrab_demuxer = {
     .name           = "x11grab",
     .long_name      = NULL_IF_CONFIG_SMALL("X11 screen capture, using XCB"),
     .priv_data_size = sizeof(XCBGrabContext),

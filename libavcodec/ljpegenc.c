@@ -72,13 +72,6 @@ static int ljpeg_encode_bgr(AVCodecContext *avctx, PutBitContext *pb,
     int left[4], top[4], topleft[4];
     int x, y, i;
 
-#if FF_API_PRIVATE_OPT
-FF_DISABLE_DEPRECATION_WARNINGS
-    if (avctx->prediction_method)
-        s->pred = avctx->prediction_method + 1;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
     for (i = 0; i < 4; i++)
         buffer[0][i] = 1 << (9 - 1);
 
@@ -203,13 +196,6 @@ static int ljpeg_encode_yuv(AVCodecContext *avctx, PutBitContext *pb,
     const int mb_height = (avctx->height + s->vsample[0] - 1) / s->vsample[0];
     int mb_x, mb_y;
 
-#if FF_API_PRIVATE_OPT
-FF_DISABLE_DEPRECATION_WARNINGS
-    if (avctx->prediction_method)
-        s->pred = avctx->prediction_method + 1;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
     for (mb_y = 0; mb_y < mb_height; mb_y++) {
         if (put_bytes_left(pb, 0) <
             mb_width * 4 * 3 * s->hsample[0] * s->vsample[0]) {
@@ -295,13 +281,6 @@ static av_cold int ljpeg_encode_init(AVCodecContext *avctx)
     if (ret < 0)
         return ret;
 
-#if FF_API_CODED_FRAME
-FF_DISABLE_DEPRECATION_WARNINGS
-    avctx->coded_frame->pict_type = AV_PICTURE_TYPE_I;
-    avctx->coded_frame->key_frame = 1;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
     s->scratch = av_malloc_array(avctx->width + 1, sizeof(*s->scratch));
     if (!s->scratch)
         return AVERROR(ENOMEM);
@@ -342,7 +321,7 @@ static const AVClass ljpeg_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVCodec ff_ljpeg_encoder = {
+const AVCodec ff_ljpeg_encoder = {
     .name           = "ljpeg",
     .long_name      = NULL_IF_CONFIG_SMALL("Lossless JPEG"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -358,4 +337,5 @@ AVCodec ff_ljpeg_encoder = {
         AV_PIX_FMT_YUVJ420P, AV_PIX_FMT_YUVJ444P, AV_PIX_FMT_YUVJ422P,
         AV_PIX_FMT_YUV420P , AV_PIX_FMT_YUV444P , AV_PIX_FMT_YUV422P,
         AV_PIX_FMT_NONE},
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };

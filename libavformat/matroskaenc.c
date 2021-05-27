@@ -1671,11 +1671,7 @@ static int mkv_write_chapters(AVFormatContext *s)
         int64_t chapterstart = av_rescale_q(c->start, c->time_base, scale);
         int64_t chapterend   = av_rescale_q(c->end,   c->time_base, scale);
         const AVDictionaryEntry *t;
-#if FF_API_CHAPTER_ID_INT
-        uint64_t uid = create_new_ids ? i + 1ULL : (uint32_t)c->id;
-#else
         uint64_t uid = create_new_ids ? i + 1ULL : c->id;
-#endif
         if (chapterstart < 0 || chapterstart > chapterend || chapterend < 0) {
             av_log(s, AV_LOG_ERROR,
                    "Invalid chapter start (%"PRId64") or end (%"PRId64").\n",
@@ -2034,7 +2030,7 @@ static int mkv_write_block(AVFormatContext *s, AVIOContext *pb,
     AVCodecParameters *par = s->streams[pkt->stream_index]->codecpar;
     mkv_track *track = &mkv->tracks[pkt->stream_index];
     uint8_t *data = NULL, *side_data = NULL;
-    buffer_size_t side_data_size;
+    size_t side_data_size;
     int err = 0, offset = 0, size = pkt->size;
     int64_t ts = track->write_dts ? pkt->dts : pkt->pts;
     uint64_t additional_id;
@@ -2145,7 +2141,7 @@ static int mkv_write_vtt_blocks(AVFormatContext *s, AVIOContext *pb, const AVPac
     MatroskaMuxContext *mkv = s->priv_data;
     mkv_track *track = &mkv->tracks[pkt->stream_index];
     ebml_master blockgroup;
-    buffer_size_t id_size, settings_size;
+    size_t id_size, settings_size;
     int size, id_size_int, settings_size_int;
     const char *id, *settings;
     int64_t ts = track->write_dts ? pkt->dts : pkt->pts;
@@ -2218,7 +2214,7 @@ static int mkv_check_new_extra_data(AVFormatContext *s, const AVPacket *pkt)
     mkv_track *track        = &mkv->tracks[pkt->stream_index];
     AVCodecParameters *par  = s->streams[pkt->stream_index]->codecpar;
     uint8_t *side_data;
-    buffer_size_t side_data_size;
+    size_t side_data_size;
     int ret;
 
     side_data = av_packet_get_side_data(pkt, AV_PKT_DATA_NEW_EXTRADATA,
@@ -2372,14 +2368,6 @@ static int mkv_write_packet_internal(AVFormatContext *s, const AVPacket *pkt)
                                                        mkv_blockgroup_size(pkt->size,
                                                                            track->track_num_size));
 
-#if FF_API_CONVERGENCE_DURATION
-FF_DISABLE_DEPRECATION_WARNINGS
-            /* For backward compatibility, prefer convergence_duration. */
-            if (pkt->convergence_duration > 0) {
-                duration = pkt->convergence_duration;
-            }
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
             /* All subtitle blocks are considered to be keyframes. */
             mkv_write_block(s, pb, MATROSKA_ID_BLOCK, pkt, 1);
             put_ebml_uint(pb, MATROSKA_ID_BLOCKDURATION, duration);
@@ -2849,7 +2837,7 @@ static const AVClass matroska_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVOutputFormat ff_matroska_muxer = {
+const AVOutputFormat ff_matroska_muxer = {
     .name              = "matroska",
     .long_name         = NULL_IF_CONFIG_SMALL("Matroska"),
     .mime_type         = "video/x-matroska",
@@ -2885,7 +2873,7 @@ static const AVClass webm_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVOutputFormat ff_webm_muxer = {
+const AVOutputFormat ff_webm_muxer = {
     .name              = "webm",
     .long_name         = NULL_IF_CONFIG_SMALL("WebM"),
     .mime_type         = "video/webm",
@@ -2914,7 +2902,7 @@ static const AVClass mka_class = {
     .option     = options,
     .version    = LIBAVUTIL_VERSION_INT,
 };
-AVOutputFormat ff_matroska_audio_muxer = {
+const AVOutputFormat ff_matroska_audio_muxer = {
     .name              = "matroska",
     .long_name         = NULL_IF_CONFIG_SMALL("Matroska Audio"),
     .mime_type         = "audio/x-matroska",

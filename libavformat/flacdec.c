@@ -56,7 +56,7 @@ static int flac_read_header(AVFormatContext *s)
         return AVERROR(ENOMEM);
     st->codecpar->codec_type = AVMEDIA_TYPE_AUDIO;
     st->codecpar->codec_id = AV_CODEC_ID_FLAC;
-    st->need_parsing = AVSTREAM_PARSE_FULL_RAW;
+    st->internal->need_parsing = AVSTREAM_PARSE_FULL_RAW;
     /* the parameters will be extracted from the compressed bitstream */
 
     /* if fLaC marker is not found, assume there is no header */
@@ -330,7 +330,7 @@ static int flac_seek(AVFormatContext *s, int stream_index, int64_t timestamp, in
 }
 
 FF_RAW_DEMUXER_CLASS(flac)
-AVInputFormat ff_flac_demuxer = {
+const AVInputFormat ff_flac_demuxer = {
     .name           = "flac",
     .long_name      = NULL_IF_CONFIG_SMALL("raw FLAC"),
     .read_probe     = flac_probe,

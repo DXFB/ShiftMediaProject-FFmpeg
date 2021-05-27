@@ -29,11 +29,12 @@
 #include "dnn_backend_native_layer_depth2space.h"
 #include "libavformat/avio.h"
 #include "libavutil/avassert.h"
+#include "libavutil/avstring.h"
 #include "../internal.h"
 #include "dnn_backend_native_layer_pad.h"
 #include "dnn_backend_native_layer_maximum.h"
 #include "dnn_io_proc.h"
-
+#include "dnn_backend_common.h"
 #include <tensorflow/c/c_api.h>
 
 typedef struct TFOptions{
@@ -142,6 +143,7 @@ static DNNReturnType get_input_tf(void *model, DNNData *input, const char *input
 
     tf_output.index = 0;
     input->dt = TF_OperationOutputType(tf_output);
+    input->order = DCO_RGB;
 
     status = TF_NewStatus();
     TF_GraphGetTensorShape(tf_model->graph, tf_output, dims, 4, status);
@@ -153,7 +155,7 @@ static DNNReturnType get_input_tf(void *model, DNNData *input, const char *input
     TF_DeleteStatus(status);
 
     // currently only NHWC is supported
-    av_assert0(dims[0] == 1);
+    av_assert0(dims[0] == 1 || dims[0] == -1);
     input->height = dims[1];
     input->width = dims[2];
     input->channels = dims[3];
@@ -194,6 +196,36 @@ static DNNReturnType get_output_tf(void *model, const char *input_name, int inpu
     return ret;
 }
 
+#define SPACE_CHARS " \t\r\n"
+static int hex_to_data(uint8_t *data, const char *p)
+{
+    int c, len, v;
+
+    len = 0;
+    v   = 1;
+    for (;;) {
+        p += strspn(p, SPACE_CHARS);
+        if (*p == '\0')
+            break;
+        c = av_toupper((unsigned char) *p++);
+        if (c >= '0' && c <= '9')
+            c = c - '0';
+        else if (c >= 'A' && c <= 'F')
+            c = c - 'A' + 10;
+        else
+            break;
+        v = (v << 4) | c;
+        if (v & 0x100) {
+            if (data) {
+                data[len] = v;
+            }
+            len++;
+            v = 1;
+        }
+    }
+    return len;
+}
+
 static DNNReturnType load_tf_model(TFModel *tf_model, const char *model_filename)
 {
     TFContext *ctx = &tf_model->ctx;
@@ -206,52 +238,28 @@ static DNNReturnType load_tf_model(TFModel *tf_model, const char *model_filename
 
     // prepare the sess config data
     if (tf_model->ctx.options.sess_config != NULL) {
+        const char *config;
         /*
         tf_model->ctx.options.sess_config is hex to present the serialized proto
         required by TF_SetConfig below, so we need to first generate the serialized
-        proto in a python script, the following is a script example to generate
-        serialized proto which specifies one GPU, we can change the script to add
-        more options.
-
-        import tensorflow as tf
-        gpu_options = tf.GPUOptions(visible_device_list='0')
-        config = tf.ConfigProto(gpu_options=gpu_options)
-        s = config.SerializeToString()
-        b = ''.join("%02x" % int(ord(b)) for b in s[::-1])
-        print('0x%s' % b)
-
-        the script output looks like: 0xab...cd, and then pass 0xab...cd to sess_config.
+        proto in a python script, tools/python/tf_sess_config.py is a script example
+        to generate the configs of sess_config.
         */
-        char tmp[3];
-        tmp[2] = '\0';
-
         if (strncmp(tf_model->ctx.options.sess_config, "0x", 2) != 0) {
             av_log(ctx, AV_LOG_ERROR, "sess_config should start with '0x'\n");
             return DNN_ERROR;
         }
+        config = tf_model->ctx.options.sess_config + 2;
+        sess_config_length = hex_to_data(NULL, config);
 
-        sess_config_length = strlen(tf_model->ctx.options.sess_config);
-        if (sess_config_length % 2 != 0) {
-            av_log(ctx, AV_LOG_ERROR, "the length of sess_config is not even (%s), "
-                                      "please re-generate the config.\n",
-                                      tf_model->ctx.options.sess_config);
-            return DNN_ERROR;
-        }
-
-        sess_config_length -= 2; //ignore the first '0x'
-        sess_config_length /= 2; //get the data length in byte
-
-        sess_config = av_malloc(sess_config_length);
+        sess_config = av_mallocz(sess_config_length + AV_INPUT_BUFFER_PADDING_SIZE);
         if (!sess_config) {
             av_log(ctx, AV_LOG_ERROR, "failed to allocate memory\n");
             return DNN_ERROR;
         }
-
-        for (int i = 0; i < sess_config_length; i++) {
-            int index = 2 + (sess_config_length - 1 - i) * 2;
-            tmp[0] = tf_model->ctx.options.sess_config[index];
-            tmp[1] = tf_model->ctx.options.sess_config[index + 1];
-            sess_config[i] = strtol(tmp, NULL, 16);
+        if (hex_to_data(sess_config, config) < 0) {
+            av_log(ctx, AV_LOG_ERROR, "failed to convert hex to data\n");
+            return DNN_ERROR;
         }
     }
 
@@ -732,7 +740,7 @@ static DNNReturnType execute_model_tf(const DNNModel *model, const char *input_n
     TF_Output *tf_outputs;
     TFModel *tf_model = model->model;
     TFContext *ctx = &tf_model->ctx;
-    DNNData input, output;
+    DNNData input, *outputs;
     TF_Tensor **output_tensors;
     TF_Output tf_input;
     TF_Tensor *input_tensor;
@@ -755,20 +763,22 @@ static DNNReturnType execute_model_tf(const DNNModel *model, const char *input_n
     }
     input.data = (float *)TF_TensorData(input_tensor);
 
-    if (do_ioproc) {
-        if (tf_model->model->frame_pre_proc != NULL) {
-            tf_model->model->frame_pre_proc(in_frame, &input, tf_model->model->filter_ctx);
-        } else {
-            ff_proc_from_frame_to_dnn(in_frame, &input, tf_model->model->func_type, ctx);
+    switch (tf_model->model->func_type) {
+    case DFT_PROCESS_FRAME:
+        if (do_ioproc) {
+            if (tf_model->model->frame_pre_proc != NULL) {
+                tf_model->model->frame_pre_proc(in_frame, &input, tf_model->model->filter_ctx);
+            } else {
+                ff_proc_from_frame_to_dnn(in_frame, &input, ctx);
+            }
         }
-    }
-
-    if (nb_output != 1) {
-        // currently, the filter does not need multiple outputs,
-        // so we just pending the support until we really need it.
-        TF_DeleteTensor(input_tensor);
-        avpriv_report_missing_feature(ctx, "multiple outputs");
-        return DNN_ERROR;
+        break;
+    case DFT_ANALYTICS_DETECT:
+        ff_frame_to_dnn_detect(in_frame, &input, ctx);
+        break;
+    default:
+        avpriv_report_missing_feature(ctx, "model function type %d", tf_model->model->func_type);
+        break;
     }
 
     tf_outputs = av_malloc_array(nb_output, sizeof(*tf_outputs));
@@ -810,23 +820,56 @@ static DNNReturnType execute_model_tf(const DNNModel *model, const char *input_n
         return DNN_ERROR;
     }
 
-    for (uint32_t i = 0; i < nb_output; ++i) {
-        output.height = TF_Dim(output_tensors[i], 1);
-        output.width = TF_Dim(output_tensors[i], 2);
-        output.channels = TF_Dim(output_tensors[i], 3);
-        output.data = TF_TensorData(output_tensors[i]);
-        output.dt = TF_TensorType(output_tensors[i]);
+    outputs = av_malloc_array(nb_output, sizeof(*outputs));
+    if (!outputs) {
+        TF_DeleteTensor(input_tensor);
+        av_freep(&tf_outputs);
+        av_freep(&output_tensors);
+        av_log(ctx, AV_LOG_ERROR, "Failed to allocate memory for *outputs\n"); \
+        return DNN_ERROR;
+    }
 
+    for (uint32_t i = 0; i < nb_output; ++i) {
+        outputs[i].height = TF_Dim(output_tensors[i], 1);
+        outputs[i].width = TF_Dim(output_tensors[i], 2);
+        outputs[i].channels = TF_Dim(output_tensors[i], 3);
+        outputs[i].data = TF_TensorData(output_tensors[i]);
+        outputs[i].dt = TF_TensorType(output_tensors[i]);
+    }
+    switch (model->func_type) {
+    case DFT_PROCESS_FRAME:
+        //it only support 1 output if it's frame in & frame out
         if (do_ioproc) {
             if (tf_model->model->frame_post_proc != NULL) {
-                tf_model->model->frame_post_proc(out_frame, &output, tf_model->model->filter_ctx);
+                tf_model->model->frame_post_proc(out_frame, outputs, tf_model->model->filter_ctx);
             } else {
-                ff_proc_from_dnn_to_frame(out_frame, &output, ctx);
+                ff_proc_from_dnn_to_frame(out_frame, outputs, ctx);
             }
         } else {
-            out_frame->width = output.width;
-            out_frame->height = output.height;
+            out_frame->width = outputs[0].width;
+            out_frame->height = outputs[0].height;
         }
+        break;
+    case DFT_ANALYTICS_DETECT:
+        if (!model->detect_post_proc) {
+            av_log(ctx, AV_LOG_ERROR, "Detect filter needs provide post proc\n");
+            return DNN_ERROR;
+        }
+        model->detect_post_proc(out_frame, outputs, nb_output, model->filter_ctx);
+        break;
+    default:
+        for (uint32_t i = 0; i < nb_output; ++i) {
+            if (output_tensors[i]) {
+                TF_DeleteTensor(output_tensors[i]);
+            }
+        }
+        TF_DeleteTensor(input_tensor);
+        av_freep(&output_tensors);
+        av_freep(&tf_outputs);
+        av_freep(&outputs);
+
+        av_log(ctx, AV_LOG_ERROR, "Tensorflow backend does not support this kind of dnn filter now\n");
+        return DNN_ERROR;
     }
 
     for (uint32_t i = 0; i < nb_output; ++i) {
@@ -837,26 +880,21 @@ static DNNReturnType execute_model_tf(const DNNModel *model, const char *input_n
     TF_DeleteTensor(input_tensor);
     av_freep(&output_tensors);
     av_freep(&tf_outputs);
+    av_freep(&outputs);
     return DNN_SUCCESS;
 }
 
-DNNReturnType ff_dnn_execute_model_tf(const DNNModel *model, const char *input_name, AVFrame *in_frame,
-                                      const char **output_names, uint32_t nb_output, AVFrame *out_frame)
+DNNReturnType ff_dnn_execute_model_tf(const DNNModel *model, DNNExecBaseParams *exec_params)
 {
     TFModel *tf_model = model->model;
     TFContext *ctx = &tf_model->ctx;
 
-    if (!in_frame) {
-        av_log(ctx, AV_LOG_ERROR, "in frame is NULL when execute model.\n");
-        return DNN_ERROR;
+    if (ff_check_exec_params(ctx, DNN_TF, model->func_type, exec_params) != 0) {
+         return DNN_ERROR;
     }
 
-    if (!out_frame) {
-        av_log(ctx, AV_LOG_ERROR, "out frame is NULL when execute model.\n");
-        return DNN_ERROR;
-    }
-
-    return execute_model_tf(model, input_name, in_frame, output_names, nb_output, out_frame, 1);
+    return execute_model_tf(model, exec_params->input_name, exec_params->in_frame,
+                            exec_params->output_names, exec_params->nb_output, exec_params->out_frame, 1);
 }
 
 void ff_dnn_free_model_tf(DNNModel **model)

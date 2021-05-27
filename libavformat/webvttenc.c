@@ -64,7 +64,7 @@ static int webvtt_write_header(AVFormatContext *ctx)
 static int webvtt_write_packet(AVFormatContext *ctx, AVPacket *pkt)
 {
     AVIOContext  *pb = ctx->pb;
-    buffer_size_t id_size, settings_size;
+    size_t id_size, settings_size;
     int id_size_int, settings_size_int;
     uint8_t *id, *settings;
 
@@ -102,7 +102,7 @@ static int webvtt_write_packet(AVFormatContext *ctx, AVPacket *pkt)
     return 0;
 }
 
-AVOutputFormat ff_webvtt_muxer = {
+const AVOutputFormat ff_webvtt_muxer = {
     .name              = "webvtt",
     .long_name         = NULL_IF_CONFIG_SMALL("WebVTT subtitle"),
     .extensions        = "vtt",

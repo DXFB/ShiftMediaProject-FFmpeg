@@ -133,7 +133,7 @@ enum AVChromaLocation ff_choose_chroma_location(AVFormatContext *s, AVStream *st
 
 }
 
-int avformat_alloc_output_context2(AVFormatContext **avctx, ff_const59 AVOutputFormat *oformat,
+int avformat_alloc_output_context2(AVFormatContext **avctx, const AVOutputFormat *oformat,
                                    const char *format, const char *filename)
 {
     AVFormatContext *s = avformat_alloc_context();
@@ -175,11 +175,6 @@ int avformat_alloc_output_context2(AVFormatContext **avctx, ff_const59 AVOutputF
         s->priv_data = NULL;
 
     if (filename) {
-#if FF_API_FORMAT_FILENAME
-FF_DISABLE_DEPRECATION_WARNINGS
-        av_strlcpy(s->filename, filename, sizeof(s->filename));
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
         if (!(s->url = av_strdup(filename)))
             goto nomem;
 
@@ -247,29 +242,10 @@ static int init_muxer(AVFormatContext *s, AVDictionary **options)
         (ret = av_opt_set_dict2(s->priv_data, &tmp, AV_OPT_SEARCH_CHILDREN)) < 0)
         goto fail;
 
-#if FF_API_FORMAT_FILENAME
-FF_DISABLE_DEPRECATION_WARNINGS
-    if (!s->url && !(s->url = av_strdup(s->filename))) {
-FF_ENABLE_DEPRECATION_WARNINGS
-#else
     if (!s->url && !(s->url = av_strdup(""))) {
-#endif
         ret = AVERROR(ENOMEM);
         goto fail;
     }
-
-#if FF_API_LAVF_AVCTX
-FF_DISABLE_DEPRECATION_WARNINGS
-    if (s->nb_streams && s->streams[0]->codec->flags & AV_CODEC_FLAG_BITEXACT) {
-        if (!(s->flags & AVFMT_FLAG_BITEXACT)) {
-            av_log(s, AV_LOG_WARNING,
-                   "The AVFormatContext is not in set to bitexact mode, only "
-                   "the AVCodecContext. If this is not intended, set "
-                   "AVFormatContext.flags |= AVFMT_FLAG_BITEXACT.\n");
-        }
-    }
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
 
     // some sanity checks
     if (s->nb_streams == 0 && !(of->flags & AVFMT_NOSTREAMS)) {
@@ -281,20 +257,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
     for (i = 0; i < s->nb_streams; i++) {
         st  = s->streams[i];
         par = st->codecpar;
-
-#if FF_API_LAVF_AVCTX
-FF_DISABLE_DEPRECATION_WARNINGS
-        if (st->codecpar->codec_type == AVMEDIA_TYPE_UNKNOWN &&
-            st->codec->codec_type    != AVMEDIA_TYPE_UNKNOWN) {
-            av_log(s, AV_LOG_WARNING, "Using AVStream.codec to pass codec "
-                   "parameters to muxers is deprecated, use AVStream.codecpar "
-                   "instead.\n");
-            ret = avcodec_parameters_from_context(st->codecpar, st->codec);
-            if (ret < 0)
-                goto fail;
-        }
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
 
         if (!st->time_base.num) {
             /* fall back on the default timebase values */

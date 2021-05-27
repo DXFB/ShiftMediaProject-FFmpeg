@@ -2957,7 +2957,7 @@ static const AVClass wavpack_encoder_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVCodec ff_wavpack_encoder = {
+const AVCodec ff_wavpack_encoder = {
     .name           = "wavpack",
     .long_name      = NULL_IF_CONFIG_SMALL("WavPack"),
     .type           = AVMEDIA_TYPE_AUDIO,
@@ -2973,4 +2973,5 @@ AVCodec ff_wavpack_encoder = {
                                                      AV_SAMPLE_FMT_S32P,
                                                      AV_SAMPLE_FMT_FLTP,
                                                      AV_SAMPLE_FMT_NONE },
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };

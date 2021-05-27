@@ -136,10 +136,6 @@ typedef struct AVCodecInternal {
      */
     int last_audio_frame;
 
-#if FF_API_OLD_ENCDEC
-    AVFrame *to_free;
-#endif
-
     AVBufferRef *pool;
 
     void *thread_ctx;
@@ -165,6 +161,12 @@ typedef struct AVCodecInternal {
     EncodeSimpleContext es;
 
     /**
+     * If this is set, then AVCodec->close (if existing) needs to be called
+     * for the parent AVCodecContext.
+     */
+    int needs_close;
+
+    /**
      * Number of audio samples to skip at the start of the next decoded frame
      */
     int skip_samples;
@@ -185,18 +187,6 @@ typedef struct AVCodecInternal {
     AVPacket *buffer_pkt;
     AVFrame *buffer_frame;
     int draining_done;
-
-#if FF_API_OLD_ENCDEC
-    int compat_decode_warned;
-    /* this variable is set by the decoder internals to signal to the old
-     * API compat wrappers the amount of data consumed from the last packet */
-    size_t compat_decode_consumed;
-    /* when a partial packet has been consumed, this stores the remaining size
-     * of the packet (that should be submitted in the next decode call */
-    size_t compat_decode_partial_size;
-    AVFrame *compat_decode_frame;
-    AVPacket *compat_encode_packet;
-#endif
 
     int showed_multi_packet_warning;
 

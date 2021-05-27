@@ -37,6 +37,7 @@
 #include "dca_core.h"
 #include "dcadata.h"
 #include "dcaenc.h"
+#include "encode.h"
 #include "fft.h"
 #include "internal.h"
 #include "mathops.h"
@@ -1182,7 +1183,7 @@ static int encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
     const int32_t *samples;
     int ret, i;
 
-    if ((ret = ff_alloc_packet2(avctx, avpkt, c->frame_size, 0)) < 0)
+    if ((ret = ff_get_encode_buffer(avctx, avpkt, c->frame_size, 0)) < 0)
         return ret;
 
     samples = (const int32_t *)frame->data[0];
@@ -1206,14 +1207,10 @@ static int encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
     for (i = 0; i < SUBFRAMES; i++)
         put_subframe(c, i);
 
-
-    for (i = put_bits_count(&c->pb); i < 8*c->frame_size; i++)
-        put_bits(&c->pb, 1, 0);
-
     flush_put_bits(&c->pb);
+    memset(put_bits_ptr(&c->pb), 0, put_bytes_left(&c->pb, 0));
 
     avpkt->pts      = frame->pts;
-    avpkt->size     = put_bytes_output(&c->pb);
     avpkt->duration = ff_samples_to_time_base(avctx, frame->nb_samples);
     *got_packet_ptr = 1;
     return 0;
@@ -1238,16 +1235,16 @@ static const AVCodecDefault defaults[] = {
     { NULL },
 };
 
-AVCodec ff_dca_encoder = {
+const AVCodec ff_dca_encoder = {
     .name                  = "dca",
     .long_name             = NULL_IF_CONFIG_SMALL("DCA (DTS Coherent Acoustics)"),
     .type                  = AVMEDIA_TYPE_AUDIO,
     .id                    = AV_CODEC_ID_DTS,
+    .capabilities          = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_EXPERIMENTAL,
     .priv_data_size        = sizeof(DCAEncContext),
     .init                  = encode_init,
     .close                 = encode_close,
     .encode2               = encode_frame,
-    .capabilities          = AV_CODEC_CAP_EXPERIMENTAL,
     .caps_internal         = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
     .sample_fmts           = (const enum AVSampleFormat[]){ AV_SAMPLE_FMT_S32,
                                                             AV_SAMPLE_FMT_NONE },

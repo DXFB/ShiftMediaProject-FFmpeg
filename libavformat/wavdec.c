@@ -167,7 +167,7 @@ static void handle_stream_probing(AVStream *st)
 {
     if (st->codecpar->codec_id == AV_CODEC_ID_PCM_S16LE) {
         st->internal->request_probe = AVPROBE_SCORE_EXTENSION;
-        st->probe_packets = FFMIN(st->probe_packets, 32);
+        st->internal->probe_packets = FFMIN(st->internal->probe_packets, 32);
     }
 }
 
@@ -183,7 +183,7 @@ static int wav_parse_fmt_tag(AVFormatContext *s, int64_t size, AVStream *st)
         return ret;
     handle_stream_probing(st);
 
-    st->need_parsing = AVSTREAM_PARSE_FULL_RAW;
+    st->internal->need_parsing = AVSTREAM_PARSE_FULL_RAW;
 
     avpriv_set_pts_info(st, 64, 1, st->codecpar->sample_rate);
 
@@ -200,7 +200,7 @@ static int wav_parse_xma2_tag(AVFormatContext *s, int64_t size, AVStream *st)
 
     st->codecpar->codec_type = AVMEDIA_TYPE_AUDIO;
     st->codecpar->codec_id   = AV_CODEC_ID_XMA2;
-    st->need_parsing         = AVSTREAM_PARSE_FULL_RAW;
+    st->internal->need_parsing         = AVSTREAM_PARSE_FULL_RAW;
 
     version = avio_r8(pb);
     if (version != 3 && version != 4)
@@ -816,7 +816,7 @@ static const AVClass wav_demuxer_class = {
     .option     = demux_options,
     .version    = LIBAVUTIL_VERSION_INT,
 };
-AVInputFormat ff_wav_demuxer = {
+const AVInputFormat ff_wav_demuxer = {
     .name           = "wav",
     .long_name      = NULL_IF_CONFIG_SMALL("WAV / WAVE (Waveform Audio)"),
     .priv_data_size = sizeof(WAVDemuxContext),
@@ -950,7 +950,7 @@ static int w64_read_header(AVFormatContext *s)
     ff_metadata_conv_ctx(s, NULL, ff_riff_info_conv);
 
     handle_stream_probing(st);
-    st->need_parsing = AVSTREAM_PARSE_FULL_RAW;
+    st->internal->need_parsing = AVSTREAM_PARSE_FULL_RAW;
 
     avio_seek(pb, data_ofs, SEEK_SET);
 
@@ -966,7 +966,7 @@ static const AVClass w64_demuxer_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVInputFormat ff_w64_demuxer = {
+const AVInputFormat ff_w64_demuxer = {
     .name           = "w64",
     .long_name      = NULL_IF_CONFIG_SMALL("Sony Wave64"),
     .priv_data_size = sizeof(WAVDemuxContext),

@@ -132,19 +132,6 @@ static int xsub_encode(AVCodecContext *avctx, unsigned char *buf,
     if (h->num_rects != 1)
         av_log(avctx, AV_LOG_WARNING, "Only single rects supported (%d in subtitle.)\n", h->num_rects);
 
-#if FF_API_AVPICTURE
-FF_DISABLE_DEPRECATION_WARNINGS
-    if (!h->rects[0]->data[0]) {
-        AVSubtitleRect *rect = h->rects[0];
-        int j;
-        for (j = 0; j < 4; j++) {
-            rect->data[j] = rect->pict.data[j];
-            rect->linesize[j] = rect->pict.linesize[j];
-        }
-    }
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
     // TODO: render text-based subtitles into bitmaps
     if (!h->rects[0]->data[0] || !h->rects[0]->data[1]) {
         av_log(avctx, AV_LOG_WARNING, "No subtitle bitmap available.\n");
@@ -224,7 +211,7 @@ static av_cold int xsub_encoder_init(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_xsub_encoder = {
+const AVCodec ff_xsub_encoder = {
     .name       = "xsub",
     .long_name  = NULL_IF_CONFIG_SMALL("DivX subtitles (XSUB)"),
     .type       = AVMEDIA_TYPE_SUBTITLE,

@@ -404,7 +404,7 @@ static av_cold int decode_init(AVCodecContext * avctx)
     return 0;
 }
 
-AVCodec ff_kmvc_decoder = {
+const AVCodec ff_kmvc_decoder = {
     .name           = "kmvc",
     .long_name      = NULL_IF_CONFIG_SMALL("Karl Morton's video codec"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -413,4 +413,5 @@ AVCodec ff_kmvc_decoder = {
     .init           = decode_init,
     .decode         = decode_frame,
     .capabilities   = AV_CODEC_CAP_DR1,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };

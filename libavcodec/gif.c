@@ -551,7 +551,7 @@ static const AVClass gif_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVCodec ff_gif_encoder = {
+const AVCodec ff_gif_encoder = {
     .name           = "gif",
     .long_name      = NULL_IF_CONFIG_SMALL("GIF (Graphics Interchange Format)"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -565,5 +565,5 @@ AVCodec ff_gif_encoder = {
         AV_PIX_FMT_GRAY8, AV_PIX_FMT_PAL8, AV_PIX_FMT_NONE
     },
     .priv_class     = &gif_class,
-    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
 };

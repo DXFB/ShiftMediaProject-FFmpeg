@@ -24,6 +24,28 @@ A description of some of the currently available muxers follows.
 
 A64 muxer for Commodore 64 video. Accepts a single @code{a64_multi} or @code{a64_multi5} codec video stream.
 
+@anchor{adts}
+@section adts
+
+Audio Data Transport Stream muxer. It accepts a single AAC stream.
+
+@subsection Options
+
+It accepts the following options:
+
+@table @option
+
+@item write_id3v2 @var{bool}
+Enable to write ID3v2.4 tags at the start of the stream. Default is disabled.
+
+@item write_apetag @var{bool}
+Enable to write APE tags at the end of the stream. Default is disabled.
+
+@item write_mpeg2 @var{bool}
+Enable to set MPEG version bit in the ADTS frame header to 1 which indicates MPEG-2. Default is 0, which indicates MPEG-4.
+
+@end table
+
 @anchor{aiff}
 @section aiff
 
@@ -40,6 +62,37 @@ Enable ID3v2 tags writing when set to 1. Default is 0 (disabled).
 @item id3v2_version
 Select ID3v2 version to write. Currently only version 3 and 4 (aka.
 ID3v2.3 and ID3v2.4) are supported. The default is version 4.
+
+@end table
+
+@anchor{alp}
+@section alp
+
+Muxer for audio of High Voltage Software's Lego Racers game. It accepts a single ADPCM_IMA_ALP stream
+with no more than 2 channels nor a sample rate greater than 44100 Hz.
+
+Extensions: tun, pcm
+
+@subsection Options
+
+It accepts the following options:
+
+@table @option
+
+@item type @var{type}
+Set file type.
+
+@table @samp
+@item tun
+Set file type as music. Must have a sample rate of 22050 Hz.
+
+@item pcm
+Set file type as sfx.
+
+@item auto
+Set file type as per output file extension. @code{.pcm} results in type @code{pcm} else type @code{tun} is set. @var{(default)}
+
+@end table
 
 @end table
 
@@ -211,8 +264,6 @@ ffmpeg -re -i <input> -map 0 -map 0 -c:a libfdk_aac -c:v libx264 \
 @end example
 
 @table @option
-@item min_seg_duration @var{microseconds}
-This is a deprecated option to set the segment length in microseconds, use @var{seg_duration} instead.
 @item seg_duration @var{duration}
 Set the segment length in seconds (fractional value can be set). The value is
 treated as average segment duration when @var{use_template} is enabled and
@@ -748,15 +799,6 @@ Set output format options using a :-separated list of key=value
 parameters. Values containing @code{:} special characters must be
 escaped.
 
-@item hls_wrap @var{wrap}
-This is a deprecated option, you can use @code{hls_list_size}
-and @code{hls_flags delete_segments} instead it
-
-This option is useful to avoid to fill the disk with many segment
-files, and limits the maximum number of segment files written to disk
-to @var{wrap}.
-
-
 @item hls_start_number_source
 Start the playlist sequence number (@code{#EXT-X-MEDIA-SEQUENCE}) according to the specified source.
 Unless @code{hls_flags single_file} is set, it also specifies source of starting sequence numbers of
@@ -842,9 +884,6 @@ This example will produce the playlists segment file sets:
 @file{vs0/file_000.ts}, @file{vs0/file_001.ts}, @file{vs0/file_002.ts}, etc. and
 @file{vs1/file_000.ts}, @file{vs1/file_001.ts}, @file{vs1/file_002.ts}, etc.
 
-@item use_localtime
-Same as strftime option, will be deprecated.
-
 @item strftime
 Use strftime() on @var{filename} to expand the segment filename with localtime.
 The segment number is also available in this mode, but to use it, you need to specify second_level_segment_index
@@ -861,9 +900,6 @@ ffmpeg -i in.nut -strftime 1 -hls_flags second_level_segment_index -hls_segment_
 @end example
 This example will produce the playlist, @file{out.m3u8}, and segment files:
 @file{file-20160215-0001.ts}, @file{file-20160215-0002.ts}, etc.
-
-@item use_localtime_mkdir
-Same as strftime_mkdir option, will be deprecated .
 
 @item strftime_mkdir
 Used together with -strftime_mkdir, it will create all subdirectories which
@@ -1686,6 +1722,11 @@ Setting value to @samp{pts} is applicable only for a live encoding use case,
 where PTS values are set as as wallclock time at the source. For example, an
 encoding use case with decklink capture source where @option{video_pts} and
 @option{audio_pts} are set to @samp{abs_wallclock}.
+
+@item -movie_timescale @var{scale}
+Set the timescale written in the movie header box (@code{mvhd}).
+Range is 1 to INT_MAX. Default is 1000.
+
 @end table
 
 @subsection Example
@@ -1835,6 +1876,8 @@ Reemit PAT and PMT at each video frame.
 Conform to System B (DVB) instead of System A (ATSC).
 @item initial_discontinuity
 Mark the initial packet of each stream as discontinuity.
+@item nit
+Emit NIT table.
 @end table
 
 @item mpegts_copyts @var{boolean}
@@ -1856,8 +1899,11 @@ Maximum time in seconds between PAT/PMT tables. Default is @code{0.1}.
 @item sdt_period @var{duration}
 Maximum time in seconds between SDT tables. Default is @code{0.5}.
 
+@item nit_period @var{duration}
+Maximum time in seconds between NIT tables. Default is @code{0.5}.
+
 @item tables_version @var{integer}
-Set PAT, PMT and SDT version (default @code{0}, valid values are from 0 to 31, inclusively).
+Set PAT, PMT, SDT and NIT version (default @code{0}, valid values are from 0 to 31, inclusively).
 This option allows updating stream structure so that standard consumer may
 detect the change. To do so, reopen output @code{AVFormatContext} (in case of API
 usage) or restart @command{ffmpeg} instance, cyclically changing

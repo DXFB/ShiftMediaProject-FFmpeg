@@ -2245,7 +2245,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
     // allocate thread data, used for non EXR_RAW compression types
     s->thread_data = av_mallocz_array(avctx->thread_count, sizeof(EXRThreadData));
     if (!s->thread_data)
-        return AVERROR_INVALIDDATA;
+        return AVERROR(ENOMEM);
 
     return 0;
 }
@@ -2331,7 +2331,7 @@ static const AVClass exr_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVCodec ff_exr_decoder = {
+const AVCodec ff_exr_decoder = {
     .name             = "exr",
     .long_name        = NULL_IF_CONFIG_SMALL("OpenEXR image"),
     .type             = AVMEDIA_TYPE_VIDEO,

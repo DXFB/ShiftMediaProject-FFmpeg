@@ -176,7 +176,7 @@ static int latm_write_packet(AVFormatContext *s, AVPacket *pkt)
             return ff_raw_write_packet(s, pkt);
         else {
             uint8_t *side_data;
-            buffer_size_t side_data_size;
+            size_t side_data_size;
             int ret;
 
             side_data = av_packet_get_side_data(pkt, AV_PKT_DATA_NEW_EXTRADATA,
@@ -256,7 +256,7 @@ static int latm_check_bitstream(struct AVFormatContext *s, const AVPacket *pkt)
     return ret;
 }
 
-AVOutputFormat ff_latm_muxer = {
+const AVOutputFormat ff_latm_muxer = {
     .name           = "latm",
     .long_name      = NULL_IF_CONFIG_SMALL("LOAS/LATM"),
     .mime_type      = "audio/MP4A-LATM",

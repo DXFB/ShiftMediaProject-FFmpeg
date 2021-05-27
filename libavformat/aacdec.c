@@ -112,7 +112,7 @@ static int adts_aac_read_header(AVFormatContext *s)
 
     st->codecpar->codec_type = AVMEDIA_TYPE_AUDIO;
     st->codecpar->codec_id   = s->iformat->raw_codec_id;
-    st->need_parsing         = AVSTREAM_PARSE_FULL_RAW;
+    st->internal->need_parsing         = AVSTREAM_PARSE_FULL_RAW;
 
     ff_id3v1_read(s);
     if ((s->pb->seekable & AVIO_SEEKABLE_NORMAL) &&
@@ -206,7 +206,7 @@ retry:
     return ret;
 }
 
-AVInputFormat ff_aac_demuxer = {
+const AVInputFormat ff_aac_demuxer = {
     .name         = "aac",
     .long_name    = NULL_IF_CONFIG_SMALL("raw ADTS AAC (Advanced Audio Coding)"),
     .read_probe   = adts_aac_probe,

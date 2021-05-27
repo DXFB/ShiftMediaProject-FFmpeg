@@ -615,13 +615,6 @@ static int svq1_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
         s->pict_type = AV_PICTURE_TYPE_I;
     s->quality = pict->quality;
 
-#if FF_API_CODED_FRAME
-FF_DISABLE_DEPRECATION_WARNINGS
-    avctx->coded_frame->pict_type = s->pict_type;
-    avctx->coded_frame->key_frame = s->pict_type == AV_PICTURE_TYPE_I;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
     ff_side_data_set_encoder_stats(pkt, pict->quality, NULL, 0, s->pict_type);
 
     svq1_write_header(s, s->pict_type);
@@ -678,7 +671,7 @@ static const AVClass svq1enc_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVCodec ff_svq1_encoder = {
+const AVCodec ff_svq1_encoder = {
     .name           = "svq1",
     .long_name      = NULL_IF_CONFIG_SMALL("Sorenson Vector Quantizer 1 / Sorenson Video 1 / SVQ1"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -688,7 +681,7 @@ AVCodec ff_svq1_encoder = {
     .init           = svq1_encode_init,
     .encode2        = svq1_encode_frame,
     .close          = svq1_encode_end,
-    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
     .pix_fmts       = (const enum AVPixelFormat[]) { AV_PIX_FMT_YUV410P,
                                                      AV_PIX_FMT_NONE },
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
 };

@@ -107,6 +107,8 @@ OBJS-$(CONFIG_AQTITLE_DEMUXER)           += aqtitledec.o subtitles.o
 OBJS-$(CONFIG_ARGO_ASF_DEMUXER)          += argo_asf.o
 OBJS-$(CONFIG_ARGO_ASF_MUXER)            += argo_asf.o
 OBJS-$(CONFIG_ARGO_BRP_DEMUXER)          += argo_brp.o argo_asf.o
+OBJS-$(CONFIG_ARGO_CVG_DEMUXER)          += argo_cvg.o
+OBJS-$(CONFIG_ARGO_CVG_MUXER)            += argo_cvg.o
 OBJS-$(CONFIG_ASF_DEMUXER)               += asfdec_f.o asf.o asfcrypt.o \
                                             avlanguage.o
 OBJS-$(CONFIG_ASF_O_DEMUXER)             += asfdec_o.o asf.o asfcrypt.o \
@@ -581,6 +583,7 @@ OBJS-$(CONFIG_WEBP_MUXER)                += webpenc.o
 OBJS-$(CONFIG_WEBVTT_DEMUXER)            += webvttdec.o subtitles.o
 OBJS-$(CONFIG_WEBVTT_MUXER)              += webvttenc.o
 OBJS-$(CONFIG_WSAUD_DEMUXER)             += westwood_aud.o
+OBJS-$(CONFIG_WSAUD_MUXER)               += westwood_audenc.o
 OBJS-$(CONFIG_WSD_DEMUXER)               += wsddec.o rawdec.o
 OBJS-$(CONFIG_WSVQA_DEMUXER)             += westwood_vqa.o
 OBJS-$(CONFIG_WTV_DEMUXER)               += wtvdec.o wtv_common.o \

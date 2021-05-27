@@ -824,19 +824,19 @@ static int avi_read_header(AVFormatContext *s)
 
                     /* This is needed to get the pict type which is necessary
                      * for generating correct pts. */
-                    st->need_parsing = AVSTREAM_PARSE_HEADERS;
+                    st->internal->need_parsing = AVSTREAM_PARSE_HEADERS;
 
                     if (st->codecpar->codec_id == AV_CODEC_ID_MPEG4 &&
                         ast->handler == MKTAG('X', 'V', 'I', 'D'))
                         st->codecpar->codec_tag = MKTAG('X', 'V', 'I', 'D');
 
                     if (st->codecpar->codec_tag == MKTAG('V', 'S', 'S', 'H'))
-                        st->need_parsing = AVSTREAM_PARSE_FULL;
+                        st->internal->need_parsing = AVSTREAM_PARSE_FULL;
                     if (st->codecpar->codec_id == AV_CODEC_ID_RV40)
-                        st->need_parsing = AVSTREAM_PARSE_NONE;
+                        st->internal->need_parsing = AVSTREAM_PARSE_NONE;
                     if (st->codecpar->codec_id == AV_CODEC_ID_HEVC &&
                         st->codecpar->codec_tag == MKTAG('H', '2', '6', '5'))
-                        st->need_parsing = AVSTREAM_PARSE_FULL;
+                        st->internal->need_parsing = AVSTREAM_PARSE_FULL;
 
                     if (st->codecpar->codec_id  == AV_CODEC_ID_AVRN &&
                         st->codecpar->codec_tag == MKTAG('A', 'V', 'R', 'n') &&
@@ -880,16 +880,16 @@ static int avi_read_header(AVFormatContext *s)
                         avio_skip(pb, 1);
                     /* Force parsing as several audio frames can be in
                      * one packet and timestamps refer to packet start. */
-                    st->need_parsing = AVSTREAM_PARSE_TIMESTAMPS;
+                    st->internal->need_parsing = AVSTREAM_PARSE_TIMESTAMPS;
                     /* ADTS header is in extradata, AAC without header must be
                      * stored as exact frames. Parser not needed and it will
                      * fail. */
                     if (st->codecpar->codec_id == AV_CODEC_ID_AAC &&
                         st->codecpar->extradata_size)
-                        st->need_parsing = AVSTREAM_PARSE_NONE;
+                        st->internal->need_parsing = AVSTREAM_PARSE_NONE;
                     // The flac parser does not work with AVSTREAM_PARSE_TIMESTAMPS
                     if (st->codecpar->codec_id == AV_CODEC_ID_FLAC)
-                        st->need_parsing = AVSTREAM_PARSE_NONE;
+                        st->internal->need_parsing = AVSTREAM_PARSE_NONE;
                     /* AVI files with Xan DPCM audio (wrongly) declare PCM
                      * audio in the header but have Axan as stream_code_tag. */
                     if (ast->handler == AV_RL32("Axan")) {
@@ -1052,7 +1052,7 @@ end_of_header:
             AVStream *st = s->streams[i];
             if (   st->codecpar->codec_id == AV_CODEC_ID_MPEG1VIDEO
                 || st->codecpar->codec_id == AV_CODEC_ID_MPEG2VIDEO)
-                st->need_parsing = AVSTREAM_PARSE_FULL;
+                st->internal->need_parsing = AVSTREAM_PARSE_FULL;
         }
 
     for (i = 0; i < s->nb_streams; i++) {
@@ -1092,7 +1092,7 @@ static int read_gab2_sub(AVFormatContext *s, AVStream *st, AVPacket *pkt)
         uint8_t desc[256];
         int score      = AVPROBE_SCORE_EXTENSION, ret;
         AVIStream *ast = st->priv_data;
-        ff_const59 AVInputFormat *sub_demuxer;
+        const AVInputFormat *sub_demuxer;
         AVRational time_base;
         int size;
         AVProbeData pd;
@@ -1494,10 +1494,8 @@ resync:
         }
 
         if (CONFIG_DV_DEMUXER && dv_demux) {
-            AVBufferRef *avbuf = pkt->buf;
             size = avpriv_dv_produce_packet(avi->dv_demux, pkt,
                                             pkt->data, pkt->size, pkt->pos);
-            pkt->buf    = avbuf;
             pkt->flags |= AV_PKT_FLAG_KEY;
             if (size < 0)
                 av_packet_unref(pkt);
@@ -1969,7 +1967,7 @@ static int avi_probe(const AVProbeData *p)
     return 0;
 }
 
-AVInputFormat ff_avi_demuxer = {
+const AVInputFormat ff_avi_demuxer = {
     .name           = "avi",
     .long_name      = NULL_IF_CONFIG_SMALL("AVI (Audio Video Interleaved)"),
     .priv_data_size = sizeof(AVIContext),

@@ -272,6 +272,7 @@ static int create_vorbis_context(vorbis_enc_context *venc,
     vorbis_enc_floor   *fc;
     vorbis_enc_residue *rc;
     vorbis_enc_mapping *mc;
+    const uint8_t *clens, *quant;
     int i, book, ret;
 
     venc->channels    = avctx->channels;
@@ -279,13 +280,15 @@ static int create_vorbis_context(vorbis_enc_context *venc,
     venc->log2_blocksize[0] = venc->log2_blocksize[1] = 11;
 
     venc->ncodebooks = FF_ARRAY_ELEMS(cvectors);
-    venc->codebooks  = av_malloc(sizeof(vorbis_enc_codebook) * venc->ncodebooks);
+    venc->codebooks  = av_mallocz(sizeof(vorbis_enc_codebook) * venc->ncodebooks);
     if (!venc->codebooks)
         return AVERROR(ENOMEM);
 
     // codebook 0..14 - floor1 book, values 0..255
     // codebook 15 residue masterbook
     // codebook 16..29 residue
+    clens = codebooks;
+    quant = quant_tables;
     for (book = 0; book < venc->ncodebooks; book++) {
         vorbis_enc_codebook *cb = &venc->codebooks[book];
         int vals;
@@ -300,8 +303,9 @@ static int create_vorbis_context(vorbis_enc_context *venc,
         cb->codewords = av_malloc_array(cb->nentries, sizeof(uint32_t));
         if (!cb->lens || !cb->codewords)
             return AVERROR(ENOMEM);
-        memcpy(cb->lens, cvectors[book].clens, cvectors[book].len);
+        memcpy(cb->lens, clens, cvectors[book].len);
         memset(cb->lens + cvectors[book].len, 0, cb->nentries - cvectors[book].len);
+        clens += cvectors[book].len;
 
         if (cb->lookup) {
             vals = cb_lookup_vals(cb->lookup, cb->ndimensions, cb->nentries);
@@ -309,7 +313,7 @@ static int create_vorbis_context(vorbis_enc_context *venc,
             if (!cb->quantlist)
                 return AVERROR(ENOMEM);
             for (i = 0; i < vals; i++)
-                cb->quantlist[i] = cvectors[book].quant[i];
+                cb->quantlist[i] = *quant++;
         } else {
             cb->quantlist = NULL;
         }
@@ -318,7 +322,7 @@ static int create_vorbis_context(vorbis_enc_context *venc,
     }
 
     venc->nfloors = 1;
-    venc->floors  = av_malloc(sizeof(vorbis_enc_floor) * venc->nfloors);
+    venc->floors  = av_mallocz(sizeof(vorbis_enc_floor) * venc->nfloors);
     if (!venc->floors)
         return AVERROR(ENOMEM);
 
@@ -335,7 +339,7 @@ static int create_vorbis_context(vorbis_enc_context *venc,
         fc->nclasses = FFMAX(fc->nclasses, fc->partition_to_class[i]);
     }
     fc->nclasses++;
-    fc->classes = av_malloc_array(fc->nclasses, sizeof(vorbis_enc_floor_class));
+    fc->classes = av_calloc(fc->nclasses, sizeof(vorbis_enc_floor_class));
     if (!fc->classes)
         return AVERROR(ENOMEM);
     for (i = 0; i < fc->nclasses; i++) {
@@ -375,7 +379,7 @@ static int create_vorbis_context(vorbis_enc_context *venc,
         return AVERROR_BUG;
 
     venc->nresidues = 1;
-    venc->residues  = av_malloc(sizeof(vorbis_enc_residue) * venc->nresidues);
+    venc->residues  = av_mallocz(sizeof(vorbis_enc_residue) * venc->nresidues);
     if (!venc->residues)
         return AVERROR(ENOMEM);
 
@@ -409,7 +413,7 @@ static int create_vorbis_context(vorbis_enc_context *venc,
         return ret;
 
     venc->nmappings = 1;
-    venc->mappings  = av_malloc(sizeof(vorbis_enc_mapping) * venc->nmappings);
+    venc->mappings  = av_mallocz(sizeof(vorbis_enc_mapping) * venc->nmappings);
     if (!venc->mappings)
         return AVERROR(ENOMEM);
 
@@ -1254,8 +1258,6 @@ static av_cold int vorbis_encode_close(AVCodecContext *avctx)
     ff_af_queue_close(&venc->afq);
     ff_bufqueue_discard_all(&venc->bufqueue);
 
-    av_freep(&avctx->extradata);
-
     return 0 ;
 }
 
@@ -1293,7 +1295,7 @@ error:
     return ret;
 }
 
-AVCodec ff_vorbis_encoder = {
+const AVCodec ff_vorbis_encoder = {
     .name           = "vorbis",
     .long_name      = NULL_IF_CONFIG_SMALL("Vorbis"),
     .type           = AVMEDIA_TYPE_AUDIO,
@@ -1305,4 +1307,5 @@ AVCodec ff_vorbis_encoder = {
     .capabilities   = AV_CODEC_CAP_DELAY | AV_CODEC_CAP_EXPERIMENTAL,
     .sample_fmts    = (const enum AVSampleFormat[]){ AV_SAMPLE_FMT_FLTP,
                                                      AV_SAMPLE_FMT_NONE },
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };

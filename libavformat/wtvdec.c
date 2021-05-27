@@ -618,7 +618,7 @@ static AVStream * new_stream(AVFormatContext *s, AVStream *st, int sid, int code
         st->priv_data = wst;
     }
     st->codecpar->codec_type = codec_type;
-    st->need_parsing      = AVSTREAM_PARSE_FULL;
+    st->internal->need_parsing      = AVSTREAM_PARSE_FULL;
     avpriv_set_pts_info(st, 64, 1, 10000000);
     return st;
 }
@@ -809,7 +809,7 @@ static int parse_chunks(AVFormatContext *s, int mode, int64_t seekts, int *len_p
                 avio_skip(pb, 12);
                 ff_get_guid(pb, &formattype);
                 size = avio_rl32(pb);
-                if (size < 0 || size > INT_MAX - 92)
+                if (size < 0 || size > INT_MAX - 92 - consumed)
                     return AVERROR_INVALIDDATA;
                 parse_media_type(s, 0, sid, mediatype, subtype, formattype, size);
                 consumed += 92 + size;
@@ -825,7 +825,7 @@ static int parse_chunks(AVFormatContext *s, int mode, int64_t seekts, int *len_p
                 avio_skip(pb, 12);
                 ff_get_guid(pb, &formattype);
                 size = avio_rl32(pb);
-                if (size < 0 || size > INT_MAX - 76)
+                if (size < 0 || size > INT_MAX - 76 - consumed)
                     return AVERROR_INVALIDDATA;
                 parse_media_type(s, s->streams[stream_index], sid, mediatype, subtype, formattype, size);
                 consumed += 76 + size;
@@ -1124,7 +1124,7 @@ static int read_close(AVFormatContext *s)
     return 0;
 }
 
-AVInputFormat ff_wtv_demuxer = {
+const AVInputFormat ff_wtv_demuxer = {
     .name           = "wtv",
     .long_name      = NULL_IF_CONFIG_SMALL("Windows Television (WTV)"),
     .priv_data_size = sizeof(WtvContext),

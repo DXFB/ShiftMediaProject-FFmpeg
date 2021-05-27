@@ -799,7 +799,7 @@ static int parse_playlist(HLSContext *c, const char *url,
                 key_type = KEY_AES_128;
             if (!strcmp(info.method, "SAMPLE-AES"))
                 key_type = KEY_SAMPLE_AES;
-            if (!strncmp(info.iv, "0x", 2) || !strncmp(info.iv, "0X", 2)) {
+            if (!av_strncasecmp(info.iv, "0x", 2)) {
                 ff_hex_to_data(iv, info.iv + 2);
                 has_iv = 1;
             }
@@ -1957,8 +1957,8 @@ static int hls_read_header(AVFormatContext *s)
     /* Open the demuxer for each playlist */
     for (i = 0; i < c->n_playlists; i++) {
         struct playlist *pls = c->playlists[i];
+        const AVInputFormat *in_fmt = NULL;
         char *url;
-        ff_const59 AVInputFormat *in_fmt = NULL;
 
         if (!(pls->ctx = avformat_alloc_context())) {
             ret = AVERROR(ENOMEM);
@@ -2413,7 +2413,7 @@ static const AVClass hls_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVInputFormat ff_hls_demuxer = {
+const AVInputFormat ff_hls_demuxer = {
     .name           = "hls",
     .long_name      = NULL_IF_CONFIG_SMALL("Apple HTTP Live Streaming"),
     .priv_class     = &hls_class,

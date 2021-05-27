@@ -204,7 +204,7 @@ static int rm_read_audio_stream_info(AVFormatContext *s, AVIOContext *pb,
 
         switch (st->codecpar->codec_id) {
         case AV_CODEC_ID_AC3:
-            st->need_parsing = AVSTREAM_PARSE_FULL;
+            st->internal->need_parsing = AVSTREAM_PARSE_FULL;
             break;
         case AV_CODEC_ID_RA_288:
             st->codecpar->extradata_size= 0;
@@ -213,7 +213,7 @@ static int rm_read_audio_stream_info(AVFormatContext *s, AVIOContext *pb,
             st->codecpar->block_align = coded_framesize;
             break;
         case AV_CODEC_ID_COOK:
-            st->need_parsing = AVSTREAM_PARSE_HEADERS;
+            st->internal->need_parsing = AVSTREAM_PARSE_HEADERS;
         case AV_CODEC_ID_ATRAC3:
         case AV_CODEC_ID_SIPR:
             if (read_all) {
@@ -237,7 +237,7 @@ static int rm_read_audio_stream_info(AVFormatContext *s, AVIOContext *pb,
                     return -1;
                 }
                 st->codecpar->block_align = ff_sipr_subpk_size[flavor];
-                st->need_parsing = AVSTREAM_PARSE_FULL_RAW;
+                st->internal->need_parsing = AVSTREAM_PARSE_FULL_RAW;
             } else {
                 if(sub_packet_size <= 0){
                     av_log(s, AV_LOG_ERROR, "sub_packet_size is invalid\n");
@@ -390,7 +390,7 @@ int ff_rm_read_mdpr_codecdata(AVFormatContext *s, AVIOContext *pb,
         avio_skip(pb, 2); // looks like bits per sample
         avio_skip(pb, 4); // always zero?
         st->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
-        st->need_parsing = AVSTREAM_PARSE_TIMESTAMPS;
+        st->internal->need_parsing = AVSTREAM_PARSE_TIMESTAMPS;
         fps = avio_rb32(pb);
 
         if ((ret = rm_read_extradata(s, pb, st->codecpar, codec_data_size - (avio_tell(pb) - codec_pos))) < 0)
@@ -1147,7 +1147,7 @@ static int rm_read_seek(AVFormatContext *s, int stream_index,
 }
 
 
-AVInputFormat ff_rm_demuxer = {
+const AVInputFormat ff_rm_demuxer = {
     .name           = "rm",
     .long_name      = NULL_IF_CONFIG_SMALL("RealMedia"),
     .priv_data_size = sizeof(RMDemuxContext),
@@ -1159,7 +1159,7 @@ AVInputFormat ff_rm_demuxer = {
     .read_seek      = rm_read_seek,
 };
 
-AVInputFormat ff_rdt_demuxer = {
+const AVInputFormat ff_rdt_demuxer = {
     .name           = "rdt",
     .long_name      = NULL_IF_CONFIG_SMALL("RDT demuxer"),
     .priv_data_size = sizeof(RMDemuxContext),
@@ -1406,7 +1406,7 @@ static int ivr_read_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-AVInputFormat ff_ivr_demuxer = {
+const AVInputFormat ff_ivr_demuxer = {
     .name           = "ivr",
     .long_name      = NULL_IF_CONFIG_SMALL("IVR (Internet Video Recording)"),
     .priv_data_size = sizeof(RMDemuxContext),

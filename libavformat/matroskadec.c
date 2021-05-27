@@ -2720,10 +2720,6 @@ static int matroska_parse_tracks(AVFormatContext *s)
             /* we don't need any value stored in CodecPrivate.
                make sure that it's not exported as extradata. */
             track->codec_priv.size = 0;
-        } else if (codec_id == AV_CODEC_ID_AV1 && track->codec_priv.size) {
-            /* For now, propagate only the OBUs, if any. Once libavcodec is
-               updated to handle isobmff style extradata this can be removed. */
-            extradata_offset = 4;
         }
         track->codec_priv.size -= extradata_offset;
 
@@ -2806,7 +2802,7 @@ static int matroska_parse_tracks(AVFormatContext *s)
                           255);
             }
             if (st->codecpar->codec_id != AV_CODEC_ID_HEVC)
-                st->need_parsing = AVSTREAM_PARSE_HEADERS;
+                st->internal->need_parsing = AVSTREAM_PARSE_HEADERS;
 
             if (track->default_duration) {
                 av_reduce(&st->avg_frame_rate.num, &st->avg_frame_rate.den,
@@ -2864,9 +2860,9 @@ static int matroska_parse_tracks(AVFormatContext *s)
             if (st->codecpar->codec_id == AV_CODEC_ID_MP3 ||
                 st->codecpar->codec_id == AV_CODEC_ID_MLP ||
                 st->codecpar->codec_id == AV_CODEC_ID_TRUEHD)
-                st->need_parsing = AVSTREAM_PARSE_FULL;
+                st->internal->need_parsing = AVSTREAM_PARSE_FULL;
             else if (st->codecpar->codec_id != AV_CODEC_ID_AAC)
-                st->need_parsing = AVSTREAM_PARSE_HEADERS;
+                st->internal->need_parsing = AVSTREAM_PARSE_HEADERS;
             if (track->codec_delay > 0) {
                 st->codecpar->initial_padding = av_rescale_q(track->codec_delay,
                                                              (AVRational){1, 1000000000},
@@ -3571,14 +3567,6 @@ static int matroska_parse_frame(MatroskaDemuxContext *matroska,
         pkt->pts = timecode;
     pkt->pos = pos;
     pkt->duration = lace_duration;
-
-#if FF_API_CONVERGENCE_DURATION
-FF_DISABLE_DEPRECATION_WARNINGS
-    if (st->codecpar->codec_id == AV_CODEC_ID_SUBRIP) {
-        pkt->convergence_duration = lace_duration;
-    }
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
 
     res = avpriv_packet_list_put(&matroska->queue, &matroska->queue_end, pkt, NULL, 0);
     if (res < 0) {
@@ -4314,7 +4302,7 @@ static const AVClass webm_dash_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVInputFormat ff_matroska_demuxer = {
+const AVInputFormat ff_matroska_demuxer = {
     .name           = "matroska,webm",
     .long_name      = NULL_IF_CONFIG_SMALL("Matroska / WebM"),
     .extensions     = "mkv,mk3d,mka,mks,webm",
@@ -4327,7 +4315,7 @@ AVInputFormat ff_matroska_demuxer = {
     .mime_type      = "audio/webm,audio/x-matroska,video/webm,video/x-matroska"
 };
 
-AVInputFormat ff_webm_dash_manifest_demuxer = {
+const AVInputFormat ff_webm_dash_manifest_demuxer = {
     .name           = "webm_dash_manifest",
     .long_name      = NULL_IF_CONFIG_SMALL("WebM DASH Manifest"),
     .priv_data_size = sizeof(MatroskaDemuxContext),

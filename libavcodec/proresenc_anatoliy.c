@@ -944,7 +944,7 @@ static const AVClass prores_enc_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVCodec ff_prores_aw_encoder = {
+const AVCodec ff_prores_aw_encoder = {
     .name           = "prores_aw",
     .long_name      = NULL_IF_CONFIG_SMALL("Apple ProRes"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -957,10 +957,10 @@ AVCodec ff_prores_aw_encoder = {
     .capabilities   = AV_CODEC_CAP_FRAME_THREADS,
     .priv_class     = &proresaw_enc_class,
     .profiles       = NULL_IF_CONFIG_SMALL(ff_prores_profiles),
-    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
 };
 
-AVCodec ff_prores_encoder = {
+const AVCodec ff_prores_encoder = {
     .name           = "prores",
     .long_name      = NULL_IF_CONFIG_SMALL("Apple ProRes"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -973,5 +973,5 @@ AVCodec ff_prores_encoder = {
     .capabilities   = AV_CODEC_CAP_FRAME_THREADS,
     .priv_class     = &prores_enc_class,
     .profiles       = NULL_IF_CONFIG_SMALL(ff_prores_profiles),
-    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
 };

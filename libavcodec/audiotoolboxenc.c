@@ -616,7 +616,7 @@ static const AVOption options[] = {
 
 #define FFAT_ENC(NAME, ID, PROFILES, ...) \
     FFAT_ENC_CLASS(NAME) \
-    AVCodec ff_##NAME##_at_encoder = { \
+    const AVCodec ff_##NAME##_at_encoder = { \
         .name           = #NAME "_at", \
         .long_name      = NULL_IF_CONFIG_SMALL(#NAME " (AudioToolbox)"), \
         .type           = AVMEDIA_TYPE_AUDIO, \
@@ -627,7 +627,7 @@ static const AVOption options[] = {
         .encode2        = ffat_encode, \
         .flush          = ffat_encode_flush, \
         .priv_class     = &ffat_##NAME##_enc_class, \
-        .capabilities   = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_DELAY | \
+        .capabilities   = AV_CODEC_CAP_DELAY | \
                           AV_CODEC_CAP_ENCODER_FLUSH __VA_ARGS__, \
         .sample_fmts    = (const enum AVSampleFormat[]) { \
             AV_SAMPLE_FMT_S16, \

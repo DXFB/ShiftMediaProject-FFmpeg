@@ -325,17 +325,6 @@ av_cold int ff_mpv_encode_init(AVCodecContext *avctx)
 
     avctx->bits_per_raw_sample = av_clip(avctx->bits_per_raw_sample, 0, 8);
 
-#if FF_API_PRIVATE_OPT
-FF_DISABLE_DEPRECATION_WARNINGS
-    if (avctx->rtp_payload_size)
-        s->rtp_payload_size = avctx->rtp_payload_size;
-    if (avctx->me_penalty_compensation)
-        s->me_penalty_compensation = avctx->me_penalty_compensation;
-    if (avctx->pre_me)
-        s->me_pre = avctx->pre_me;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
     s->bit_rate = avctx->bit_rate;
     s->width    = avctx->width;
     s->height   = avctx->height;
@@ -561,20 +550,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
         return AVERROR(EINVAL);
     }
 
-#if FF_API_PRIVATE_OPT
-    FF_DISABLE_DEPRECATION_WARNINGS
-    if (avctx->mpeg_quant)
-        s->mpeg_quant = 1;
-    FF_ENABLE_DEPRECATION_WARNINGS
-
-    if (s->mpeg_quant && (   s->codec_id != AV_CODEC_ID_MPEG4
-                          && s->codec_id != AV_CODEC_ID_MPEG2VIDEO)) {
-        av_log(avctx, AV_LOG_ERROR,
-               "mpeg2 style quantization not supported by codec\n");
-        return AVERROR(EINVAL);
-    }
-#endif
-
     if ((s->mpv_flags & FF_MPV_FLAG_CBP_RD) && !avctx->trellis) {
         av_log(avctx, AV_LOG_ERROR, "CBP RD needs trellis quant\n");
         return AVERROR(EINVAL);
@@ -594,13 +569,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
                "QP RD is no longer compatible with MJPEG or AMV\n");
         return AVERROR(EINVAL);
     }
-
-#if FF_API_PRIVATE_OPT
-FF_DISABLE_DEPRECATION_WARNINGS
-    if (avctx->scenechange_threshold)
-        s->scenechange_threshold = avctx->scenechange_threshold;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
 
     if (s->scenechange_threshold < 1000000000 &&
         (avctx->flags & AV_CODEC_FLAG_CLOSED_GOP)) {
@@ -656,15 +624,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
                "patch welcome\n");
         return AVERROR_PATCHWELCOME;
     }
-
-#if FF_API_PRIVATE_OPT
-FF_DISABLE_DEPRECATION_WARNINGS
-    if (avctx->b_frame_strategy)
-        s->b_frame_strategy = avctx->b_frame_strategy;
-    if (avctx->b_sensitivity != 40)
-        s->b_sensitivity = avctx->b_sensitivity;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
 
     if (s->b_frame_strategy && (avctx->flags & AV_CODEC_FLAG_PASS2)) {
         av_log(avctx, AV_LOG_INFO,
@@ -855,13 +814,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
         return AVERROR(EINVAL);
     }
 
-#if FF_API_PRIVATE_OPT
-    FF_DISABLE_DEPRECATION_WARNINGS
-    if (avctx->noise_reduction)
-        s->noise_reduction = avctx->noise_reduction;
-    FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
     avctx->has_b_frames = !s->low_delay;
 
     s->encoding = 1;
@@ -918,19 +870,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
 
     s->quant_precision = 5;
 
-#if FF_API_PRIVATE_OPT
-FF_DISABLE_DEPRECATION_WARNINGS
-    if (avctx->frame_skip_threshold)
-        s->frame_skip_threshold = avctx->frame_skip_threshold;
-    if (avctx->frame_skip_factor)
-        s->frame_skip_factor = avctx->frame_skip_factor;
-    if (avctx->frame_skip_exp)
-        s->frame_skip_exp = avctx->frame_skip_exp;
-    if (avctx->frame_skip_cmp != FF_CMP_DCTMAX)
-        s->frame_skip_cmp = avctx->frame_skip_cmp;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
     ff_set_cmp(&s->mecc, s->mecc.ildct_cmp,      avctx->ildct_cmp);
     ff_set_cmp(&s->mecc, s->mecc.frame_skip_cmp, s->frame_skip_cmp);
 
@@ -983,16 +922,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
     if ((ret = ff_rate_control_init(s)) < 0)
         return ret;
 
-#if FF_API_PRIVATE_OPT
-    FF_DISABLE_DEPRECATION_WARNINGS
-    if (avctx->brd_scale)
-        s->brd_scale = avctx->brd_scale;
-
-    if (avctx->prediction_method)
-        s->pred = avctx->prediction_method + 1;
-    FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
     if (s->b_frame_strategy == 2) {
         for (i = 0; i < s->max_b_frames + 2; i++) {
             s->tmp_frames[i] = av_frame_alloc();
@@ -1031,8 +960,6 @@ av_cold int ff_mpv_encode_end(AVCodecContext *avctx)
     if ((CONFIG_MJPEG_ENCODER || CONFIG_AMV_ENCODER) &&
         s->out_format == FMT_MJPEG)
         ff_mjpeg_encode_close(s);
-
-    av_freep(&avctx->extradata);
 
     for (i = 0; i < FF_ARRAY_ELEMS(s->tmp_frames); i++)
         av_frame_free(&s->tmp_frames[i]);
@@ -1675,19 +1602,6 @@ static void frame_end(MpegEncContext *s)
     s->last_lambda_for [s->pict_type] = s->current_picture_ptr->f->quality;
     if (s->pict_type!= AV_PICTURE_TYPE_B)
         s->last_non_b_pict_type = s->pict_type;
-
-#if FF_API_CODED_FRAME
-FF_DISABLE_DEPRECATION_WARNINGS
-    av_frame_unref(s->avctx->coded_frame);
-    av_frame_copy_props(s->avctx->coded_frame, s->current_picture.f);
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-#if FF_API_ERROR_FRAME
-FF_DISABLE_DEPRECATION_WARNINGS
-    memcpy(s->current_picture.f->error, s->current_picture.encoding_error,
-           sizeof(s->current_picture.encoding_error));
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
 }
 
 static void update_noise_reduction(MpegEncContext *s)
@@ -1841,20 +1755,6 @@ vbv_retry:
         if (ret < 0)
             return -1;
 
-#if FF_API_STAT_BITS
-FF_DISABLE_DEPRECATION_WARNINGS
-        avctx->header_bits = s->header_bits;
-        avctx->mv_bits     = s->mv_bits;
-        avctx->misc_bits   = s->misc_bits;
-        avctx->i_tex_bits  = s->i_tex_bits;
-        avctx->p_tex_bits  = s->p_tex_bits;
-        avctx->i_count     = s->i_count;
-        // FIXME f/b_count in avctx
-        avctx->p_count     = s->mb_num - s->i_count - s->skip_count;
-        avctx->skip_count  = s->skip_count;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
         frame_end(s);
 
        if ((CONFIG_MJPEG_ENCODER || CONFIG_AMV_ENCODER) && s->out_format == FMT_MJPEG)
@@ -1998,20 +1898,8 @@ FF_ENABLE_DEPRECATION_WARNINGS
                 av_freep(&props);
                 return ret;
             }
-
-#if FF_API_VBV_DELAY
-FF_DISABLE_DEPRECATION_WARNINGS
-            avctx->vbv_delay     = vbv_delay * 300;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
         }
         s->total_bits     += s->frame_bits;
-#if FF_API_STAT_BITS
-FF_DISABLE_DEPRECATION_WARNINGS
-        avctx->frame_bits  = s->frame_bits;
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
-
 
         pkt->pts = s->current_picture.f->pts;
         if (!s->low_delay && s->pict_type != AV_PICTURE_TYPE_B) {
@@ -3037,14 +2925,6 @@ static int encode_thread(AVCodecContext *c, void *arg){
                         }
                     }
 
-#if FF_API_RTP_CALLBACK
-FF_DISABLE_DEPRECATION_WARNINGS
-                    if (s->avctx->rtp_callback){
-                        int number_mb = (mb_y - s->resync_mb_y)*s->mb_width + mb_x - s->resync_mb_x;
-                        s->avctx->rtp_callback(s->avctx, s->ptr_lastgob, current_packet_size, number_mb);
-                    }
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
                     update_mb_info(s, 1);
 
                     switch(s->codec_id){
@@ -3519,19 +3399,6 @@ FF_ENABLE_DEPRECATION_WARNINGS
         ff_msmpeg4_encode_ext_header(s);
 
     write_slice_end(s);
-
-#if FF_API_RTP_CALLBACK
-FF_DISABLE_DEPRECATION_WARNINGS
-    /* Send the last GOB if RTP */
-    if (s->avctx->rtp_callback) {
-        int number_mb = (mb_y - s->resync_mb_y)*s->mb_width - s->resync_mb_x;
-        int pdif = put_bits_ptr(&s->pb) - s->ptr_lastgob;
-        /* Call the RTP callback to send the last GOB */
-        emms_c();
-        s->avctx->rtp_callback(s->avctx, s->ptr_lastgob, pdif, number_mb);
-    }
-FF_ENABLE_DEPRECATION_WARNINGS
-#endif
 
     return 0;
 }
@@ -4729,7 +4596,7 @@ static const AVClass h263_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVCodec ff_h263_encoder = {
+const AVCodec ff_h263_encoder = {
     .name           = "h263",
     .long_name      = NULL_IF_CONFIG_SMALL("H.263 / H.263-1996"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -4738,7 +4605,7 @@ AVCodec ff_h263_encoder = {
     .init           = ff_mpv_encode_init,
     .encode2        = ff_mpv_encode_picture,
     .close          = ff_mpv_encode_end,
-    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
     .pix_fmts= (const enum AVPixelFormat[]){AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE},
     .priv_class     = &h263_class,
 };
@@ -4764,7 +4631,7 @@ static const AVClass h263p_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVCodec ff_h263p_encoder = {
+const AVCodec ff_h263p_encoder = {
     .name           = "h263p",
     .long_name      = NULL_IF_CONFIG_SMALL("H.263+ / H.263-1998 / H.263 version 2"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -4774,7 +4641,7 @@ AVCodec ff_h263p_encoder = {
     .encode2        = ff_mpv_encode_picture,
     .close          = ff_mpv_encode_end,
     .capabilities   = AV_CODEC_CAP_SLICE_THREADS,
-    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
     .pix_fmts       = (const enum AVPixelFormat[]){ AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE },
     .priv_class     = &h263p_class,
 };
@@ -4786,7 +4653,7 @@ static const AVClass msmpeg4v2_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVCodec ff_msmpeg4v2_encoder = {
+const AVCodec ff_msmpeg4v2_encoder = {
     .name           = "msmpeg4v2",
     .long_name      = NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 2"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -4795,7 +4662,7 @@ AVCodec ff_msmpeg4v2_encoder = {
     .init           = ff_mpv_encode_init,
     .encode2        = ff_mpv_encode_picture,
     .close          = ff_mpv_encode_end,
-    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
     .pix_fmts       = (const enum AVPixelFormat[]){ AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE },
     .priv_class     = &msmpeg4v2_class,
 };
@@ -4807,7 +4674,7 @@ static const AVClass msmpeg4v3_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVCodec ff_msmpeg4v3_encoder = {
+const AVCodec ff_msmpeg4v3_encoder = {
     .name           = "msmpeg4",
     .long_name      = NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 3"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -4816,7 +4683,7 @@ AVCodec ff_msmpeg4v3_encoder = {
     .init           = ff_mpv_encode_init,
     .encode2        = ff_mpv_encode_picture,
     .close          = ff_mpv_encode_end,
-    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
     .pix_fmts       = (const enum AVPixelFormat[]){ AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE },
     .priv_class     = &msmpeg4v3_class,
 };
@@ -4828,7 +4695,7 @@ static const AVClass wmv1_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVCodec ff_wmv1_encoder = {
+const AVCodec ff_wmv1_encoder = {
     .name           = "wmv1",
     .long_name      = NULL_IF_CONFIG_SMALL("Windows Media Video 7"),
     .type           = AVMEDIA_TYPE_VIDEO,
@@ -4837,7 +4704,7 @@ AVCodec ff_wmv1_encoder = {
     .init           = ff_mpv_encode_init,
     .encode2        = ff_mpv_encode_picture,
     .close          = ff_mpv_encode_end,
-    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
     .pix_fmts       = (const enum AVPixelFormat[]){ AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE },
     .priv_class     = &wmv1_class,
 };

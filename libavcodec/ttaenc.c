@@ -200,7 +200,7 @@ static av_cold int tta_encode_close(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_tta_encoder = {
+const AVCodec ff_tta_encoder = {
     .name           = "tta",
     .long_name      = NULL_IF_CONFIG_SMALL("TTA (True Audio)"),
     .type           = AVMEDIA_TYPE_AUDIO,
@@ -214,4 +214,5 @@ AVCodec ff_tta_encoder = {
                                                      AV_SAMPLE_FMT_S16,
                                                      AV_SAMPLE_FMT_S32,
                                                      AV_SAMPLE_FMT_NONE },
+    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };

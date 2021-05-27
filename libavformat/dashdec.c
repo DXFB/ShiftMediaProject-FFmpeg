@@ -1879,7 +1879,7 @@ static void close_demux_for_component(struct representation *pls)
 static int reopen_demux_for_component(AVFormatContext *s, struct representation *pls)
 {
     DASHContext *c = s->priv_data;
-    ff_const59 AVInputFormat *in_fmt = NULL;
+    const AVInputFormat *in_fmt = NULL;
     AVDictionary  *in_fmt_opts = NULL;
     uint8_t *avio_ctx_buffer  = NULL;
     int ret = 0, i;
@@ -2397,7 +2397,7 @@ static const AVClass dash_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVInputFormat ff_dash_demuxer = {
+const AVInputFormat ff_dash_demuxer = {
     .name           = "dash",
     .long_name      = NULL_IF_CONFIG_SMALL("Dynamic Adaptive Streaming over HTTP"),
     .priv_class     = &dash_class,

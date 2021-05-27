@@ -28,6 +28,7 @@
 #include "libavutil/channel_layout.h"
 #include "libavutil/dict.h"
 #include "libavutil/opt.h"
+#include "libavutil/internal.h"
 #include "libavutil/intfloat.h"
 #include "libavutil/mathematics.h"
 #include "libavutil/time_internal.h"
@@ -271,7 +272,7 @@ static void flv_set_audio_codec(AVFormatContext *s, AVStream *astream,
         break;
     case FLV_CODECID_MP3:
         apar->codec_id      = AV_CODEC_ID_MP3;
-        astream->need_parsing = AVSTREAM_PARSE_FULL;
+        astream->internal->need_parsing = AVSTREAM_PARSE_FULL;
         break;
     case FLV_CODECID_NELLYMOSER_8KHZ_MONO:
         // in case metadata does not otherwise declare samplerate
@@ -362,7 +363,7 @@ static int flv_set_video_codec(AVFormatContext *s, AVStream *vstream,
         break;
     case FLV_CODECID_H264:
         par->codec_id = AV_CODEC_ID_H264;
-        vstream->need_parsing = AVSTREAM_PARSE_HEADERS;
+        vstream->internal->need_parsing = AVSTREAM_PARSE_HEADERS;
         ret = 3;     // not 4, reading packet type will consume one byte
         break;
     case FLV_CODECID_MPEG4:
@@ -682,14 +683,9 @@ static int amf_parse_object(AVFormatContext *s, AVStream *astream,
         } else if (amf_type == AMF_DATA_TYPE_STRING) {
             av_dict_set(&s->metadata, key, str_val, 0);
         } else if (amf_type == AMF_DATA_TYPE_DATE) {
-            time_t time;
-            struct tm t;
-            char datestr[128];
-            time =  date.milliseconds / 1000; // to seconds
-            localtime_r(&time, &t);
-            strftime(datestr, sizeof(datestr), "%a, %d %b %Y %H:%M:%S %z", &t);
-
-            av_dict_set(&s->metadata, key, datestr, 0);
+            // timezone is ignored, since there is no easy way to offset the UTC
+            // timestamp into the specified timezone
+            avpriv_dict_set_timestamp(&s->metadata, key, 1000 * (int64_t)date.milliseconds);
         }
     }
 
@@ -1372,7 +1368,7 @@ static const AVClass flv_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVInputFormat ff_flv_demuxer = {
+const AVInputFormat ff_flv_demuxer = {
     .name           = "flv",
     .long_name      = NULL_IF_CONFIG_SMALL("FLV (Flash Video)"),
     .priv_data_size = sizeof(FLVContext),
@@ -1392,7 +1388,7 @@ static const AVClass live_flv_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVInputFormat ff_live_flv_demuxer = {
+const AVInputFormat ff_live_flv_demuxer = {
     .name           = "live_flv",
     .long_name      = NULL_IF_CONFIG_SMALL("live RTMP FLV (Flash Video)"),
     .priv_data_size = sizeof(FLVContext),
@@ -1413,7 +1409,7 @@ static const AVClass kux_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-AVInputFormat ff_kux_demuxer = {
+const AVInputFormat ff_kux_demuxer = {
     .name           = "kux",
     .long_name      = NULL_IF_CONFIG_SMALL("KUX (YouKu)"),
     .priv_data_size = sizeof(FLVContext),

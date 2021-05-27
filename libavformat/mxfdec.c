@@ -2593,7 +2593,7 @@ static int mxf_parse_structural_metadata(MXFContext *mxf)
                     }
                 }
             }
-            st->need_parsing = AVSTREAM_PARSE_HEADERS;
+            st->internal->need_parsing = AVSTREAM_PARSE_HEADERS;
             if (material_track->sequence->origin) {
                 av_dict_set_int(&st->metadata, "material_track_origin", material_track->sequence->origin, 0);
             }
@@ -2658,7 +2658,7 @@ static int mxf_parse_structural_metadata(MXFContext *mxf)
                 else if (descriptor->bits_per_sample == 32)
                     st->codecpar->codec_id = AV_CODEC_ID_PCM_S32BE;
             } else if (st->codecpar->codec_id == AV_CODEC_ID_MP2) {
-                st->need_parsing = AVSTREAM_PARSE_FULL;
+                st->internal->need_parsing = AVSTREAM_PARSE_FULL;
             }
             st->codecpar->bits_per_coded_sample = av_get_bits_per_sample(st->codecpar->codec_id);
         } else if (st->codecpar->codec_type == AVMEDIA_TYPE_DATA) {
@@ -2692,7 +2692,7 @@ static int mxf_parse_structural_metadata(MXFContext *mxf)
         }
         if (st->codecpar->codec_type != AVMEDIA_TYPE_DATA && source_track->wrapping != FrameWrapped) {
             /* TODO: decode timestamps */
-            st->need_parsing = AVSTREAM_PARSE_TIMESTAMPS;
+            st->internal->need_parsing = AVSTREAM_PARSE_TIMESTAMPS;
         }
     }
 
@@ -2903,7 +2903,7 @@ static int mxf_read_local_tags(MXFContext *mxf, KLVPacket *klv, MXFMetadataReadF
         meta = NULL;
         ctx  = mxf;
     }
-    while (avio_tell(pb) + 4 < klv_end && !avio_feof(pb)) {
+    while (avio_tell(pb) + 4ULL < klv_end && !avio_feof(pb)) {
         int ret;
         int tag = avio_rb16(pb);
         int size = avio_rb16(pb); /* KLV specified by 0x53 */
@@ -3660,7 +3660,7 @@ static int mxf_read_packet(AVFormatContext *s, AVPacket *pkt)
                 if (next_ofs <= 0) {
                     // If we have no way to packetize the data, then return it in chunks...
                     if (klv.next_klv - klv.length == pos && max_data_size > MXF_MAX_CHUNK_SIZE) {
-                        st->need_parsing = AVSTREAM_PARSE_FULL;
+                        st->internal->need_parsing = AVSTREAM_PARSE_FULL;
                         avpriv_request_sample(s, "Huge KLV without proper index in non-frame wrapped essence");
                     }
                     size = FFMIN(max_data_size, MXF_MAX_CHUNK_SIZE);
@@ -3911,7 +3911,7 @@ static const AVClass demuxer_class = {
     .category   = AV_CLASS_CATEGORY_DEMUXER,
 };
 
-AVInputFormat ff_mxf_demuxer = {
+const AVInputFormat ff_mxf_demuxer = {
     .name           = "mxf",
     .long_name      = NULL_IF_CONFIG_SMALL("MXF (Material eXchange Format)"),
     .flags          = AVFMT_SEEK_TO_PTS,

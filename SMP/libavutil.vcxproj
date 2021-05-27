@@ -66,6 +66,7 @@
     <NASM Include="..\libavutil\x86\float_dsp.asm" />
     <NASM Include="..\libavutil\x86\imgutils.asm" />
     <NASM Include="..\libavutil\x86\lls.asm" />
+    <NASM Include="..\libavutil\x86\tx_float.asm" />
     <NASM Include="..\libavutil\x86\pixelutils.asm" />
   </ItemGroup>
   <ItemGroup>
@@ -136,7 +137,6 @@
     <ClCompile Include="..\libavutil\xtea.c" />
     <ClCompile Include="..\libavutil\tea.c" />
     <ClCompile Include="..\libavutil\tx.c" />
-    <ClCompile Include="..\libavutil\tx_float.c" />
     <ClCompile Include="..\libavutil\tx_double.c" />
     <ClCompile Include="..\libavutil\tx_int32.c" />
     <ClCompile Include="..\libavutil\video_enc_params.c" />
@@ -152,6 +152,7 @@
     <ClCompile Include="..\libavutil\x86\float_dsp_init.c" />
     <ClCompile Include="..\libavutil\x86\imgutils_init.c" />
     <ClCompile Include="..\libavutil\x86\lls_init.c" />
+    <ClCompile Include="..\libavutil\x86\tx_float_init.c" />
     <ClCompile Include="..\libavutil\x86\pixelutils_init.c" />
     <ClCompile Include="libavutil\hwcontext_d3d11va_wrap.c" />
     <ClCompile Include="libavutil\dce_defs.c" />
@@ -169,6 +170,9 @@
     </ClCompile>
     <ClCompile Include="..\libavutil\pixelutils.c">
       <ObjectFileName>$(IntDir)\libavutil_pixelutils.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\libavutil\tx_float.c">
+      <ObjectFileName>$(IntDir)\libavutil_tx_float.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\libavutil\x86\cpu.c">
       <ObjectFileName>$(IntDir)\libavutil_x86_cpu.obj</ObjectFileName>

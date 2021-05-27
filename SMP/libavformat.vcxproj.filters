@@ -316,6 +316,9 @@
     <ClCompile Include="..\libavformat\argo_brp.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\argo_cvg.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\asfdec_f.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
@@ -1355,6 +1358,9 @@
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\westwood_aud.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\westwood_audenc.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\wsddec.c">

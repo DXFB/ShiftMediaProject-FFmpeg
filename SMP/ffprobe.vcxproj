@@ -37,7 +37,6 @@
   <ItemGroup>
     <ClCompile Include="..\fftools\cmdutils.c" />
     <ClCompile Include="..\fftools\ffprobe.c" />
-    <ClCompile Include="ffprobe\dce_defs.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{147A422A-FA63-4724-A5D9-08B1CAFDAB59}</ProjectGuid>
@@ -149,6 +148,7 @@
     <OutDir>$(ProjectDir)..\..\..\msvc\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Configuration)\$(Platform)\ffprobe\</IntDir>
     <LocalDebuggerWorkingDirectory>$(OutDir)\bin\x86\</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>$(TargetFileName)</LocalDebuggerCommand>
     <MSBuildWarningsAsMessages>MSB8012</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -156,6 +156,7 @@
     <IntDir>$(SolutionDir)obj\$(Configuration)\$(Platform)\ffprobe\</IntDir>
     <OutDir>$(ProjectDir)..\..\..\msvc\</OutDir>
     <LocalDebuggerWorkingDirectory>$(OutDir)\bin\x64\</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>$(TargetFileName)</LocalDebuggerCommand>
     <MSBuildWarningsAsMessages>MSB8012</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
@@ -163,6 +164,7 @@
     <OutDir>$(ProjectDir)..\..\..\msvc\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Configuration)\$(Platform)\ffprobe\</IntDir>
     <LocalDebuggerWorkingDirectory>$(OutDir)\bin\x86\</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>$(TargetFileName)</LocalDebuggerCommand>
     <MSBuildWarningsAsMessages>MSB8012</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|x64'">
@@ -170,6 +172,7 @@
     <IntDir>$(SolutionDir)obj\$(Configuration)\$(Platform)\ffprobe\</IntDir>
     <OutDir>$(ProjectDir)..\..\..\msvc\</OutDir>
     <LocalDebuggerWorkingDirectory>$(OutDir)\bin\x64\</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>$(TargetFileName)</LocalDebuggerCommand>
     <MSBuildWarningsAsMessages>MSB8012</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -177,6 +180,7 @@
     <OutDir>$(ProjectDir)..\..\..\msvc\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Configuration)\$(Platform)\ffprobe\</IntDir>
     <LocalDebuggerWorkingDirectory>$(OutDir)\bin\x86\</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>$(TargetFileName)</LocalDebuggerCommand>
     <MSBuildWarningsAsMessages>MSB8012</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -184,6 +188,7 @@
     <OutDir>$(ProjectDir)..\..\..\msvc\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Configuration)\$(Platform)\ffprobe\</IntDir>
     <LocalDebuggerWorkingDirectory>$(OutDir)\bin\x64\</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>$(TargetFileName)</LocalDebuggerCommand>
     <MSBuildWarningsAsMessages>MSB8012</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">
@@ -191,6 +196,7 @@
     <OutDir>$(ProjectDir)..\..\..\msvc\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Configuration)\$(Platform)\ffprobe\</IntDir>
     <LocalDebuggerWorkingDirectory>$(OutDir)\bin\x86\</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>$(TargetFileName)</LocalDebuggerCommand>
     <MSBuildWarningsAsMessages>MSB8012</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|x64'">
@@ -198,6 +204,7 @@
     <OutDir>$(ProjectDir)..\..\..\msvc\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Configuration)\$(Platform)\ffprobe\</IntDir>
     <LocalDebuggerWorkingDirectory>$(OutDir)\bin\x64\</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>$(TargetFileName)</LocalDebuggerCommand>
     <MSBuildWarningsAsMessages>MSB8012</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

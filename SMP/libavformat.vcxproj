@@ -155,6 +155,7 @@
     <ClCompile Include="..\libavformat\subtitles.c" />
     <ClCompile Include="..\libavformat\argo_asf.c" />
     <ClCompile Include="..\libavformat\argo_brp.c" />
+    <ClCompile Include="..\libavformat\argo_cvg.c" />
     <ClCompile Include="..\libavformat\asfdec_f.c" />
     <ClCompile Include="..\libavformat\asf.c" />
     <ClCompile Include="..\libavformat\asfcrypt.c" />
@@ -502,6 +503,7 @@
     <ClCompile Include="..\libavformat\webvttdec.c" />
     <ClCompile Include="..\libavformat\webvttenc.c" />
     <ClCompile Include="..\libavformat\westwood_aud.c" />
+    <ClCompile Include="..\libavformat\westwood_audenc.c" />
     <ClCompile Include="..\libavformat\wsddec.c" />
     <ClCompile Include="..\libavformat\westwood_vqa.c" />
     <ClCompile Include="..\libavformat\wtvdec.c" />

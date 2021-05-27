@@ -58,6 +58,9 @@
     <NASM Include="..\libavutil\x86\lls.asm">
       <Filter>Source Files\libavutil\x86</Filter>
     </NASM>
+    <NASM Include="..\libavutil\x86\tx_float.asm">
+      <Filter>Source Files\libavutil\x86</Filter>
+    </NASM>
     <NASM Include="..\libavutil\x86\pixelutils.asm">
       <Filter>Source Files\libavutil\x86</Filter>
     </NASM>
@@ -264,9 +267,6 @@
     <ClCompile Include="..\libavutil\tx.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
-    <ClCompile Include="..\libavutil\tx_float.c">
-      <Filter>Source Files\libavutil</Filter>
-    </ClCompile>
     <ClCompile Include="..\libavutil\tx_double.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
@@ -312,6 +312,9 @@
     <ClCompile Include="..\libavutil\x86\lls_init.c">
       <Filter>Source Files\libavutil\x86</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavutil\x86\tx_float_init.c">
+      <Filter>Source Files\libavutil\x86</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavutil\x86\pixelutils_init.c">
       <Filter>Source Files\libavutil\x86</Filter>
     </ClCompile>
@@ -334,6 +337,9 @@
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
     <ClCompile Include="..\libavutil\pixelutils.c">
+      <Filter>Source Files\libavutil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavutil\tx_float.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
     <ClCompile Include="..\libavutil\x86\cpu.c">

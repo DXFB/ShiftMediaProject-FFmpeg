@@ -162,9 +162,7 @@
     <ClCompile Include="..\libavcodec\avcodec.c" />
     <ClCompile Include="..\libavcodec\avdct.c" />
     <ClCompile Include="..\libavcodec\avpacket.c" />
-    <ClCompile Include="..\libavcodec\avpicture.c" />
     <ClCompile Include="..\libavcodec\bitstream.c" />
-    <ClCompile Include="..\libavcodec\bitstream_filter.c" />
     <ClCompile Include="..\libavcodec\bitstream_filters.c" />
     <ClCompile Include="..\libavcodec\bsf.c" />
     <ClCompile Include="..\libavcodec\codec_desc.c" />
@@ -905,7 +903,6 @@
     <ClCompile Include="..\libavcodec\nvdec_vc1.c" />
     <ClCompile Include="..\libavcodec\nvdec_vp8.c" />
     <ClCompile Include="..\libavcodec\nvdec_vp9.c" />
-    <ClCompile Include="..\libavcodec\codec2utils.c" />
     <ClCompile Include="..\libavcodec\libilbc.c" />
     <ClCompile Include="..\libavcodec\libmp3lame.c" />
     <ClCompile Include="..\libavcodec\libopusdec.c" />
@@ -927,7 +924,6 @@
     <ClCompile Include="..\libavcodec\aac_ac3_parser.c" />
     <ClCompile Include="..\libavcodec\adx_parser.c" />
     <ClCompile Include="..\libavcodec\av1_parser.c" />
-    <ClCompile Include="..\libavcodec\av1_parse.c" />
     <ClCompile Include="..\libavcodec\avs2_parser.c" />
     <ClCompile Include="..\libavcodec\avs3_parser.c" />
     <ClCompile Include="..\libavcodec\bmp_parser.c" />
@@ -983,6 +979,7 @@
     <ClCompile Include="..\libavcodec\dca_core_bsf.c" />
     <ClCompile Include="..\libavcodec\eac3_core_bsf.c" />
     <ClCompile Include="..\libavcodec\extract_extradata_bsf.c" />
+    <ClCompile Include="..\libavcodec\av1_parse.c" />
     <ClCompile Include="..\libavcodec\filter_units_bsf.c" />
     <ClCompile Include="..\libavcodec\h264_metadata_bsf.c" />
     <ClCompile Include="..\libavcodec\h264_levels.c" />
@@ -1282,7 +1279,6 @@
     <ClInclude Include="..\libavcodec\mediacodec.h" />
     <ClInclude Include="..\libavcodec\packet.h" />
     <ClInclude Include="..\libavcodec\qsv.h" />
-    <ClInclude Include="..\libavcodec\vaapi.h" />
     <ClInclude Include="..\libavcodec\vdpau.h" />
     <ClInclude Include="..\libavcodec\version.h" />
     <ClInclude Include="..\libavcodec\videotoolbox.h" />
@@ -1529,7 +1525,6 @@ copy ..\libavcodec\jni.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\mediacodec.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\packet.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\qsv.h "$(OutDir)"\include\libavcodec
-copy ..\libavcodec\vaapi.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\vdpau.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\version.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\videotoolbox.h "$(OutDir)"\include\libavcodec
@@ -1618,7 +1613,6 @@ copy ..\libavcodec\jni.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\mediacodec.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\packet.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\qsv.h "$(OutDir)"\include\libavcodec
-copy ..\libavcodec\vaapi.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\vdpau.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\version.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\videotoolbox.h "$(OutDir)"\include\libavcodec
@@ -1714,7 +1708,6 @@ copy ..\libavcodec\jni.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\mediacodec.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\packet.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\qsv.h "$(OutDir)"\include\libavcodec
-copy ..\libavcodec\vaapi.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\vdpau.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\version.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\videotoolbox.h "$(OutDir)"\include\libavcodec
@@ -1808,7 +1801,6 @@ copy ..\libavcodec\jni.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\mediacodec.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\packet.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\qsv.h "$(OutDir)"\include\libavcodec
-copy ..\libavcodec\vaapi.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\vdpau.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\version.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\videotoolbox.h "$(OutDir)"\include\libavcodec
@@ -1903,7 +1895,6 @@ copy ..\libavcodec\jni.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\mediacodec.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\packet.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\qsv.h "$(OutDir)"\include\libavcodec
-copy ..\libavcodec\vaapi.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\vdpau.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\version.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\videotoolbox.h "$(OutDir)"\include\libavcodec
@@ -1996,7 +1987,6 @@ copy ..\libavcodec\jni.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\mediacodec.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\packet.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\qsv.h "$(OutDir)"\include\libavcodec
-copy ..\libavcodec\vaapi.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\vdpau.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\version.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\videotoolbox.h "$(OutDir)"\include\libavcodec
@@ -2097,7 +2087,6 @@ copy ..\libavcodec\jni.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\mediacodec.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\packet.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\qsv.h "$(OutDir)"\include\libavcodec
-copy ..\libavcodec\vaapi.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\vdpau.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\version.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\videotoolbox.h "$(OutDir)"\include\libavcodec
@@ -2197,7 +2186,6 @@ copy ..\libavcodec\jni.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\mediacodec.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\packet.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\qsv.h "$(OutDir)"\include\libavcodec
-copy ..\libavcodec\vaapi.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\vdpau.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\version.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\videotoolbox.h "$(OutDir)"\include\libavcodec
@@ -2298,7 +2286,6 @@ copy ..\libavcodec\jni.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\mediacodec.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\packet.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\qsv.h "$(OutDir)"\include\libavcodec
-copy ..\libavcodec\vaapi.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\vdpau.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\version.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\videotoolbox.h "$(OutDir)"\include\libavcodec
@@ -2398,7 +2385,6 @@ copy ..\libavcodec\jni.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\mediacodec.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\packet.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\qsv.h "$(OutDir)"\include\libavcodec
-copy ..\libavcodec\vaapi.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\vdpau.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\version.h "$(OutDir)"\include\libavcodec
 copy ..\libavcodec\videotoolbox.h "$(OutDir)"\include\libavcodec

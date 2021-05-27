@@ -111,7 +111,6 @@
     <ClCompile Include="..\libavfilter\framequeue.c" />
     <ClCompile Include="..\libavfilter\graphdump.c" />
     <ClCompile Include="..\libavfilter\graphparser.c" />
-    <ClCompile Include="..\libavfilter\transform.c" />
     <ClCompile Include="..\libavfilter\video.c" />
     <ClCompile Include="..\libavfilter\pthread.c" />
     <ClCompile Include="..\libavfilter\qsvvpp.c" />
@@ -273,9 +272,11 @@
     <ClCompile Include="..\libavfilter\vf_dejudder.c" />
     <ClCompile Include="..\libavfilter\vf_delogo.c" />
     <ClCompile Include="..\libavfilter\vf_deshake.c" />
+    <ClCompile Include="..\libavfilter\transform.c" />
     <ClCompile Include="..\libavfilter\vf_despill.c" />
     <ClCompile Include="..\libavfilter\vf_detelecine.c" />
     <ClCompile Include="..\libavfilter\vf_displace.c" />
+    <ClCompile Include="..\libavfilter\vf_dnn_classify.c" />
     <ClCompile Include="..\libavfilter\vf_dnn_detect.c" />
     <ClCompile Include="..\libavfilter\vf_dnn_processing.c" />
     <ClCompile Include="..\libavfilter\vf_weave.c" />
@@ -307,6 +308,7 @@
     <ClCompile Include="..\libavfilter\vf_geq.c" />
     <ClCompile Include="..\libavfilter\f_graphmonitor.c" />
     <ClCompile Include="..\libavfilter\vf_colorconstancy.c" />
+    <ClCompile Include="..\libavfilter\vf_guided.c" />
     <ClCompile Include="..\libavfilter\vf_lut3d.c" />
     <ClCompile Include="..\libavfilter\vf_histeq.c" />
     <ClCompile Include="..\libavfilter\vf_histogram.c" />
@@ -330,7 +332,6 @@
     <ClCompile Include="..\libavfilter\vf_maskedminmax.c" />
     <ClCompile Include="..\libavfilter\vf_maskedthreshold.c" />
     <ClCompile Include="..\libavfilter\vf_maskfun.c" />
-    <ClCompile Include="..\libavfilter\vf_mcdeint.c" />
     <ClCompile Include="..\libavfilter\vf_median.c" />
     <ClCompile Include="..\libavfilter\vf_mergeplanes.c" />
     <ClCompile Include="..\libavfilter\vf_mestimate.c" />
@@ -399,7 +400,6 @@
     <ClCompile Include="..\libavfilter\vf_tpad.c" />
     <ClCompile Include="..\libavfilter\vf_unsharp.c" />
     <ClCompile Include="..\libavfilter\vf_untile.c" />
-    <ClCompile Include="..\libavfilter\vf_uspp.c" />
     <ClCompile Include="..\libavfilter\vf_vaguedenoiser.c" />
     <ClCompile Include="..\libavfilter\vf_vectorscope.c" />
     <ClCompile Include="..\libavfilter\vf_vflip.c" />
@@ -438,6 +438,7 @@
     <ClCompile Include="..\libavfilter\dnn\dnn_io_proc.c" />
     <ClCompile Include="..\libavfilter\dnn\queue.c" />
     <ClCompile Include="..\libavfilter\dnn\safe_queue.c" />
+    <ClCompile Include="..\libavfilter\dnn\dnn_backend_common.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layers.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_avgpool.c" />

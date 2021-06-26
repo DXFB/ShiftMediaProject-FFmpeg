@@ -418,6 +418,7 @@ EXPORTS
     av_sha_init
     av_sha_update
     av_shr_i
+    av_size_mult
     av_small_strptime
     av_spherical_alloc
     av_spherical_from_name

@@ -3326,6 +3326,9 @@
     <ClInclude Include="..\libavcodec\d3d11va.h">
       <Filter>Header Files\libavcodec</Filter>
     </ClInclude>
+    <ClInclude Include="..\libavcodec\defs.h">
+      <Filter>Header Files\libavcodec</Filter>
+    </ClInclude>
     <ClInclude Include="..\libavcodec\dirac.h">
       <Filter>Header Files\libavcodec</Filter>
     </ClInclude>

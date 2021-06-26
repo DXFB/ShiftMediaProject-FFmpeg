@@ -149,4 +149,5 @@ EXPORTS
     avpriv_register_devices
     avpriv_set_pts_info
     avpriv_stream_set_need_parsing
+    avpriv_update_cur_dts
     av_format_ffversion DATA

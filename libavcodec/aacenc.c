@@ -28,11 +28,13 @@
  *              TODOs:
  * add sane pulse detection
  ***********************************/
+#include <float.h>
 
 #include "libavutil/libm.h"
 #include "libavutil/float_dsp.h"
 #include "libavutil/opt.h"
 #include "avcodec.h"
+#include "encode.h"
 #include "put_bits.h"
 #include "internal.h"
 #include "mpeg4audio.h"
@@ -675,7 +677,7 @@ static int aac_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
         }
         start_ch += chans;
     }
-    if ((ret = ff_alloc_packet2(avctx, avpkt, 8192 * s->channels, 0)) < 0)
+    if ((ret = ff_alloc_packet(avctx, avpkt, 8192 * s->channels)) < 0)
         return ret;
     frame_bits = its = 0;
     do {
@@ -852,7 +854,7 @@ static int aac_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
                 /* Not so fast though */
                 ratio = sqrtf(ratio);
             }
-            s->lambda = FFMIN(s->lambda * ratio, 65536.f);
+            s->lambda = av_clipf(s->lambda * ratio, FLT_EPSILON, 65536.f);
 
             /* Keep iterating if we must reduce and lambda is in the sky */
             if (ratio > 0.9f && ratio < 1.1f) {
@@ -897,7 +899,7 @@ static av_cold int aac_encode_end(AVCodecContext *avctx)
 {
     AACEncContext *s = avctx->priv_data;
 
-    av_log(avctx, AV_LOG_INFO, "Qavg: %.3f\n", s->lambda_sum / s->lambda_count);
+    av_log(avctx, AV_LOG_INFO, "Qavg: %.3f\n", s->lambda_count ? s->lambda_sum / s->lambda_count : NAN);
 
     ff_mdct_end(&s->mdct1024);
     ff_mdct_end(&s->mdct128);

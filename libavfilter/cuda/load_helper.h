@@ -1,6 +1,4 @@
 /*
- * Copyright (c) 2012 Michael Niedermayer <michaelni@gmx.at>
- *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or
@@ -18,14 +16,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVCODEC_FRAME_THREAD_ENCODER_H
-#define AVCODEC_FRAME_THREAD_ENCODER_H
+#ifndef AVFILTER_CUDA_LOAD_HELPER_H
+#define AVFILTER_CUDA_LOAD_HELPER_H
 
-#include "avcodec.h"
+/**
+ * Loads a CUDA module and applies any decompression, if neccesary.
+ */
+int ff_cuda_load_module(void *avctx, AVCUDADeviceContext *hwctx, CUmodule *cu_module,
+                        const unsigned char *data, const unsigned int length);
 
-int ff_frame_thread_encoder_init(AVCodecContext *avctx);
-void ff_frame_thread_encoder_free(AVCodecContext *avctx);
-int ff_thread_video_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
-                                 AVFrame *frame, int *got_packet_ptr);
-
-#endif /* AVCODEC_FRAME_THREAD_ENCODER_H */
+#endif /* AVFILTER_CUDA_LOAD_HELPER_H */

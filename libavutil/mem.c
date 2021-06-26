@@ -510,12 +510,58 @@ void *av_fast_realloc(void *ptr, unsigned int *size, size_t min_size)
     return ptr;
 }
 
+static inline void fast_malloc(void *ptr, unsigned int *size, size_t min_size, int zero_realloc)
+{
+    size_t max_size;
+    void *val;
+
+    memcpy(&val, ptr, sizeof(val));
+    if (min_size <= *size) {
+        av_assert0(val || !min_size);
+        return;
+    }
+
+    max_size = atomic_load_explicit(&max_alloc_size, memory_order_relaxed);
+
+    if (min_size > max_size) {
+        av_freep(ptr);
+        *size = 0;
+        return;
+    }
+    min_size = FFMIN(max_size, FFMAX(min_size + min_size / 16 + 32, min_size));
+    av_freep(ptr);
+    val = zero_realloc ? av_mallocz(min_size) : av_malloc(min_size);
+    memcpy(ptr, &val, sizeof(val));
+    if (!val)
+        min_size = 0;
+    *size = min_size;
+    return;
+}
+
 void av_fast_malloc(void *ptr, unsigned int *size, size_t min_size)
 {
-    ff_fast_malloc(ptr, size, min_size, 0);
+    fast_malloc(ptr, size, min_size, 0);
 }
 
 void av_fast_mallocz(void *ptr, unsigned int *size, size_t min_size)
 {
-    ff_fast_malloc(ptr, size, min_size, 1);
+    fast_malloc(ptr, size, min_size, 1);
+}
+
+int av_size_mult(size_t a, size_t b, size_t *r)
+{
+    size_t t;
+
+#if (!defined(__INTEL_COMPILER) && AV_GCC_VERSION_AT_LEAST(5,1)) || AV_HAS_BUILTIN(__builtin_mul_overflow)
+    if (__builtin_mul_overflow(a, b, &t))
+        return AVERROR(EINVAL);
+#else
+    t = a * b;
+    /* Hack inspired from glibc: don't try the division if nelem and elsize
+     * are both less than sqrt(SIZE_MAX). */
+    if ((a | b) >= ((size_t)1 << (sizeof(size_t) * 4)) && a && t / a != b)
+        return AVERROR(EINVAL);
+#endif
+    *r = t;
+    return 0;
 }

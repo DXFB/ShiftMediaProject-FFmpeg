@@ -489,6 +489,7 @@ Developer options (useful when working on FFmpeg itself):
                            in the name) of tests whose result is ignored
   --enable-linux-perf      enable Linux Performance Monitor API
   --disable-large-tests    disable tests that use a large amount of memory
+  --disable-ptx-compression don't compress CUDA PTX code even when possible
 
 NOTE: Object files are built at the place where configure is launched.
 EOF
@@ -534,7 +535,7 @@ die(){
 
 If you think configure made a mistake, make sure you are using the latest
 version from Git.  If the latest version fails, report the problem to the
-ffmpeg-user@ffmpeg.org mailing list or IRC #ffmpeg on irc.freenode.net.
+ffmpeg-user@ffmpeg.org mailing list or IRC #ffmpeg on irc.libera.chat.
 EOF
     if disabled logging; then
         cat <<EOF
@@ -1980,6 +1981,7 @@ CONFIG_LIST="
     neon_clobber_test
     ossfuzz
     pic
+    ptx_compression
     thumb
     valgrind_backtrace
     xmm_clobber_test
@@ -2355,6 +2357,7 @@ HAVE_LIST="
     $THREADS_LIST
     $TOOLCHAIN_FEATURES
     $TYPES_LIST
+    gzip
     libdrm_getfb2
     makeinfo
     makeinfo_html
@@ -2367,6 +2370,7 @@ HAVE_LIST="
     perl
     pod2man
     texi2html
+    zlib_gzip
 "
 
 # options emitted with CONFIG_ prefix but not available on the command line
@@ -3836,6 +3840,7 @@ enable doc
 enable faan faandct faanidct
 enable large_tests
 enable optimizations
+enable ptx_compression
 enable runtime_cpudetect
 enable safe_bitstream_reader
 enable static
@@ -4388,8 +4393,16 @@ else
     NVCC_C=""
 fi
 
+set_default nvcc
+
+if enabled cuda_nvcc; then
+    if $nvcc $nvccflags_default 2>&1 | grep -qi unsupported; then
+        nvccflags_default="-gencode arch=compute_60,code=sm_60 -O2"
+    fi
+fi
+
 set_default arch cc cxx doxygen pkg_config ranlib strip sysinclude \
-    target_exec x86asmexe nvcc
+    target_exec x86asmexe
 enabled cross_compile || host_cc_default=$cc
 set_default host_cc
 
@@ -4409,7 +4422,7 @@ fi
 
 exesuf() {
     case $1 in
-        mingw32*|mingw64*|win32|win64|cygwin*|*-dos|freedos|opendos|os/2*|symbian) echo .exe ;;
+        mingw32*|mingw64*|msys*|win32|win64|cygwin*|*-dos|freedos|opendos|os/2*|symbian) echo .exe ;;
     esac
 }
 
@@ -6270,6 +6283,8 @@ if [ -z "$nvccflags" ]; then
     nvccflags=$nvccflags_default
 fi
 
+nvccflags="$nvccflags -std=c++11"
+
 if enabled x86_64 || enabled ppc64 || enabled aarch64; then
     nvccflags="$nvccflags -m64"
 else
@@ -6337,6 +6352,18 @@ enabled  zlib && { check_pkg_config zlib zlib "zlib.h" zlibVersion ||
                    check_lib zlib   zlib.h      zlibVersion    -lz; }
 enabled bzlib && check_lib bzlib bzlib.h BZ2_bzlibVersion    -lbz2
 enabled  lzma && check_lib lzma   lzma.h lzma_version_number -llzma
+
+enabled zlib && test_exec $zlib_extralibs <<EOF && enable zlib_gzip
+#include <zlib.h>
+int main(void) {
+    if (zlibCompileFlags() & (1 << 17)) return 1;
+    return 0;
+}
+EOF
+
+[ -x "$(command -v gzip)" ] && enable gzip
+
+enabled zlib_gzip && enabled gzip || disable ptx_compression
 
 # On some systems dynamic loading requires no extra linker flags
 check_lib libdl dlfcn.h "dlopen dlsym" || check_lib libdl dlfcn.h "dlopen dlsym" -ldl
@@ -7527,7 +7554,6 @@ LD_LIB=$LD_LIB
 LD_PATH=$LD_PATH
 DLLTOOL=$dlltool
 WINDRES=$windres
-DEPWINDRES=$dep_cc
 DOXYGEN=$doxygen
 LDFLAGS=$LDFLAGS
 LDEXEFLAGS=$LDEXEFLAGS

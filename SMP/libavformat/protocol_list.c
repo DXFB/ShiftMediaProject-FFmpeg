@@ -23,6 +23,7 @@ static const URLProtocol *url_protocols[] = {
     &ff_bluray_protocol,
     &ff_cache_protocol,
     &ff_concat_protocol,
+    &ff_concatf_protocol,
     &ff_crypto_protocol,
     &ff_data_protocol,
     &ff_ffrtmpcrypt_protocol,

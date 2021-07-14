@@ -75,7 +75,7 @@ typedef struct RequestItem {
 #define FLAGS AV_OPT_FLAG_FILTERING_PARAM
 static const AVOption dnn_openvino_options[] = {
     { "device", "device to run model", OFFSET(options.device_type), AV_OPT_TYPE_STRING, { .str = "CPU" }, 0, 0, FLAGS },
-    { "nireq",  "number of request",   OFFSET(options.nireq),       AV_OPT_TYPE_INT,    { .i64 = 0 },     0, INT_MAX, FLAGS },
+    DNN_BACKEND_COMMON_OPTIONS
     { "batch_size",  "batch size per request", OFFSET(options.batch_size),  AV_OPT_TYPE_INT,    { .i64 = 1 },     1, 1000, FLAGS},
     { "input_resizable", "can input be resizable or not", OFFSET(options.input_resizable), AV_OPT_TYPE_BOOL,   { .i64 = 0 },     0, 1, FLAGS },
     { NULL }
@@ -448,12 +448,12 @@ static DNNReturnType execute_model_ov(RequestItem *request, Queue *inferenceq)
         status = ie_infer_set_completion_callback(request->infer_request, &request->callback);
         if (status != OK) {
             av_log(ctx, AV_LOG_ERROR, "Failed to set completion callback for inference\n");
-            return DNN_ERROR;
+            goto err;
         }
         status = ie_infer_request_infer_async(request->infer_request);
         if (status != OK) {
             av_log(ctx, AV_LOG_ERROR, "Failed to start async inference\n");
-            return DNN_ERROR;
+            goto err;
         }
         return DNN_SUCCESS;
     } else {
@@ -464,11 +464,17 @@ static DNNReturnType execute_model_ov(RequestItem *request, Queue *inferenceq)
         status = ie_infer_request_infer(request->infer_request);
         if (status != OK) {
             av_log(ctx, AV_LOG_ERROR, "Failed to start synchronous model inference\n");
-            return DNN_ERROR;
+            goto err;
         }
         infer_completion_callback(request);
         return (task->inference_done == task->inference_todo) ? DNN_SUCCESS : DNN_ERROR;
     }
+err:
+    if (ff_safe_queue_push_back(ov_model->request_queue, request) < 0) {
+        ie_infer_request_free(&request->infer_request);
+        av_freep(&request);
+    }
+    return DNN_ERROR;
 }
 
 static DNNReturnType get_input_ov(void *model, DNNData *input, const char *input_name)

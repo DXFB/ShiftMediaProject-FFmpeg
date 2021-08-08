@@ -42,6 +42,7 @@ static const AVFilter *filter_list[] = {
     &ff_af_afir,
     &ff_af_aformat,
     &ff_af_afreqshift,
+    &ff_af_afwtdn,
     &ff_af_agate,
     &ff_af_aiir,
     &ff_af_aintegral,

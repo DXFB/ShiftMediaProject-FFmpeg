@@ -135,6 +135,7 @@
     <ClCompile Include="..\libavfilter\af_afftfilt.c" />
     <ClCompile Include="..\libavfilter\af_aformat.c" />
     <ClCompile Include="..\libavfilter\af_afreqshift.c" />
+    <ClCompile Include="..\libavfilter\af_afwtdn.c" />
     <ClCompile Include="..\libavfilter\af_agate.c" />
     <ClCompile Include="..\libavfilter\af_aiir.c" />
     <ClCompile Include="..\libavfilter\f_interleave.c" />

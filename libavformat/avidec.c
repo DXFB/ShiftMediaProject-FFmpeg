@@ -362,7 +362,8 @@ static void avi_read_nikon(AVFormatContext *s, uint64_t end)
                 uint16_t size    = avio_rl16(s->pb);
                 const char *name = NULL;
                 char buffer[64]  = { 0 };
-                size = FFMIN(size, tag_end - avio_tell(s->pb));
+                uint64_t remaining = tag_end - avio_tell(s->pb);
+                size = FFMIN(size, remaining);
                 size -= avio_read(s->pb, buffer,
                                   FFMIN(size, sizeof(buffer) - 1));
                 switch (tag) {
@@ -1775,7 +1776,10 @@ static int avi_load_index(AVFormatContext *s)
         size = avio_rl32(pb);
         if (avio_feof(pb))
             break;
-        next = avio_tell(pb) + size + (size & 1);
+        next = avio_tell(pb);
+        if (next < 0 || next > INT64_MAX - size - (size & 1))
+            break;
+        next += size + (size & 1LL);
 
         if (tag == MKTAG('i', 'd', 'x', '1') &&
             avi_read_idx1(s, size) >= 0) {

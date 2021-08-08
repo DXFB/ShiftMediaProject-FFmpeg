@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/channel_layout.h"
 #include "libavutil/opt.h"
 #include "libavutil/eval.h"
 #include "libavutil/avassert.h"
@@ -836,7 +837,7 @@ static int config_input(AVFilterLink *inlink)
            inlink->sample_rate, inlink->channels, s->analysis_rdft_len, s->rdft_len, s->fir_len, s->nsamples_max);
 
     if (s->fixed)
-        inlink->min_samples = inlink->max_samples = inlink->partial_buf_size = s->nsamples_max;
+        inlink->min_samples = inlink->max_samples = s->nsamples_max;
 
     return generate_kernel(ctx, SELECT_GAIN(s), SELECT_GAIN_ENTRY(s));
 }

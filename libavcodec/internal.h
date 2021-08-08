@@ -32,6 +32,7 @@
 #include "libavutil/mathematics.h"
 #include "libavutil/pixfmt.h"
 #include "avcodec.h"
+#include "bsf.h"
 #include "config.h"
 
 /**
@@ -88,13 +89,6 @@
  * AVCodec.codec_tags termination value
  */
 #define FF_CODEC_TAGS_END -1
-
-
-#ifdef TRACE
-#   define ff_tlog(ctx, ...) av_log(ctx, AV_LOG_TRACE, __VA_ARGS__)
-#else
-#   define ff_tlog(ctx, ...) do { } while(0)
-#endif
 
 
 #define FF_DEFAULT_QUANT_BIAS 999999

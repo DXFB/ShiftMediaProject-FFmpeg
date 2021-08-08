@@ -28,7 +28,6 @@
 #include <lv2/lv2plug.in/ns/ext/atom/atom.h>
 #include <lv2/lv2plug.in/ns/ext/buf-size/buf-size.h>
 
-#include "libavutil/avassert.h"
 #include "libavutil/avstring.h"
 #include "libavutil/channel_layout.h"
 #include "libavutil/opt.h"
@@ -381,7 +380,7 @@ static int config_output(AVFilterLink *outlink)
          lilv_plugin_has_feature(s->plugin, s->boundedBlockLength))) {
         AVFilterLink *inlink = ctx->inputs[0];
 
-        inlink->partial_buf_size = inlink->min_samples = inlink->max_samples = 4096;
+        inlink->min_samples = inlink->max_samples = 4096;
     }
 
     return 0;

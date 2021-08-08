@@ -531,7 +531,7 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
     q->param.mfx.GopPicSize         = FFMAX(0, avctx->gop_size);
     q->param.mfx.GopRefDist         = FFMAX(-1, avctx->max_b_frames) + 1;
     q->param.mfx.GopOptFlag         = avctx->flags & AV_CODEC_FLAG_CLOSED_GOP ?
-                                      MFX_GOP_CLOSED : 0;
+                                      MFX_GOP_CLOSED : MFX_GOP_STRICT;
     q->param.mfx.IdrInterval        = q->idr_interval;
     q->param.mfx.NumSlice           = avctx->slices;
     q->param.mfx.NumRefFrame        = FFMAX(0, avctx->refs);
@@ -804,6 +804,24 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
         q->extparam_internal[q->nb_extparam_internal++] = (mfxExtBuffer *)&q->exthevctiles;
     }
 #endif
+
+    q->extvsi.VideoFullRange = (avctx->color_range == AVCOL_RANGE_JPEG);
+    q->extvsi.ColourDescriptionPresent = 0;
+
+    if (avctx->color_primaries != AVCOL_PRI_UNSPECIFIED ||
+        avctx->color_trc != AVCOL_TRC_UNSPECIFIED ||
+        avctx->colorspace != AVCOL_SPC_UNSPECIFIED) {
+        q->extvsi.ColourDescriptionPresent = 1;
+        q->extvsi.ColourPrimaries = avctx->color_primaries;
+        q->extvsi.TransferCharacteristics = avctx->color_trc;
+        q->extvsi.MatrixCoefficients = avctx->colorspace;
+    }
+
+    if (q->extvsi.VideoFullRange || q->extvsi.ColourDescriptionPresent) {
+        q->extvsi.Header.BufferId = MFX_EXTBUFF_VIDEO_SIGNAL_INFO;
+        q->extvsi.Header.BufferSz = sizeof(q->extvsi);
+        q->extparam_internal[q->nb_extparam_internal++] = (mfxExtBuffer *)&q->extvsi;
+    }
 
     if (!check_enc_param(avctx,q)) {
         av_log(avctx, AV_LOG_ERROR,

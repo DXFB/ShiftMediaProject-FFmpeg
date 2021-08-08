@@ -33,6 +33,7 @@
 #include "libavutil/avassert.h"
 #include "libavutil/avstring.h"
 #include "libavutil/bprint.h"
+#include "libavutil/channel_layout.h"
 #include "libavutil/display.h"
 #include "libavutil/hash.h"
 #include "libavutil/hdr_dynamic_metadata.h"
@@ -1682,9 +1683,9 @@ static void xml_print_section_header(WriterContext *wctx)
         wctx->section[wctx->level-1] : NULL;
 
     if (wctx->level == 0) {
-        const char *qual = " xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "
-            "xmlns:ffprobe='http://www.ffmpeg.org/schema/ffprobe' "
-            "xsi:schemaLocation='http://www.ffmpeg.org/schema/ffprobe ffprobe.xsd'";
+        const char *qual = " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+            "xmlns:ffprobe=\"http://www.ffmpeg.org/schema/ffprobe\" "
+            "xsi:schemaLocation=\"http://www.ffmpeg.org/schema/ffprobe ffprobe.xsd\"";
 
         printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         printf("<%sffprobe%s>\n",
@@ -2031,7 +2032,7 @@ static void print_pkt_side_data(WriterContext *w,
             print_int("dv_bl_signal_compatibility_id", dovi->dv_bl_signal_compatibility_id);
         } else if (sd->type == AV_PKT_DATA_AUDIO_SERVICE_TYPE) {
             enum AVAudioServiceType *t = (enum AVAudioServiceType *)sd->data;
-            print_int("type", *t);
+            print_int("service_type", *t);
         } else if (sd->type == AV_PKT_DATA_MPEGTS_STREAM_ID) {
             print_int("id", *sd->data);
         } else if (sd->type == AV_PKT_DATA_CPB_PROPERTIES) {
@@ -2247,8 +2248,8 @@ static void show_frame(WriterContext *w, AVFrame *frame, AVStream *stream,
     else   print_str_opt("media_type", "unknown");
     print_int("stream_index",           stream->index);
     print_int("key_frame",              frame->key_frame);
-    print_ts  ("pkt_pts",               frame->pts);
-    print_time("pkt_pts_time",          frame->pts, &stream->time_base);
+    print_ts  ("pts",                   frame->pts);
+    print_time("pts_time",              frame->pts, &stream->time_base);
     print_ts  ("pkt_dts",               frame->pkt_dts);
     print_time("pkt_dts_time",          frame->pkt_dts, &stream->time_base);
     print_ts  ("best_effort_timestamp", frame->best_effort_timestamp);
@@ -3720,7 +3721,6 @@ int main(int argc, char **argv)
     options = real_options;
     parse_loglevel(argc, argv, options);
     avformat_network_init();
-    init_opts();
 #if CONFIG_AVDEVICE
     avdevice_register_all();
 #endif

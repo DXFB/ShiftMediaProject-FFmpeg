@@ -25,8 +25,8 @@
 #include "libavutil/channel_layout.h"
 #include "libavutil/common.h"
 #include "libavutil/eval.h"
+#include "libavutil/frame.h"
 #include "libavutil/hwcontext.h"
-#include "libavutil/imgutils.h"
 #include "libavutil/internal.h"
 #include "libavutil/opt.h"
 #include "libavutil/pixdesc.h"
@@ -41,6 +41,7 @@
 #include "avfilter.h"
 #include "filters.h"
 #include "formats.h"
+#include "framepool.h"
 #include "internal.h"
 
 #include "libavutil/ffversion.h"
@@ -176,7 +177,6 @@ void avfilter_link_free(AVFilterLink **link)
     if (!*link)
         return;
 
-    av_frame_free(&(*link)->partial_buf);
     ff_framequeue_free(&(*link)->fifo);
     ff_frame_pool_uninit((FFFramePool**)&(*link)->frame_pool);
 
@@ -1012,6 +1012,7 @@ int ff_filter_frame(AVFilterLink *link, AVFrame *frame)
 
     link->frame_blocked_in = link->frame_wanted_out = 0;
     link->frame_count_in++;
+    link->sample_count_in += frame->nb_samples;
     filter_unblock(link->dst);
     ret = ff_framequeue_add(&link->fifo, frame);
     if (ret < 0) {
@@ -1371,6 +1372,7 @@ static void consume_update(AVFilterLink *link, const AVFrame *frame)
     ff_inlink_process_commands(link, frame);
     link->dst->is_disabled = !ff_inlink_evaluate_timeline_at_frame(link, frame);
     link->frame_count_out++;
+    link->sample_count_out += frame->nb_samples;
 }
 
 int ff_inlink_consume_frame(AVFilterLink *link, AVFrame **rframe)
@@ -1446,19 +1448,10 @@ int ff_inlink_make_frame_writable(AVFilterLink *link, AVFrame **rframe)
         return ret;
     }
 
-    switch (link->type) {
-    case AVMEDIA_TYPE_VIDEO:
-        av_image_copy(out->data, out->linesize, (const uint8_t **)frame->data, frame->linesize,
-                      frame->format, frame->width, frame->height);
-        break;
-    case AVMEDIA_TYPE_AUDIO:
-        av_samples_copy(out->extended_data, frame->extended_data,
-                        0, 0, frame->nb_samples,
-                        frame->channels,
-                        frame->format);
-        break;
-    default:
-        av_assert0(!"reached");
+    ret = av_frame_copy(out, frame);
+    if (ret < 0) {
+        av_frame_free(&out);
+        return ret;
     }
 
     av_frame_free(&frame);

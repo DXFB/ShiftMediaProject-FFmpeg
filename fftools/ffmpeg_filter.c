@@ -968,22 +968,29 @@ int configure_filtergraph(FilterGraph *fg)
         char args[512];
         AVDictionaryEntry *e = NULL;
 
-        fg->graph->nb_threads = filter_nbthreads;
+        if (filter_nbthreads) {
+            ret = av_opt_set(fg->graph, "threads", filter_nbthreads, 0);
+            if (ret < 0)
+                goto fail;
+        } else {
+            e = av_dict_get(ost->encoder_opts, "threads", NULL, 0);
+            if (e)
+                av_opt_set(fg->graph, "threads", e->value, 0);
+        }
 
         args[0] = 0;
+        e       = NULL;
         while ((e = av_dict_get(ost->sws_dict, "", e,
                                 AV_DICT_IGNORE_SUFFIX))) {
             av_strlcatf(args, sizeof(args), "%s=%s:", e->key, e->value);
         }
-        if (strlen(args))
+        if (strlen(args)) {
             args[strlen(args)-1] = 0;
-
-        if (!strncmp(args, "sws_flags=", 10)) {
-            // keep the 'flags=' part
-            fg->graph->scale_sws_opts = av_strdup(args+4);
+            fg->graph->scale_sws_opts = av_strdup(args);
         }
 
         args[0] = 0;
+        e       = NULL;
         while ((e = av_dict_get(ost->swr_opts, "", e,
                                 AV_DICT_IGNORE_SUFFIX))) {
             av_strlcatf(args, sizeof(args), "%s=%s:", e->key, e->value);
@@ -991,18 +998,6 @@ int configure_filtergraph(FilterGraph *fg)
         if (strlen(args))
             args[strlen(args)-1] = 0;
         av_opt_set(fg->graph, "aresample_swr_opts", args, 0);
-
-        args[0] = '\0';
-        while ((e = av_dict_get(fg->outputs[0]->ost->resample_opts, "", e,
-                                AV_DICT_IGNORE_SUFFIX))) {
-            av_strlcatf(args, sizeof(args), "%s=%s:", e->key, e->value);
-        }
-        if (strlen(args))
-            args[strlen(args) - 1] = '\0';
-
-        e = av_dict_get(ost->encoder_opts, "threads", NULL, 0);
-        if (e)
-            av_opt_set(fg->graph, "threads", e->value, 0);
     } else {
         fg->graph->nb_threads = filter_complex_nbthreads;
     }

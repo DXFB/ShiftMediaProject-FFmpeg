@@ -106,17 +106,19 @@ typedef struct MXFPartition {
     KLVPacket first_essence_klv;
 } MXFPartition;
 
-typedef struct MXFCryptoContext {
+typedef struct MXFMetadataSet {
     UID uid;
-    MXFPartition *partition;
+    uint64_t partition_score;
     enum MXFMetadataSetType type;
+} MXFMetadataSet;
+
+typedef struct MXFCryptoContext {
+    MXFMetadataSet meta;
     UID source_container_ul;
 } MXFCryptoContext;
 
 typedef struct MXFStructuralComponent {
-    UID uid;
-    MXFPartition *partition;
-    enum MXFMetadataSetType type;
+    MXFMetadataSet meta;
     UID source_package_ul;
     UID source_package_uid;
     UID data_definition_ul;
@@ -126,9 +128,7 @@ typedef struct MXFStructuralComponent {
 } MXFStructuralComponent;
 
 typedef struct MXFSequence {
-    UID uid;
-    MXFPartition *partition;
-    enum MXFMetadataSetType type;
+    MXFMetadataSet meta;
     UID data_definition_ul;
     UID *structural_components_refs;
     int structural_components_count;
@@ -137,9 +137,7 @@ typedef struct MXFSequence {
 } MXFSequence;
 
 typedef struct MXFTimecodeComponent {
-    UID uid;
-    MXFPartition *partition;
-    enum MXFMetadataSetType type;
+    MXFMetadataSet meta;
     int drop_frame;
     int start_frame;
     struct AVRational rate;
@@ -147,33 +145,25 @@ typedef struct MXFTimecodeComponent {
 } MXFTimecodeComponent;
 
 typedef struct {
-    UID uid;
-    MXFPartition *partition;
-    enum MXFMetadataSetType type;
+    MXFMetadataSet meta;
     UID input_segment_ref;
 } MXFPulldownComponent;
 
 typedef struct {
-    UID uid;
-    MXFPartition *partition;
-    enum MXFMetadataSetType type;
+    MXFMetadataSet meta;
     UID *structural_components_refs;
     int structural_components_count;
     int64_t duration;
 } MXFEssenceGroup;
 
 typedef struct {
-    UID uid;
-    MXFPartition *partition;
-    enum MXFMetadataSetType type;
+    MXFMetadataSet meta;
     char *name;
     char *value;
 } MXFTaggedValue;
 
 typedef struct {
-    UID uid;
-    MXFPartition *partition;
-    enum MXFMetadataSetType type;
+    MXFMetadataSet meta;
     MXFSequence *sequence; /* mandatory, and only one */
     UID sequence_ref;
     int track_id;
@@ -190,9 +180,7 @@ typedef struct {
 } MXFTrack;
 
 typedef struct MXFDescriptor {
-    UID uid;
-    MXFPartition *partition;
-    enum MXFMetadataSetType type;
+    MXFMetadataSet meta;
     UID essence_container_ul;
     UID essence_codec_ul;
     UID codec_ul;
@@ -230,9 +218,7 @@ typedef struct MXFDescriptor {
 } MXFDescriptor;
 
 typedef struct MXFIndexTableSegment {
-    UID uid;
-    MXFPartition *partition;
-    enum MXFMetadataSetType type;
+    MXFMetadataSet meta;
     int edit_unit_byte_count;
     int index_sid;
     int body_sid;
@@ -246,9 +232,7 @@ typedef struct MXFIndexTableSegment {
 } MXFIndexTableSegment;
 
 typedef struct MXFPackage {
-    UID uid;
-    MXFPartition *partition;
-    enum MXFMetadataSetType type;
+    MXFMetadataSet meta;
     UID package_uid;
     UID package_ul;
     UID *tracks_refs;
@@ -261,20 +245,12 @@ typedef struct MXFPackage {
 } MXFPackage;
 
 typedef struct MXFEssenceContainerData {
-    UID uid;
-    MXFPartition *partition;
-    enum MXFMetadataSetType type;
+    MXFMetadataSet meta;
     UID package_uid;
     UID package_ul;
     int index_sid;
     int body_sid;
 } MXFEssenceContainerData;
-
-typedef struct MXFMetadataSet {
-    UID uid;
-    MXFPartition *partition;
-    enum MXFMetadataSetType type;
-} MXFMetadataSet;
 
 /* decoded index table */
 typedef struct MXFIndexTable {
@@ -576,6 +552,10 @@ static int mxf_get_d10_aes3_packet(AVIOContext *pb, AVStream *st, AVPacket *pkt,
     data_ptr = pkt->data;
     end_ptr = pkt->data + length;
     buf_ptr = pkt->data + 4; /* skip SMPTE 331M header */
+
+    if (st->codecpar->channels > 8)
+        return AVERROR_INVALIDDATA;
+
     for (; end_ptr - buf_ptr >= st->codecpar->channels * 4; ) {
         for (i = 0; i < st->codecpar->channels; i++) {
             uint32_t sample = bytestream_get_le32(&buf_ptr);
@@ -855,21 +835,25 @@ static int mxf_read_partition_pack(void *arg, AVIOContext *pb, int tag, int size
     return 0;
 }
 
-static int partition_score(MXFPartition *p)
+static uint64_t partition_score(MXFPartition *p)
 {
+    uint64_t score;
+    if (!p)
+        return 0;
     if (p->type == Footer)
-        return 5;
-    if (p->complete)
-        return 4;
-    if (p->closed)
-        return 3;
-    return 1;
+        score = 5;
+    else if (p->complete)
+        score = 4;
+    else if (p->closed)
+        score = 3;
+    else
+        score = 1;
+    return (score << 60) | ((uint64_t)p->this_partition >> 4);
 }
 
 static int mxf_add_metadata_set(MXFContext *mxf, MXFMetadataSet **metadata_set)
 {
     MXFMetadataSet **tmp;
-    MXFPartition *new_p = (*metadata_set)->partition;
     enum MXFMetadataSetType type = (*metadata_set)->type;
 
     // Index Table is special because it might be added manually without
@@ -878,10 +862,9 @@ static int mxf_add_metadata_set(MXFContext *mxf, MXFMetadataSet **metadata_set)
     if (type != IndexTableSegment) {
         for (int i = 0; i < mxf->metadata_sets_count; i++) {
             if (!memcmp((*metadata_set)->uid, mxf->metadata_sets[i]->uid, 16) && type == mxf->metadata_sets[i]->type) {
-                MXFPartition *old_p = mxf->metadata_sets[i]->partition;
-                int old_s = partition_score(old_p);
-                int new_s = partition_score(new_p);
-                if (old_s > new_s || old_s == new_s && old_p->this_partition > new_p->this_partition) {
+                uint64_t old_s = mxf->metadata_sets[i]->partition_score;
+                uint64_t new_s = (*metadata_set)->partition_score;
+                if (old_s > new_s) {
                      mxf_free_metadataset(metadata_set, 1);
                      return 0;
                 }
@@ -2060,7 +2043,7 @@ static MXFTimecodeComponent* mxf_resolve_timecode_component(MXFContext *mxf, UID
     if (!component)
         return NULL;
 
-    switch (component->type) {
+    switch (component->meta.type) {
     case TimecodeComponent:
         return (MXFTimecodeComponent*)component;
     case PulldownComponent: /* timcode component may be located on a pulldown component */
@@ -2096,7 +2079,7 @@ static MXFDescriptor* mxf_resolve_multidescriptor(MXFContext *mxf, MXFDescriptor
     if (!descriptor)
         return NULL;
 
-    if (descriptor->type == MultipleDescriptor) {
+    if (descriptor->meta.type == MultipleDescriptor) {
         for (i = 0; i < descriptor->sub_descriptors_count; i++) {
             sub_descriptor = mxf_resolve_strong_ref(mxf, &descriptor->sub_descriptors_refs[i], Descriptor);
 
@@ -2108,7 +2091,7 @@ static MXFDescriptor* mxf_resolve_multidescriptor(MXFContext *mxf, MXFDescriptor
                 return sub_descriptor;
             }
         }
-    } else if (descriptor->type == Descriptor)
+    } else if (descriptor->meta.type == Descriptor)
         return descriptor;
 
     return NULL;
@@ -2148,7 +2131,7 @@ static MXFStructuralComponent* mxf_resolve_sourceclip(MXFContext *mxf, UID *stro
     component = mxf_resolve_strong_ref(mxf, strong_ref, AnyType);
     if (!component)
         return NULL;
-    switch (component->type) {
+    switch (component->meta.type) {
         case SourceClip:
             return component;
         case EssenceGroup:
@@ -2918,7 +2901,7 @@ static const MXFMetadataReadTableEntry mxf_metadata_read_table[] = {
 static int mxf_metadataset_init(MXFMetadataSet *ctx, enum MXFMetadataSetType type, MXFPartition *partition)
 {
     ctx->type = type;
-    ctx->partition = partition;
+    ctx->partition_score = partition_score(partition);
     switch (type){
     case MultipleDescriptor:
     case Descriptor:
@@ -3312,7 +3295,7 @@ static int mxf_handle_missing_index_segment(MXFContext *mxf, AVStream *st)
     if (!track->index_sid)
         track->index_sid = track->body_sid;
 
-    segment->type = IndexTableSegment;
+    segment->meta.type = IndexTableSegment;
     /* stream will be treated as small EditUnitByteCount */
     segment->edit_unit_byte_count = edit_unit_byte_count;
     segment->index_start_position = 0;

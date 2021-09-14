@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2017 Ronald S. Bultje <rsbultje@gmail.com>
- * Copyright (c) 2017 Ashish Pratap Singh <ashk43712@gmail.com>
+ * Generic TTML helpers
+ * Copyright (c) 2021 24i
  *
  * This file is part of FFmpeg.
  *
@@ -19,14 +19,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVFILTER_VIF_H
-#define AVFILTER_VIF_H
+#ifndef AVFORMAT_TTMLENC_H
+#define AVFORMAT_TTMLENC_H
 
-#include "avfilter.h"
+#include "libavcodec/codec_par.h"
+#include "libavcodec/ttmlenc.h"
 
-int ff_compute_vif2(AVFilterContext *ctx,
-                    const float *ref, const float *main, int w, int h,
-                    int ref_stride, int main_stride, float *score,
-                    float *data_buf[13], float **temp, int nb_threads);
+static inline unsigned int ff_is_ttml_stream_paragraph_based(const AVCodecParameters *codecpar)
+{
+    // Not perfect, but decide whether the packet is a document or not
+    // by the existence of the lavc ttmlenc extradata.
+    return (codecpar->extradata &&
+            codecpar->extradata_size >= TTMLENC_EXTRADATA_SIGNATURE_SIZE &&
+            !memcmp(codecpar->extradata,
+                    TTMLENC_EXTRADATA_SIGNATURE,
+                    TTMLENC_EXTRADATA_SIGNATURE_SIZE));
+}
 
-#endif /* AVFILTER_VIF_H */
+#endif /* AVFORMAT_TTMLENC_H */

@@ -514,7 +514,7 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
         }
     }
 
-    if (q->low_power) {
+    if (q->low_power == 1) {
 #if QSV_HAVE_VDENC
         q->param.mfx.LowPower = MFX_CODINGOPTION_ON;
 #else
@@ -523,7 +523,9 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
         q->low_power = 0;
         q->param.mfx.LowPower = MFX_CODINGOPTION_OFF;
 #endif
-    } else
+    } else if (q->low_power == -1)
+        q->param.mfx.LowPower = MFX_CODINGOPTION_UNKNOWN;
+    else
         q->param.mfx.LowPower = MFX_CODINGOPTION_OFF;
 
     q->param.mfx.CodecProfile       = q->profile;
@@ -1269,6 +1271,8 @@ static void clear_unused_frames(QSVEncContext *q)
     while (cur) {
         if (cur->used && !cur->surface.Data.Locked) {
             free_encoder_ctrl_payloads(&cur->enc_ctrl);
+            //do not reuse enc_ctrl from previous frame
+            memset(&cur->enc_ctrl, 0, sizeof(cur->enc_ctrl));
             if (cur->frame->format == AV_PIX_FMT_QSV) {
                 av_frame_unref(cur->frame);
             }

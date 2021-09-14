@@ -298,18 +298,25 @@ static int filter_frame(AVFilterLink *inlink)
         int x;
         values[VAR_CHANNEL] = ch;
 
-        for (n = 0; n <= window_size / 2; n++) {
-            float fr, fi;
+        if (ctx->is_disabled) {
+            for (n = 0; n <= window_size / 2; n++) {
+                fft_temp[n].re = fft_out[n].re;
+                fft_temp[n].im = fft_out[n].im;
+            }
+        } else {
+            for (n = 0; n <= window_size / 2; n++) {
+                float fr, fi;
 
-            values[VAR_BIN] = n;
-            values[VAR_REAL] = fft_out[n].re;
-            values[VAR_IMAG] = fft_out[n].im;
+                values[VAR_BIN] = n;
+                values[VAR_REAL] = fft_out[n].re;
+                values[VAR_IMAG] = fft_out[n].im;
 
-            fr = av_expr_eval(s->real[ch], values, s);
-            fi = av_expr_eval(s->imag[ch], values, s);
+                fr = av_expr_eval(s->real[ch], values, s);
+                fi = av_expr_eval(s->imag[ch], values, s);
 
-            fft_temp[n].re = fr;
-            fft_temp[n].im = fi;
+                fft_temp[n].re = fr;
+                fft_temp[n].im = fi;
+            }
         }
 
         for (n = window_size / 2 + 1, x = window_size / 2 - 1; n < window_size; n++, x--) {
@@ -412,32 +419,19 @@ static int activate(AVFilterContext *ctx)
 
 static int query_formats(AVFilterContext *ctx)
 {
-    AVFilterFormats *formats;
-    AVFilterChannelLayouts *layouts;
     static const enum AVSampleFormat sample_fmts[] = {
         AV_SAMPLE_FMT_FLTP,
         AV_SAMPLE_FMT_NONE
     };
-    int ret;
-
-    layouts = ff_all_channel_counts();
-    if (!layouts)
-        return AVERROR(ENOMEM);
-    ret = ff_set_common_channel_layouts(ctx, layouts);
+    int ret = ff_set_common_all_channel_counts(ctx);
     if (ret < 0)
         return ret;
 
-    formats = ff_make_format_list(sample_fmts);
-    if (!formats)
-        return AVERROR(ENOMEM);
-    ret = ff_set_common_formats(ctx, formats);
+    ret = ff_set_common_formats_from_list(ctx, sample_fmts);
     if (ret < 0)
         return ret;
 
-    formats = ff_all_samplerates();
-    if (!formats)
-        return AVERROR(ENOMEM);
-    return ff_set_common_samplerates(ctx, formats);
+    return ff_set_common_all_samplerates(ctx);
 }
 
 static av_cold void uninit(AVFilterContext *ctx)
@@ -479,7 +473,6 @@ static const AVFilterPad inputs[] = {
         .type         = AVMEDIA_TYPE_AUDIO,
         .config_props = config_input,
     },
-    { NULL }
 };
 
 static const AVFilterPad outputs[] = {
@@ -487,7 +480,6 @@ static const AVFilterPad outputs[] = {
         .name = "default",
         .type = AVMEDIA_TYPE_AUDIO,
     },
-    { NULL }
 };
 
 const AVFilter ff_af_afftfilt = {
@@ -495,9 +487,10 @@ const AVFilter ff_af_afftfilt = {
     .description     = NULL_IF_CONFIG_SMALL("Apply arbitrary expressions to samples in frequency domain."),
     .priv_size       = sizeof(AFFTFiltContext),
     .priv_class      = &afftfilt_class,
-    .inputs          = inputs,
-    .outputs         = outputs,
+    FILTER_INPUTS(inputs),
+    FILTER_OUTPUTS(outputs),
     .activate        = activate,
     .query_formats   = query_formats,
     .uninit          = uninit,
+    .flags           = AVFILTER_FLAG_SUPPORT_TIMELINE_INTERNAL,
 };

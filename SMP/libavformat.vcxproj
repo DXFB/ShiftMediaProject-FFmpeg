@@ -332,6 +332,7 @@
     <ClCompile Include="..\libavformat\vpcc.c" />
     <ClCompile Include="..\libavformat\movenchint.c" />
     <ClCompile Include="..\libavformat\movenccenc.c" />
+    <ClCompile Include="..\libavformat\movenc_ttml.c" />
     <ClCompile Include="..\libavformat\mp3dec.c" />
     <ClCompile Include="..\libavformat\mp3enc.c" />
     <ClCompile Include="..\libavformat\mpc.c" />

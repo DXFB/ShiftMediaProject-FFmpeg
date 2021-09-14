@@ -118,6 +118,7 @@ static const AVOutputFormat *muxer_list[] = {
     &ff_mxf_opatom_muxer,
     &ff_null_muxer,
     &ff_nut_muxer,
+    &ff_obu_muxer,
     &ff_oga_muxer,
     &ff_ogg_muxer,
     &ff_ogv_muxer,

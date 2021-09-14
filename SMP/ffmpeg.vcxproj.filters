@@ -27,9 +27,6 @@
     <ClCompile Include="..\fftools\ffmpeg_hw.c">
       <Filter>Source Files\fftools</Filter>
     </ClCompile>
-    <ClCompile Include="..\fftools\ffmpeg_qsv.c">
-      <Filter>Source Files\fftools</Filter>
-    </ClCompile>
     <ClCompile Include="..\fftools\cmdutils.c">
       <Filter>Source Files\fftools</Filter>
     </ClCompile>

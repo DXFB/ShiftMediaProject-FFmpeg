@@ -124,6 +124,7 @@
     <ClCompile Include="..\libavfilter\af_acrusher.c" />
     <ClCompile Include="..\libavfilter\f_cue.c" />
     <ClCompile Include="..\libavfilter\af_adeclick.c" />
+    <ClCompile Include="..\libavfilter\af_adecorrelate.c" />
     <ClCompile Include="..\libavfilter\af_adelay.c" />
     <ClCompile Include="..\libavfilter\af_adenorm.c" />
     <ClCompile Include="..\libavfilter\af_aderivative.c" />
@@ -153,11 +154,13 @@
     <ClCompile Include="..\libavfilter\f_perms.c" />
     <ClCompile Include="..\libavfilter\af_aphaser.c" />
     <ClCompile Include="..\libavfilter\generate_wave_table.c" />
+    <ClCompile Include="..\libavfilter\af_apsyclip.c" />
     <ClCompile Include="..\libavfilter\af_apulsator.c" />
     <ClCompile Include="..\libavfilter\f_realtime.c" />
     <ClCompile Include="..\libavfilter\af_aresample.c" />
     <ClCompile Include="..\libavfilter\f_reverse.c" />
     <ClCompile Include="..\libavfilter\af_arnndn.c" />
+    <ClCompile Include="..\libavfilter\f_segment.c" />
     <ClCompile Include="..\libavfilter\f_select.c" />
     <ClCompile Include="..\libavfilter\f_sendcmd.c" />
     <ClCompile Include="..\libavfilter\af_asetnsamples.c" />
@@ -174,6 +177,7 @@
     <ClCompile Include="..\libavfilter\af_asubboost.c" />
     <ClCompile Include="..\libavfilter\af_asupercut.c" />
     <ClCompile Include="..\libavfilter\af_atempo.c" />
+    <ClCompile Include="..\libavfilter\af_atilt.c" />
     <ClCompile Include="..\libavfilter\trim.c" />
     <ClCompile Include="..\libavfilter\af_axcorrelate.c" />
     <ClCompile Include="..\libavfilter\af_channelmap.c" />
@@ -308,6 +312,7 @@
     <ClCompile Include="..\libavfilter\vf_freezeframes.c" />
     <ClCompile Include="..\libavfilter\vf_geq.c" />
     <ClCompile Include="..\libavfilter\f_graphmonitor.c" />
+    <ClCompile Include="..\libavfilter\vf_grayworld.c" />
     <ClCompile Include="..\libavfilter\vf_colorconstancy.c" />
     <ClCompile Include="..\libavfilter\vf_guided.c" />
     <ClCompile Include="..\libavfilter\vf_lut3d.c" />
@@ -315,6 +320,7 @@
     <ClCompile Include="..\libavfilter\vf_histogram.c" />
     <ClCompile Include="..\libavfilter\vf_hqx.c" />
     <ClCompile Include="..\libavfilter\vf_stack.c" />
+    <ClCompile Include="..\libavfilter\vf_hsvkey.c" />
     <ClCompile Include="..\libavfilter\vf_hue.c" />
     <ClCompile Include="..\libavfilter\vf_hwdownload.c" />
     <ClCompile Include="..\libavfilter\vf_hwmap.c" />

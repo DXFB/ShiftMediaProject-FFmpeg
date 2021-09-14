@@ -847,6 +847,9 @@
     <ClCompile Include="..\libavformat\movenccenc.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\movenc_ttml.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\mp3dec.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>

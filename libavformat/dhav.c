@@ -315,7 +315,7 @@ static int64_t get_pts(AVFormatContext *s, int stream_index)
 
         if (diff < 0)
             diff += 65535;
-        if (diff == 0)
+        if (diff == 0 && dhav->frame_rate)
             diff = av_rescale(dhav->frame_number - dst->last_frame_number, 1000, dhav->frame_rate);
         dst->pts += diff;
     } else {
@@ -433,15 +433,16 @@ static int dhav_read_seek(AVFormatContext *s, int stream_index,
 {
     DHAVContext *dhav = s->priv_data;
     AVStream *st = s->streams[stream_index];
+    FFStream *const sti = ffstream(st);
     int index = av_index_search_timestamp(st, timestamp, flags);
     int64_t pts;
 
     if (index < 0)
         return -1;
-    if (avio_seek(s->pb, st->internal->index_entries[index].pos, SEEK_SET) < 0)
+    if (avio_seek(s->pb, sti->index_entries[index].pos, SEEK_SET) < 0)
         return -1;
 
-    pts = st->internal->index_entries[index].timestamp;
+    pts = sti->index_entries[index].timestamp;
 
     for (int n = 0; n < s->nb_streams; n++) {
         AVStream *st = s->streams[n];

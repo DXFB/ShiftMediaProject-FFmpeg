@@ -1325,7 +1325,32 @@ Set window size. Allowed range is from 16 to 131072.
 Default is @code{4096}
 
 @item win_func
-Set window function. Default is @code{hann}.
+Set window function.
+
+It accepts the following values:
+@table @samp
+@item rect
+@item bartlett
+@item hann, hanning
+@item hamming
+@item blackman
+@item welch
+@item flattop
+@item bharris
+@item bnuttall
+@item bhann
+@item sine
+@item nuttall
+@item lanczos
+@item gauss
+@item tukey
+@item dolph
+@item cauchy
+@item parzen
+@item poisson
+@item bohman
+@end table
+Default is @code{hann}.
 
 @item overlap
 Set window overlap. If set to 1, the recommended overlap for selected
@@ -7531,22 +7556,27 @@ of @var{all_mode}. Default value is @code{normal}.
 Available values for component modes are:
 @table @samp
 @item addition
-@item grainmerge
 @item and
 @item average
+@item bleach
 @item burn
 @item darken
 @item difference
-@item grainextract
 @item divide
 @item dodge
-@item freeze
 @item exclusion
 @item extremity
+@item freeze
+@item geometric
 @item glow
+@item grainextract
+@item grainmerge
 @item hardlight
 @item hardmix
+@item hardoverlay
+@item harmonic
 @item heat
+@item interpolate
 @item lighten
 @item linearlight
 @item multiply
@@ -7559,7 +7589,9 @@ Available values for component modes are:
 @item pinlight
 @item reflect
 @item screen
+@item softdifference
 @item softlight
+@item stain
 @item subtract
 @item vividlight
 @item xor
@@ -8152,6 +8184,9 @@ means. For example, some MPEG based codecs export motion vectors through the
 The filter accepts the following option:
 
 @table @option
+@item block
+Display block partition structure using the luma plane.
+
 @item mv
 Set motion vectors to visualize.
 
@@ -8379,8 +8414,27 @@ Default is @code{1} for @var{aa}, and @code{0} for @var{ar}, @var{ag} and @var{a
 
 Allowed ranges for options are @code{[-2.0, 2.0]}.
 
-@item pl
-Preserve lightness when changing colors. Allowed range is from @code{[0.0, 1.0]}.
+@item pc
+Set preserve color mode. The accepted values are:
+@table @samp
+@item none
+Disable color preserving, this is default.
+@item lum
+Preserve luminance.
+@item max
+Preserve max value of RGB triplet.
+@item avg
+Preserve average value of RGB triplet.
+@item sum
+Preserve sum value of RGB triplet.
+@item nrm
+Preserve normalized value of RGB triplet.
+@item pwr
+Preserve power value of RGB triplet.
+@end table
+
+@item pa
+Set the preserve color amount when changing colors. Allowed range is from @code{[0.0, 1.0]}.
 Default is @code{0.0}, thus disabled.
 @end table
 
@@ -8540,6 +8594,25 @@ Adjust red, green, blue and alpha output white point.
 Allowed ranges for options are @code{[0, 1.0]}. Defaults are @code{1}.
 
 Output levels allows manual selection of a constrained output level range.
+
+@item preserve
+Set preserve color mode. The accepted values are:
+@table @samp
+@item none
+Disable color preserving, this is default.
+@item lum
+Preserve luminance.
+@item max
+Preserve max value of RGB triplet.
+@item avg
+Preserve average value of RGB triplet.
+@item sum
+Preserve sum value of RGB triplet.
+@item nrm
+Preserve normalized value of RGB triplet.
+@item pwr
+Preserve power value of RGB triplet.
+@end table
 @end table
 
 @subsection Examples
@@ -10218,6 +10291,7 @@ A number representing position of the first frame with respect to the telecine
 pattern. This is to be used if the stream is cut. The default value is @code{0}.
 @end table
 
+@anchor{dilation}
 @section dilation
 
 Apply dilation effect to the video.
@@ -11396,6 +11470,10 @@ will try to use a good random seed on a best effort basis.
 @item pal8
 Set pal8 output pixel format. This option does not work with codebook
 length greater than 256. Default is disabled.
+
+@item use_alpha
+Include alpha values in the quantization calculation. Allows creating
+palettized output images (e.g. PNG8) with multiple alpha smooth blending.
 @end table
 
 @section entropy
@@ -11534,6 +11612,7 @@ value.
 
 @end table
 
+@anchor{erosion}
 @section erosion
 
 Apply erosion effect to the video.
@@ -15308,6 +15387,46 @@ Default value is 0.
 @subsection Commands
 
 This filter supports the all above options as @ref{commands}.
+
+@section morpho
+
+This filter allows to apply main morphological grayscale transforms,
+erode and dilate with arbitrary structures set in second input stream.
+
+Unlike naive implementation and much slower performance in @ref{erosion}
+and @ref{dilation} filters, when speed is critical @code{morpho} filter
+should be used instead.
+
+A description of accepted options follows,
+
+@table @option
+@item mode
+Set morphological transform to apply, can be:
+
+@table @samp
+@item erode
+@item dilate
+@item open
+@item close
+@item gradient
+@item tophat
+@item blackhat
+@end table
+Default is @code{erode}.
+
+@item planes
+Set planes to filter, by default all planes except alpha are filtered.
+
+@item structure
+Set which structure video frames will be processed from second input stream,
+can be @var{first} or @var{all}. Default is @var{all}.
+@end table
+
+The @code{morpho} filter also supports the @ref{framesync} options.
+
+@subsection Commands
+
+This filter supports same @ref{commands} as options.
 
 @section mpdecimate
 
@@ -25386,6 +25505,10 @@ ffplay -f lavfi 'amovie=input.mp3, asplit [a][out1];
              [a] avectorscope=zoom=1.3:rc=2:gc=200:bc=10:rf=1:gf=8:bf=7 [out0]'
 @end example
 @end itemize
+
+@subsection Commands
+
+This filter supports the all above options as commands except options @code{size} and @code{rate}.
 
 @section bench, abench
 

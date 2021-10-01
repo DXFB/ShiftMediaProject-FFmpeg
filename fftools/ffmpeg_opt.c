@@ -821,7 +821,8 @@ static void add_input_streams(OptionsContext *o, AVFormatContext *ic)
         char *next;
         char *discard_str = NULL;
         const AVClass *cc = avcodec_get_class();
-        const AVOption *discard_opt = av_opt_find(&cc, "skip_frame", NULL, 0, 0);
+        const AVOption *discard_opt = av_opt_find(&cc, "skip_frame", NULL,
+                                                  0, AV_OPT_SEARCH_FAKE_OBJ);
 
         if (!ist)
             exit_program(1);
@@ -2591,7 +2592,7 @@ loop_end:
                     count = 0;
                     while (ost->enc->pix_fmts[count] != AV_PIX_FMT_NONE)
                         count++;
-                    f->formats = av_mallocz_array(count + 1, sizeof(*f->formats));
+                    f->formats = av_calloc(count + 1, sizeof(*f->formats));
                     if (!f->formats)
                         exit_program(1);
                     memcpy(f->formats, ost->enc->pix_fmts, (count + 1) * sizeof(*f->formats));
@@ -2604,7 +2605,7 @@ loop_end:
                     count = 0;
                     while (ost->enc->sample_fmts[count] != AV_SAMPLE_FMT_NONE)
                         count++;
-                    f->formats = av_mallocz_array(count + 1, sizeof(*f->formats));
+                    f->formats = av_calloc(count + 1, sizeof(*f->formats));
                     if (!f->formats)
                         exit_program(1);
                     memcpy(f->formats, ost->enc->sample_fmts, (count + 1) * sizeof(*f->formats));
@@ -2615,7 +2616,7 @@ loop_end:
                     count = 0;
                     while (ost->enc->supported_samplerates[count])
                         count++;
-                    f->sample_rates = av_mallocz_array(count + 1, sizeof(*f->sample_rates));
+                    f->sample_rates = av_calloc(count + 1, sizeof(*f->sample_rates));
                     if (!f->sample_rates)
                         exit_program(1);
                     memcpy(f->sample_rates, ost->enc->supported_samplerates,
@@ -2627,7 +2628,7 @@ loop_end:
                     count = 0;
                     while (ost->enc->channel_layouts[count])
                         count++;
-                    f->channel_layouts = av_mallocz_array(count + 1, sizeof(*f->channel_layouts));
+                    f->channel_layouts = av_calloc(count + 1, sizeof(*f->channel_layouts));
                     if (!f->channel_layouts)
                         exit_program(1);
                     memcpy(f->channel_layouts, ost->enc->channel_layouts,

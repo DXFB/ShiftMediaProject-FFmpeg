@@ -702,7 +702,7 @@ AVFilterContext *ff_filter_alloc(const AVFilter *filter, const char *inst_name)
         ret->input_pads   = av_memdup(filter->inputs,  ret->nb_inputs  * sizeof(*filter->inputs));
         if (!ret->input_pads)
             goto err;
-        ret->inputs       = av_mallocz_array(ret->nb_inputs, sizeof(AVFilterLink*));
+        ret->inputs      = av_calloc(ret->nb_inputs, sizeof(*ret->inputs));
         if (!ret->inputs)
             goto err;
     }
@@ -712,7 +712,7 @@ AVFilterContext *ff_filter_alloc(const AVFilter *filter, const char *inst_name)
         ret->output_pads  = av_memdup(filter->outputs, ret->nb_outputs * sizeof(*filter->outputs));
         if (!ret->output_pads)
             goto err;
-        ret->outputs      = av_mallocz_array(ret->nb_outputs, sizeof(AVFilterLink*));
+        ret->outputs     = av_calloc(ret->nb_outputs, sizeof(*ret->outputs));
         if (!ret->outputs)
             goto err;
     }
@@ -924,6 +924,8 @@ int avfilter_init_dict(AVFilterContext *ctx, AVDictionary **options)
         ret = ctx->filter->init(ctx);
     else if (ctx->filter->init_dict)
         ret = ctx->filter->init_dict(ctx, options);
+    if (ret < 0)
+        return ret;
 
     if (ctx->enable_str) {
         ret = set_enable_expr(ctx, ctx->enable_str);
@@ -931,7 +933,7 @@ int avfilter_init_dict(AVFilterContext *ctx, AVDictionary **options)
             return ret;
     }
 
-    return ret;
+    return 0;
 }
 
 int avfilter_init_str(AVFilterContext *filter, const char *args)

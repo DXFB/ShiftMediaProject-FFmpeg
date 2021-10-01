@@ -8,6 +8,7 @@ HEADERS = avformat.h                                                    \
 OBJS = allformats.o         \
        avio.o               \
        aviobuf.o            \
+       demux.o              \
        dump.o               \
        format.o             \
        id3v1.o              \
@@ -19,6 +20,7 @@ OBJS = allformats.o         \
        protocols.o          \
        riff.o               \
        sdp.o                \
+       seek.o               \
        url.o                \
        utils.o              \
 

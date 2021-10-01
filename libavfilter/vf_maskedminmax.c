@@ -239,11 +239,6 @@ static int config_output(AVFilterLink *outlink)
     FFFrameSyncIn *in;
     int ret;
 
-    if (source->format != f1->format ||
-        source->format != f2->format) {
-        av_log(ctx, AV_LOG_ERROR, "inputs must be of same pixel format\n");
-        return AVERROR(EINVAL);
-    }
     if (source->w != f1->w || source->h != f1->h ||
         source->w != f2->w || source->h != f2->h) {
         av_log(ctx, AV_LOG_ERROR, "First input link %s parameters "
@@ -323,13 +318,12 @@ static const AVFilterPad maskedminmax_outputs[] = {
     },
 };
 
-#define maskedmin_options maskedminmax_options
-AVFILTER_DEFINE_CLASS(maskedmin);
+AVFILTER_DEFINE_CLASS_EXT(maskedminmax, "masked(min|max)", maskedminmax_options);
 
 const AVFilter ff_vf_maskedmin = {
     .name          = "maskedmin",
     .description   = NULL_IF_CONFIG_SMALL("Apply filtering with minimum difference of two streams."),
-    .priv_class    = &maskedmin_class,
+    .priv_class    = &maskedminmax_class,
     .priv_size     = sizeof(MaskedMinMaxContext),
     .init          = maskedmin_init,
     .uninit        = uninit,
@@ -341,13 +335,10 @@ const AVFilter ff_vf_maskedmin = {
     .process_command = ff_filter_process_command,
 };
 
-#define maskedmax_options maskedminmax_options
-AVFILTER_DEFINE_CLASS(maskedmax);
-
 const AVFilter ff_vf_maskedmax = {
     .name          = "maskedmax",
     .description   = NULL_IF_CONFIG_SMALL("Apply filtering with maximum difference of two streams."),
-    .priv_class    = &maskedmax_class,
+    .priv_class    = &maskedminmax_class,
     .priv_size     = sizeof(MaskedMinMaxContext),
     .uninit        = uninit,
     .activate      = activate,

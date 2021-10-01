@@ -298,6 +298,7 @@ static const AVFilter *filter_list[] = {
     &ff_vf_minterpolate,
     &ff_vf_mix,
     &ff_vf_monochrome,
+    &ff_vf_morpho,
     &ff_vf_mpdecimate,
     &ff_vf_msad,
     &ff_vf_negate,

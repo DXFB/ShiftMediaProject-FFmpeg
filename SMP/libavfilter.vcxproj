@@ -347,6 +347,7 @@
     <ClCompile Include="..\libavfilter\vf_minterpolate.c" />
     <ClCompile Include="..\libavfilter\vf_mix.c" />
     <ClCompile Include="..\libavfilter\vf_monochrome.c" />
+    <ClCompile Include="..\libavfilter\vf_morpho.c" />
     <ClCompile Include="..\libavfilter\vf_mpdecimate.c" />
     <ClCompile Include="..\libavfilter\vf_nlmeans.c" />
     <ClCompile Include="..\libavfilter\vf_nnedi.c" />

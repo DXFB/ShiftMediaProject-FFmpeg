@@ -63,6 +63,7 @@
     <ClCompile Include="..\libavformat\allformats.c" />
     <ClCompile Include="..\libavformat\avio.c" />
     <ClCompile Include="..\libavformat\aviobuf.c" />
+    <ClCompile Include="..\libavformat\demux.c" />
     <ClCompile Include="..\libavformat\dump.c" />
     <ClCompile Include="..\libavformat\format.c" />
     <ClCompile Include="..\libavformat\id3v1.c" />
@@ -74,6 +75,7 @@
     <ClCompile Include="..\libavformat\protocols.c" />
     <ClCompile Include="..\libavformat\riff.c" />
     <ClCompile Include="..\libavformat\sdp.c" />
+    <ClCompile Include="..\libavformat\seek.c" />
     <ClCompile Include="..\libavformat\url.c" />
     <ClCompile Include="..\libavformat\utils.c" />
     <ClCompile Include="..\libavformat\file_open.c" />

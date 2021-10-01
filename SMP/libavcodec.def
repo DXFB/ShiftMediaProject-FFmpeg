@@ -149,7 +149,8 @@ EXPORTS
     avpriv_dnxhd_get_frame_size
     avpriv_dnxhd_get_hr_frame_size
     avpriv_dnxhd_get_interlaced
-    avpriv_do_elbg
+    avpriv_elbg_do
+    avpriv_elbg_free
     avpriv_exif_decode_ifd
     avpriv_find_pix_fmt
     avpriv_find_start_code
@@ -157,7 +158,6 @@ EXPORTS
     avpriv_fits_header_parse_line
     avpriv_get_raw_pix_fmt_tags
     avpriv_h264_has_num_reorder_frames
-    avpriv_init_elbg
     avpriv_mpeg4audio_get_config2
     avpriv_mpegaudio_decode_header
     avpriv_packet_list_free

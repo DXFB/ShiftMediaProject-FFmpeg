@@ -894,6 +894,9 @@
     <ClCompile Include="..\libavfilter\vf_monochrome.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_morpho.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_mpdecimate.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>

@@ -143,6 +143,7 @@ EXPORTS
     avcodec_string
     avcodec_version
     avpriv_ac3_parse_header
+    avpriv_adts_header_parse
     avpriv_codec_get_cap_skip_frame_fill_param
     avpriv_dca_convert_bitstream
     avpriv_dca_parse_core_frame_header

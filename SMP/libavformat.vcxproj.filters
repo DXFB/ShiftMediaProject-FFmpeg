@@ -664,6 +664,9 @@
     <ClCompile Include="..\libavformat\hls.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\hls_sample_encryption.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\hlsenc.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>

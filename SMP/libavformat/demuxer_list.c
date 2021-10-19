@@ -321,6 +321,7 @@ static const AVInputFormat *demuxer_list[] = {
     &ff_image_dds_pipe_demuxer,
     &ff_image_dpx_pipe_demuxer,
     &ff_image_exr_pipe_demuxer,
+    &ff_image_gem_pipe_demuxer,
     &ff_image_gif_pipe_demuxer,
     &ff_image_j2k_pipe_demuxer,
     &ff_image_jpeg_pipe_demuxer,

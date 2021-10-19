@@ -232,19 +232,15 @@ static int config_props(AVFilterLink *inlink)
     return 0;
 }
 
-static int query_formats(AVFilterContext *ctx)
-{
-    static const enum AVPixelFormat pixel_fmts_eq[] = {
-        AV_PIX_FMT_GRAY8,
-        AV_PIX_FMT_YUV410P,
-        AV_PIX_FMT_YUV411P,
-        AV_PIX_FMT_YUV420P,
-        AV_PIX_FMT_YUV422P,
-        AV_PIX_FMT_YUV444P,
-        AV_PIX_FMT_NONE
-    };
-    return ff_set_common_formats_from_list(ctx, pixel_fmts_eq);
-}
+static const enum AVPixelFormat pixel_fmts_eq[] = {
+    AV_PIX_FMT_GRAY8,
+    AV_PIX_FMT_YUV410P,
+    AV_PIX_FMT_YUV411P,
+    AV_PIX_FMT_YUV420P,
+    AV_PIX_FMT_YUV422P,
+    AV_PIX_FMT_YUV444P,
+    AV_PIX_FMT_NONE
+};
 
 static int filter_frame(AVFilterLink *inlink, AVFrame *in)
 {
@@ -379,8 +375,8 @@ const AVFilter ff_vf_eq = {
     .priv_class      = &eq_class,
     FILTER_INPUTS(eq_inputs),
     FILTER_OUTPUTS(eq_outputs),
+    FILTER_PIXFMTS_ARRAY(pixel_fmts_eq),
     .process_command = process_command,
-    .query_formats   = query_formats,
     .init            = initialize,
     .uninit          = uninit,
     .flags           = AVFILTER_FLAG_SUPPORT_TIMELINE_GENERIC,

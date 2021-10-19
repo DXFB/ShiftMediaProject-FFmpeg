@@ -285,20 +285,16 @@ static int config_input(AVFilterLink *inlink)
     return 0;
 }
 
-static int query_formats(AVFilterContext *ctx)
-{
-    static const enum AVPixelFormat pix_fmts[] = {
-        AV_PIX_FMT_RGB24,  AV_PIX_FMT_BGR24,
-        AV_PIX_FMT_RGBA,   AV_PIX_FMT_BGRA,
-        AV_PIX_FMT_ARGB,   AV_PIX_FMT_ABGR,
-        AV_PIX_FMT_0RGB,   AV_PIX_FMT_0BGR,
-        AV_PIX_FMT_RGB0,   AV_PIX_FMT_BGR0,
-        AV_PIX_FMT_RGB48,  AV_PIX_FMT_BGR48,
-        AV_PIX_FMT_RGBA64, AV_PIX_FMT_BGRA64,
-        AV_PIX_FMT_NONE
-    };
-    return ff_set_common_formats_from_list(ctx, pix_fmts);
-}
+static const enum AVPixelFormat pix_fmts[] = {
+    AV_PIX_FMT_RGB24,  AV_PIX_FMT_BGR24,
+    AV_PIX_FMT_RGBA,   AV_PIX_FMT_BGRA,
+    AV_PIX_FMT_ARGB,   AV_PIX_FMT_ABGR,
+    AV_PIX_FMT_0RGB,   AV_PIX_FMT_0BGR,
+    AV_PIX_FMT_RGB0,   AV_PIX_FMT_BGR0,
+    AV_PIX_FMT_RGB48,  AV_PIX_FMT_BGR48,
+    AV_PIX_FMT_RGBA64, AV_PIX_FMT_BGRA64,
+    AV_PIX_FMT_NONE
+};
 
 static inline int comp_adjust(int scale, float value, float adjust, float k, int correction_method)
 {
@@ -489,9 +485,9 @@ const AVFilter ff_vf_selectivecolor = {
     .name          = "selectivecolor",
     .description   = NULL_IF_CONFIG_SMALL("Apply CMYK adjustments to specific color ranges."),
     .priv_size     = sizeof(SelectiveColorContext),
-    .query_formats = query_formats,
     FILTER_INPUTS(selectivecolor_inputs),
     FILTER_OUTPUTS(selectivecolor_outputs),
+    FILTER_PIXFMTS_ARRAY(pix_fmts),
     .priv_class    = &selectivecolor_class,
     .flags         = AVFILTER_FLAG_SUPPORT_TIMELINE_GENERIC | AVFILTER_FLAG_SLICE_THREADS,
 };

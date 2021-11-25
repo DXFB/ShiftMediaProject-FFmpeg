@@ -28,6 +28,7 @@
 #include "libavutil/bprint.h"
 #include "libavutil/dict.h"
 #include "libavutil/internal.h"
+#include "libavutil/intmath.h"
 #include "libavutil/opt.h"
 #include "libavutil/parseutils.h"
 #include "libavutil/pixfmt.h"
@@ -303,7 +304,7 @@ void ff_flush_packet_queue(AVFormatContext *s)
     avpriv_packet_list_free(&si->packet_buffer,     &si->packet_buffer_end);
     avpriv_packet_list_free(&si->raw_packet_buffer, &si->raw_packet_buffer_end);
 
-    si->raw_packet_buffer_remaining_size = RAW_PACKET_BUFFER_SIZE;
+    si->raw_packet_buffer_size = 0;
 }
 
 int av_find_default_stream_index(AVFormatContext *s)
@@ -721,6 +722,41 @@ void avformat_free_context(AVFormatContext *s)
     av_free(s);
 }
 
+static const AVOption stream_options[] = {
+    { "disposition", NULL, offsetof(AVStream, disposition), AV_OPT_TYPE_FLAGS, { .i64 = 0 },
+        .flags = AV_OPT_FLAG_ENCODING_PARAM, .unit = "disposition" },
+        { "default",            .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_DEFAULT           },    .unit = "disposition" },
+        { "dub",                .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_DUB               },    .unit = "disposition" },
+        { "original",           .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_ORIGINAL          },    .unit = "disposition" },
+        { "comment",            .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_COMMENT           },    .unit = "disposition" },
+        { "lyrics",             .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_LYRICS            },    .unit = "disposition" },
+        { "karaoke",            .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_KARAOKE           },    .unit = "disposition" },
+        { "forced",             .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_FORCED            },    .unit = "disposition" },
+        { "hearing_impaired",   .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_HEARING_IMPAIRED  },    .unit = "disposition" },
+        { "visual_impaired",    .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_VISUAL_IMPAIRED   },    .unit = "disposition" },
+        { "clean_effects",      .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_CLEAN_EFFECTS     },    .unit = "disposition" },
+        { "attached_pic",       .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_ATTACHED_PIC      },    .unit = "disposition" },
+        { "timed_thumbnails",   .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_TIMED_THUMBNAILS  },    .unit = "disposition" },
+        { "captions",           .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_CAPTIONS          },    .unit = "disposition" },
+        { "descriptions",       .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_DESCRIPTIONS      },    .unit = "disposition" },
+        { "metadata",           .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_METADATA          },    .unit = "disposition" },
+        { "dependent",          .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_DEPENDENT         },    .unit = "disposition" },
+        { "still_image",        .type = AV_OPT_TYPE_CONST, { .i64 = AV_DISPOSITION_STILL_IMAGE       },    .unit = "disposition" },
+    { NULL }
+};
+
+static const AVClass stream_class = {
+    .class_name     = "AVStream",
+    .item_name      = av_default_item_name,
+    .version        = LIBAVUTIL_VERSION_INT,
+    .option         = stream_options,
+};
+
+const AVClass *av_stream_get_class(void)
+{
+    return &stream_class;
+}
+
 AVStream *avformat_new_stream(AVFormatContext *s, const AVCodec *c)
 {
     FFFormatContext *const si = ffformatcontext(s);
@@ -744,6 +780,10 @@ AVStream *avformat_new_stream(AVFormatContext *s, const AVCodec *c)
     if (!sti)
         return NULL;
     st = &sti->pub;
+
+#if FF_API_AVSTREAM_CLASS
+    st->av_class = &stream_class;
+#endif
 
     st->codecpar = avcodec_parameters_alloc();
     if (!st->codecpar)
@@ -1760,13 +1800,7 @@ int ff_stream_add_bitstream_filter(AVStream *st, const char *name, const char *a
     }
 
     if (args && bsfc->filter->priv_class) {
-        const AVOption *opt = av_opt_next(bsfc->priv_data, NULL);
-        const char * shorthand[2] = {NULL};
-
-        if (opt)
-            shorthand[0] = opt->name;
-
-        if ((ret = av_opt_set_from_string(bsfc->priv_data, args, shorthand, "=", ":")) < 0) {
+        if ((ret = av_set_options_string(bsfc->priv_data, args, "=", ":")) < 0) {
             av_bsf_free(&bsfc);
             return ret;
         }
@@ -1949,4 +1983,33 @@ void ff_format_set_url(AVFormatContext *s, char *url)
     av_assert0(url);
     av_freep(&s->url);
     s->url = url;
+}
+
+static int option_is_disposition(const AVOption *opt)
+{
+    return opt->type == AV_OPT_TYPE_CONST &&
+           opt->unit && !strcmp(opt->unit, "disposition");
+}
+
+int av_disposition_from_string(const char *disp)
+{
+    for (const AVOption *opt = stream_options; opt->name; opt++)
+        if (option_is_disposition(opt) && !strcmp(disp, opt->name))
+            return opt->default_val.i64;
+    return AVERROR(EINVAL);
+}
+
+const char *av_disposition_to_string(int disposition)
+{
+    int val;
+
+    if (disposition <= 0)
+        return NULL;
+
+    val = 1 << ff_ctz(disposition);
+    for (const AVOption *opt = stream_options; opt->name; opt++)
+        if (option_is_disposition(opt) && opt->default_val.i64 == val)
+            return opt->name;
+
+    return NULL;
 }

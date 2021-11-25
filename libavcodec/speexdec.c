@@ -1221,7 +1221,7 @@ static int sb_decode(AVCodecContext *avctx, void *ptr_st,
     float low_pi_gain[NB_NB_SUBFRAMES];
     float low_exc_rms[NB_NB_SUBFRAMES];
     float interp_qlsp[NB_ORDER];
-    int ret, wideband, dtx = 0;
+    int ret, wideband;
     float *low_innov_alias;
     float qlsp[NB_ORDER];
     float ak[NB_ORDER];
@@ -1254,11 +1254,6 @@ static int sb_decode(AVCodecContext *avctx, void *ptr_st,
 
     /* If null mode (no transmission), just set a couple things to zero */
     if (st->submodes[st->submodeID] == NULL) {
-        if (dtx) {
-            //sb_decode_lost(st, out, 1);
-            return 0;
-        }
-
         for (int i = 0; i < st->frame_size; i++)
             out[st->frame_size + i] = 1e-15f;
 
@@ -1428,7 +1423,9 @@ static int parse_speex_extradata(AVCodecContext *avctx,
         return AVERROR_INVALIDDATA;
     s->vbr = bytestream_get_le32(&buf);
     s->frames_per_packet = bytestream_get_le32(&buf);
-    if (s->frames_per_packet <= 0)
+    if (s->frames_per_packet <= 0 ||
+        s->frames_per_packet > 64 ||
+        s->frames_per_packet >= INT32_MAX / s->nb_channels / s->frame_size)
         return AVERROR_INVALIDDATA;
     s->extra_headers = bytestream_get_le32(&buf);
 

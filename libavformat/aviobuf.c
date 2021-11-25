@@ -22,6 +22,7 @@
 #include "libavutil/bprint.h"
 #include "libavutil/crc.h"
 #include "libavutil/dict.h"
+#include "libavutil/internal.h"
 #include "libavutil/intreadwrite.h"
 #include "libavutil/log.h"
 #include "libavutil/opt.h"
@@ -124,7 +125,11 @@ void ffio_init_context(FFIOContext *ctx,
     ctx->current_type        = AVIO_DATA_MARKER_UNKNOWN;
     ctx->last_time           = AV_NOPTS_VALUE;
     ctx->short_seek_get      = NULL;
+#if FF_API_AVIOCONTEXT_WRITTEN
+FF_DISABLE_DEPRECATION_WARNINGS
     s->written               = 0;
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
 }
 
 AVIOContext *avio_alloc_context(
@@ -164,8 +169,17 @@ static void writeout(AVIOContext *s, const uint8_t *data, int len)
         if (ret < 0) {
             s->error = ret;
         } else {
-            if (s->pos + len > s->written)
-                s->written = s->pos + len;
+            ctx->bytes_written += len;
+            s->bytes_written = ctx->bytes_written;
+
+            if (s->pos + len > ctx->written_output_size) {
+                ctx->written_output_size = s->pos + len;
+#if FF_API_AVIOCONTEXT_WRITTEN
+FF_DISABLE_DEPRECATION_WARNINGS
+                s->written = ctx->written_output_size;
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
+            }
         }
     }
     if (ctx->current_type == AVIO_DATA_MARKER_SYNC_POINT ||
@@ -337,13 +351,14 @@ int64_t avio_skip(AVIOContext *s, int64_t offset)
 
 int64_t avio_size(AVIOContext *s)
 {
+    FFIOContext *const ctx = ffiocontext(s);
     int64_t size;
 
     if (!s)
         return AVERROR(EINVAL);
 
-    if (s->written)
-        return s->written;
+    if (ctx->written_output_size)
+        return ctx->written_output_size;
 
     if (!s->seek)
         return AVERROR(ENOSYS);
@@ -572,6 +587,7 @@ static void fill_buffer(AVIOContext *s)
         s->buf_ptr = dst;
         s->buf_end = dst + len;
         ffiocontext(s)->bytes_read += len;
+        s->bytes_read = ffiocontext(s)->bytes_read;
     }
 }
 
@@ -645,6 +661,7 @@ int avio_read(AVIOContext *s, unsigned char *buf, int size)
                 } else {
                     s->pos += len;
                     ffiocontext(s)->bytes_read += len;
+                    s->bytes_read = ffiocontext(s)->bytes_read;
                     size -= len;
                     buf += len;
                     // reset the buffer
@@ -1224,8 +1241,9 @@ int avio_close(AVIOContext *s)
 
     av_freep(&s->buffer);
     if (s->write_flag)
-        av_log(s, AV_LOG_VERBOSE, "Statistics: %d seeks, %d writeouts\n",
-               ctx->seek_count, ctx->writeout_count);
+        av_log(s, AV_LOG_VERBOSE,
+               "Statistics: %"PRId64" bytes written, %d seeks, %d writeouts\n",
+               ctx->bytes_written, ctx->seek_count, ctx->writeout_count);
     else
         av_log(s, AV_LOG_VERBOSE, "Statistics: %"PRId64" bytes read, %d seeks\n",
                ctx->bytes_read, ctx->seek_count);

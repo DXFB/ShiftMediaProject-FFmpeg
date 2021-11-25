@@ -235,8 +235,6 @@ static AVBufferRef *qsv_pool_alloc(void *opaque, size_t size)
 
     if (s->nb_surfaces_used < hwctx->nb_surfaces) {
         s->nb_surfaces_used++;
-        av_buffer_create((uint8_t*)(s->handle_pairs_internal + s->nb_surfaces_used - 1),
-                                sizeof(*s->handle_pairs_internal), qsv_pool_release_dummy, NULL, 0);
         return av_buffer_create((uint8_t*)(s->surfaces_internal + s->nb_surfaces_used - 1),
                                 sizeof(*hwctx->surfaces), qsv_pool_release_dummy, NULL, 0);
     }
@@ -1465,10 +1463,10 @@ static int qsv_device_create(AVHWDeviceContext *ctx, const char *device,
 
     e = av_dict_get(opts, "child_device_type", NULL, 0);
     if (e) {
-        child_device_type = av_hwdevice_find_type_by_name(e ? e->value : NULL);
+        child_device_type = av_hwdevice_find_type_by_name(e->value);
         if (child_device_type == AV_HWDEVICE_TYPE_NONE) {
             av_log(ctx, AV_LOG_ERROR, "Unknown child device type "
-                   "\"%s\".\n", e ? e->value : NULL);
+                   "\"%s\".\n", e->value);
             return AVERROR(EINVAL);
         }
     } else if (CONFIG_VAAPI) {

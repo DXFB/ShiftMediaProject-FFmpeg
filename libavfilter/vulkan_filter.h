@@ -16,37 +16,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVFILTER_GLSLANG_H
-#define AVFILTER_GLSLANG_H
+#ifndef AVFILTER_VULKAN_FILTER_H
+#define AVFILTER_VULKAN_FILTER_H
 
-#include <stdlib.h>
+#include "avfilter.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "vulkan.h"
 
-int glslang_init(void);
-void glslang_uninit(void);
+/**
+ * General lavfi IO functions
+ */
+int  ff_vk_filter_init                 (AVFilterContext *avctx);
+int  ff_vk_filter_config_input         (AVFilterLink   *inlink);
+int  ff_vk_filter_config_output        (AVFilterLink  *outlink);
+int  ff_vk_filter_config_output_inplace(AVFilterLink  *outlink);
 
-typedef struct GLSlangResult {
-    int rval;
-    char *error_msg;
-
-    void *data; /* Shader data or NULL */
-    size_t size;
-} GLSlangResult;
-
-enum GLSlangStage {
-    GLSLANG_VERTEX,
-    GLSLANG_FRAGMENT,
-    GLSLANG_COMPUTE,
-};
-
-/* Compile GLSL into a SPIRV stream, if possible */
-GLSlangResult *glslang_compile(const char *glsl, enum GLSlangStage stage);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* AVFILTER_GLSLANG_H */
+#endif /* AVFILTER_VULKAN_FILTER_H */

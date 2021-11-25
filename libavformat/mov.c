@@ -77,7 +77,7 @@ typedef struct MOVParseTableEntry {
 
 static int mov_read_default(MOVContext *c, AVIOContext *pb, MOVAtom atom);
 static int mov_read_mfra(MOVContext *c, AVIOContext *f);
-static int64_t add_ctts_entry(MOVStts** ctts_data, unsigned int* ctts_count, unsigned int* allocated_size,
+static int64_t add_ctts_entry(MOVCtts** ctts_data, unsigned int* ctts_count, unsigned int* allocated_size,
                               int count, int duration);
 
 static int mov_metadata_track_or_disc_number(MOVContext *c, AVIOContext *pb,
@@ -2938,7 +2938,7 @@ static int mov_read_stts(MOVContext *c, AVIOContext *pb, MOVAtom atom)
         return AVERROR(ENOMEM);
 
     for (i = 0; i < entries && !pb->eof_reached; i++) {
-        int sample_duration;
+        unsigned int sample_duration;
         unsigned int sample_count;
         unsigned int min_entries = FFMIN(FFMAX(i + 1, 1024 * 1024), entries);
         MOVStts *stts_data = av_fast_realloc(sc->stts_data, &alloc_size,
@@ -3191,7 +3191,7 @@ static int get_edit_list_entry(MOVContext *mov,
 static int find_prev_closest_index(AVStream *st,
                                    AVIndexEntry *e_old,
                                    int nb_old,
-                                   MOVStts* ctts_data,
+                                   MOVCtts* ctts_data,
                                    int64_t ctts_count,
                                    int64_t timestamp_pts,
                                    int flag,
@@ -3342,17 +3342,17 @@ static void fix_index_entry_timestamps(AVStream* st, int end_index, int64_t end_
  * Append a new ctts entry to ctts_data.
  * Returns the new ctts_count if successful, else returns -1.
  */
-static int64_t add_ctts_entry(MOVStts** ctts_data, unsigned int* ctts_count, unsigned int* allocated_size,
+static int64_t add_ctts_entry(MOVCtts** ctts_data, unsigned int* ctts_count, unsigned int* allocated_size,
                               int count, int duration)
 {
-    MOVStts *ctts_buf_new;
-    const size_t min_size_needed = (*ctts_count + 1) * sizeof(MOVStts);
+    MOVCtts *ctts_buf_new;
+    const size_t min_size_needed = (*ctts_count + 1) * sizeof(MOVCtts);
     const size_t requested_size =
         min_size_needed > *allocated_size ?
         FFMAX(min_size_needed, 2 * (*allocated_size)) :
         min_size_needed;
 
-    if ((unsigned)(*ctts_count) >= UINT_MAX / sizeof(MOVStts) - 1)
+    if ((unsigned)(*ctts_count) >= UINT_MAX / sizeof(MOVCtts) - 1)
         return -1;
 
     ctts_buf_new = av_fast_realloc(*ctts_data, allocated_size, requested_size);
@@ -3486,7 +3486,7 @@ static void mov_fix_index(MOVContext *mov, AVStream *st)
     int nb_old = sti->nb_index_entries;
     const AVIndexEntry *e_old_end = e_old + nb_old;
     const AVIndexEntry *current = NULL;
-    MOVStts *ctts_data_old = msc->ctts_data;
+    MOVCtts *ctts_data_old = msc->ctts_data;
     int64_t ctts_index_old = 0;
     int64_t ctts_sample_old = 0;
     int64_t ctts_count_old = msc->ctts_count;
@@ -3793,7 +3793,7 @@ static void mov_build_index(MOVContext *mov, AVStream *st)
     unsigned int stps_index = 0;
     unsigned int i, j;
     uint64_t stream_size = 0;
-    MOVStts *ctts_data_old = sc->ctts_data;
+    MOVCtts *ctts_data_old = sc->ctts_data;
     unsigned int ctts_count_old = sc->ctts_count;
 
     if (sc->elst_count) {
@@ -4754,7 +4754,7 @@ static int mov_read_trun(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     AVStream *st = NULL;
     FFStream *sti = NULL;
     MOVStreamContext *sc;
-    MOVStts *ctts_data;
+    MOVCtts *ctts_data;
     uint64_t offset;
     int64_t dts, pts = AV_NOPTS_VALUE;
     int data_offset = 0;
@@ -4828,20 +4828,34 @@ static int mov_read_trun(MOVContext *c, AVIOContext *pb, MOVAtom atom)
             dts = frag_stream_info->first_tfra_pts;
             av_log(c->fc, AV_LOG_DEBUG, "found mfra time %"PRId64
                     ", using it for dts\n", pts);
-        } else if (frag_stream_info->sidx_pts != AV_NOPTS_VALUE && !c->use_tfdt) {
-            // FIXME: sidx earliest_presentation_time is *PTS*, s.b.
-            // pts = frag_stream_info->sidx_pts;
-            dts = frag_stream_info->sidx_pts - sc->time_offset;
-            av_log(c->fc, AV_LOG_DEBUG, "found sidx time %"PRId64
-                    ", using it for pts\n", pts);
-        } else if (frag_stream_info->tfdt_dts != AV_NOPTS_VALUE) {
-            dts = frag_stream_info->tfdt_dts - sc->time_offset;
-            av_log(c->fc, AV_LOG_DEBUG, "found tfdt time %"PRId64
-                    ", using it for dts\n", dts);
         } else {
-            dts = sc->track_end - sc->time_offset;
-            av_log(c->fc, AV_LOG_DEBUG, "found track end time %"PRId64
-                    ", using it for dts\n", dts);
+            int has_tfdt = frag_stream_info->tfdt_dts != AV_NOPTS_VALUE;
+            int has_sidx = frag_stream_info->sidx_pts != AV_NOPTS_VALUE;
+            int fallback_tfdt = !c->use_tfdt && !has_sidx && has_tfdt;
+            int fallback_sidx =  c->use_tfdt && !has_tfdt && has_sidx;
+
+            if (fallback_sidx) {
+                av_log(c->fc, AV_LOG_DEBUG, "use_tfdt set but no tfdt found, using sidx instead\n");
+            }
+            if (fallback_tfdt) {
+                av_log(c->fc, AV_LOG_DEBUG, "use_tfdt not set but no sidx found, using tfdt instead\n");
+            }
+
+            if (has_tfdt && c->use_tfdt || fallback_tfdt) {
+                dts = frag_stream_info->tfdt_dts - sc->time_offset;
+                av_log(c->fc, AV_LOG_DEBUG, "found tfdt time %"PRId64
+                        ", using it for dts\n", dts);
+            } else if (has_sidx && !c->use_tfdt || fallback_sidx) {
+                // FIXME: sidx earliest_presentation_time is *PTS*, s.b.
+                // pts = frag_stream_info->sidx_pts;
+                dts = frag_stream_info->sidx_pts - sc->time_offset;
+                av_log(c->fc, AV_LOG_DEBUG, "found sidx time %"PRId64
+                        ", using it for pts\n", pts);
+            } else {
+                dts = sc->track_end - sc->time_offset;
+                av_log(c->fc, AV_LOG_DEBUG, "found track end time %"PRId64
+                        ", using it for dts\n", dts);
+            }
         }
     } else {
         dts = sc->track_end - sc->time_offset;
@@ -7074,7 +7088,7 @@ static int mov_read_dvcc_dvvc(MOVContext *c, AVIOContext *pb, MOVAtom atom)
         return ret;
     }
 
-    av_log(c, AV_LOG_TRACE, "DOVI in dvcC/dvvC box, version: %d.%d, profile: %d, level: %d, "
+    av_log(c, AV_LOG_TRACE, "DOVI in dvcC/dvvC/dvwC box, version: %d.%d, profile: %d, level: %d, "
            "rpu flag: %d, el flag: %d, bl flag: %d, compatibility id: %d\n",
            dovi->dv_version_major, dovi->dv_version_minor,
            dovi->dv_profile, dovi->dv_level,
@@ -7273,6 +7287,7 @@ static const MOVParseTableEntry mov_default_parse_table[] = {
 { MKTAG('c','l','l','i'), mov_read_clli },
 { MKTAG('d','v','c','C'), mov_read_dvcc_dvvc },
 { MKTAG('d','v','v','C'), mov_read_dvcc_dvvc },
+{ MKTAG('d','v','w','C'), mov_read_dvcc_dvvc },
 { MKTAG('k','i','n','d'), mov_read_kind },
 { 0, NULL }
 };
@@ -7989,12 +8004,15 @@ static int mov_read_header(AVFormatContext *s)
             AVStream *st = s->streams[i];
             MOVStreamContext *sc = st->priv_data;
             if (st->duration > 0) {
-                if (sc->data_size > INT64_MAX / sc->time_scale / 8) {
-                    av_log(s, AV_LOG_ERROR, "Overflow during bit rate calculation %"PRId64" * 8 * %d\n",
+                /* Akin to sc->data_size * 8 * sc->time_scale / st->duration but accounting for overflows. */
+                st->codecpar->bit_rate = av_rescale(sc->data_size, ((int64_t) sc->time_scale) * 8, st->duration);
+                if (st->codecpar->bit_rate == INT64_MIN) {
+                    av_log(s, AV_LOG_WARNING, "Overflow during bit rate calculation %"PRId64" * 8 * %d\n",
                            sc->data_size, sc->time_scale);
-                    return AVERROR_INVALIDDATA;
+                    st->codecpar->bit_rate = 0;
+                    if (s->error_recognition & AV_EF_EXPLODE)
+                        return AVERROR_INVALIDDATA;
                 }
-                st->codecpar->bit_rate = sc->data_size * 8 * sc->time_scale / st->duration;
             }
         }
     }
@@ -8004,13 +8022,15 @@ static int mov_read_header(AVFormatContext *s)
             AVStream *st = s->streams[i];
             MOVStreamContext *sc = st->priv_data;
             if (sc->duration_for_fps > 0) {
-                if (sc->data_size > INT64_MAX / sc->time_scale / 8) {
-                    av_log(s, AV_LOG_ERROR, "Overflow during bit rate calculation %"PRId64" * 8 * %d\n",
+                /* Akin to sc->data_size * 8 * sc->time_scale / sc->duration_for_fps but accounting for overflows. */
+                st->codecpar->bit_rate = av_rescale(sc->data_size, ((int64_t) sc->time_scale) * 8, sc->duration_for_fps);
+                if (st->codecpar->bit_rate == INT64_MIN) {
+                    av_log(s, AV_LOG_WARNING, "Overflow during bit rate calculation %"PRId64" * 8 * %d\n",
                            sc->data_size, sc->time_scale);
-                    return AVERROR_INVALIDDATA;
+                    st->codecpar->bit_rate = 0;
+                    if (s->error_recognition & AV_EF_EXPLODE)
+                        return AVERROR_INVALIDDATA;
                 }
-                st->codecpar->bit_rate = sc->data_size * 8 * sc->time_scale /
-                    sc->duration_for_fps;
             }
         }
     }
@@ -8527,7 +8547,7 @@ static const AVOption mov_options[] = {
         FLAGS, "use_mfra_for" },
     {"pts", "pts", 0, AV_OPT_TYPE_CONST, {.i64 = FF_MOV_FLAG_MFRA_PTS}, 0, 0,
         FLAGS, "use_mfra_for" },
-    {"use_tfdt", "use tfdt for fragment timestamps", OFFSET(use_tfdt), AV_OPT_TYPE_BOOL, {.i64 = 0},
+    {"use_tfdt", "use tfdt for fragment timestamps", OFFSET(use_tfdt), AV_OPT_TYPE_BOOL, {.i64 = 1},
         0, 1, FLAGS},
     { "export_all", "Export unrecognized metadata entries", OFFSET(export_all),
         AV_OPT_TYPE_BOOL, { .i64 = 0 }, 0, 1, .flags = FLAGS },

@@ -52,6 +52,11 @@ typedef struct FFIOContext {
     int64_t bytes_read;
 
     /**
+     * Bytes written statistic
+     */
+    int64_t bytes_written;
+
+    /**
      * seek statistic
      */
     int seek_count;
@@ -66,6 +71,12 @@ typedef struct FFIOContext {
      * used after probing to ensure seekback and to reset the buffer size
      */
     int orig_buffer_size;
+
+    /**
+     * Written output size
+     * is updated each time a successful writeout ends up further position-wise
+     */
+    int64_t written_output_size;
 } FFIOContext;
 
 static av_always_inline FFIOContext *ffiocontext(AVIOContext *ctx)

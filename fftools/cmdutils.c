@@ -1754,7 +1754,7 @@ int show_pix_fmts(void *optctx, const char *opt, const char *arg)
            "..H.. = Hardware accelerated format\n"
            "...P. = Paletted format\n"
            "....B = Bitstream format\n"
-           "FLAGS NAME            NB_COMPONENTS BITS_PER_PIXEL\n"
+           "FLAGS NAME            NB_COMPONENTS BITS_PER_PIXEL BIT_DEPTHS\n"
            "-----\n");
 
 #if !CONFIG_SWSCALE
@@ -1764,7 +1764,7 @@ int show_pix_fmts(void *optctx, const char *opt, const char *arg)
 
     while ((pix_desc = av_pix_fmt_desc_next(pix_desc))) {
         enum AVPixelFormat av_unused pix_fmt = av_pix_fmt_desc_get_id(pix_desc);
-        printf("%c%c%c%c%c %-16s       %d            %2d\n",
+        printf("%c%c%c%c%c %-16s       %d            %3d      %d",
                sws_isSupportedInput (pix_fmt)              ? 'I' : '.',
                sws_isSupportedOutput(pix_fmt)              ? 'O' : '.',
                pix_desc->flags & AV_PIX_FMT_FLAG_HWACCEL   ? 'H' : '.',
@@ -1772,7 +1772,12 @@ int show_pix_fmts(void *optctx, const char *opt, const char *arg)
                pix_desc->flags & AV_PIX_FMT_FLAG_BITSTREAM ? 'B' : '.',
                pix_desc->name,
                pix_desc->nb_components,
-               av_get_bits_per_pixel(pix_desc));
+               av_get_bits_per_pixel(pix_desc),
+               pix_desc->comp[0].depth);
+
+        for (unsigned i = 1; i < pix_desc->nb_components; i++)
+            printf("-%d", pix_desc->comp[i].depth);
+        printf("\n");
     }
     return 0;
 }
@@ -1812,6 +1817,16 @@ int show_sample_fmts(void *optctx, const char *opt, const char *arg)
     char fmt_str[128];
     for (i = -1; i < AV_SAMPLE_FMT_NB; i++)
         printf("%s\n", av_get_sample_fmt_string(fmt_str, sizeof(fmt_str), i));
+    return 0;
+}
+
+int show_dispositions(void *optctx, const char *opt, const char *arg)
+{
+    for (int i = 0; i < 32; i++) {
+        const char *str = av_disposition_to_string(1 << i);
+        if (str)
+            printf("%s\n", str);
+    }
     return 0;
 }
 
@@ -2106,7 +2121,7 @@ AVDictionary *filter_codec_opts(AVDictionary *opts, enum AVCodecID codec_id,
                                 AVFormatContext *s, AVStream *st, const AVCodec *codec)
 {
     AVDictionary    *ret = NULL;
-    AVDictionaryEntry *t = NULL;
+    const AVDictionaryEntry *t = NULL;
     int            flags = s->oformat ? AV_OPT_FLAG_ENCODING_PARAM
                                       : AV_OPT_FLAG_DECODING_PARAM;
     char          prefix = 0;

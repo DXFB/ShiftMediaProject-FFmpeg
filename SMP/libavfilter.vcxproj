@@ -81,6 +81,7 @@
     <NASM Include="..\libavfilter\x86\vf_lut3d.asm" />
     <NASM Include="..\libavfilter\x86\vf_maskedclamp.asm" />
     <NASM Include="..\libavfilter\x86\vf_maskedmerge.asm" />
+    <NASM Include="..\libavfilter\x86\vf_nlmeans.asm" />
     <NASM Include="..\libavfilter\x86\vf_overlay.asm" />
     <NASM Include="..\libavfilter\x86\vf_pp7.asm" />
     <NASM Include="..\libavfilter\x86\vf_psnr.asm" />
@@ -324,6 +325,7 @@
     <ClCompile Include="..\libavfilter\vf_stack.c" />
     <ClCompile Include="..\libavfilter\vf_hsvkey.c" />
     <ClCompile Include="..\libavfilter\vf_hue.c" />
+    <ClCompile Include="..\libavfilter\vf_huesaturation.c" />
     <ClCompile Include="..\libavfilter\vf_hwdownload.c" />
     <ClCompile Include="..\libavfilter\vf_hwmap.c" />
     <ClCompile Include="..\libavfilter\vf_hwupload_cuda.c" />
@@ -352,7 +354,7 @@
     <ClCompile Include="..\libavfilter\vf_monochrome.c" />
     <ClCompile Include="..\libavfilter\vf_morpho.c" />
     <ClCompile Include="..\libavfilter\vf_mpdecimate.c" />
-    <ClCompile Include="..\libavfilter\vf_nlmeans.c" />
+    <ClCompile Include="..\libavfilter\vf_negate.c" />
     <ClCompile Include="..\libavfilter\vf_nnedi.c" />
     <ClCompile Include="..\libavfilter\vf_noise.c" />
     <ClCompile Include="..\libavfilter\vf_normalize.c" />
@@ -482,6 +484,7 @@
     <ClCompile Include="..\libavfilter\x86\vf_lut3d_init.c" />
     <ClCompile Include="..\libavfilter\x86\vf_maskedclamp_init.c" />
     <ClCompile Include="..\libavfilter\x86\vf_maskedmerge_init.c" />
+    <ClCompile Include="..\libavfilter\x86\vf_nlmeans_init.c" />
     <ClCompile Include="..\libavfilter\x86\vf_overlay_init.c" />
     <ClCompile Include="..\libavfilter\x86\vf_pp7_init.c" />
     <ClCompile Include="..\libavfilter\x86\vf_psnr_init.c" />
@@ -560,6 +563,9 @@
     </ClCompile>
     <ClCompile Include="..\libavfilter\vf_maskedmerge.c">
       <ObjectFileName>$(IntDir)\libavfilter_vf_maskedmerge.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_nlmeans.c">
+      <ObjectFileName>$(IntDir)\libavfilter_vf_nlmeans.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vf_overlay.c">
       <ObjectFileName>$(IntDir)\libavfilter_vf_overlay.obj</ObjectFileName>

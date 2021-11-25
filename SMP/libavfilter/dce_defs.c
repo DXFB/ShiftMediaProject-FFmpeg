@@ -37,6 +37,18 @@ void ff_atadenoise_filter_row8_sse4(const uint8_t *src, uint8_t *dst,
                                     int thra, int thrb, const float *weights) {return;}
 #endif
 #if !(ARCH_X86_64)
+void ff_compute_weights_line_avx2(const uint32_t *const iia,
+                                  const uint32_t *const iib,
+                                  const uint32_t *const iid,
+                                  const uint32_t *const iie,
+                                  const uint8_t *const src,
+                                  float *total_weight,
+                                  float *sum,
+                                  const float *const weight_lut,
+                                  int max_meaningful_diff,
+                                  int startx, int endx) {return;}
+#endif
+#if !(ARCH_X86_64)
 void ff_multiply3x3_sse2(int16_t *data[3], ptrdiff_t stride, int w, int h,
                          const int16_t coeff[3][3][8]) {return;}
 #endif

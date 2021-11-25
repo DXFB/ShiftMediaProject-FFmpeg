@@ -147,9 +147,6 @@ EXPORTS
     avpriv_codec_get_cap_skip_frame_fill_param
     avpriv_dca_convert_bitstream
     avpriv_dca_parse_core_frame_header
-    avpriv_dnxhd_get_frame_size
-    avpriv_dnxhd_get_hr_frame_size
-    avpriv_dnxhd_get_interlaced
     avpriv_elbg_do
     avpriv_elbg_free
     avpriv_exif_decode_ifd

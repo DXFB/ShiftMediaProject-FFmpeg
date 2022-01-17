@@ -187,6 +187,7 @@
     <ClCompile Include="..\libavformat\bink.c" />
     <ClCompile Include="..\libavformat\binka.c" />
     <ClCompile Include="..\libavformat\bit.c" />
+    <ClCompile Include="..\libavformat\rawvideodec.c" />
     <ClCompile Include="..\libavformat\bmv.c" />
     <ClCompile Include="..\libavformat\boadec.c" />
     <ClCompile Include="..\libavformat\brstm.c" />
@@ -284,6 +285,8 @@
     <ClCompile Include="..\libavformat\img2enc.c" />
     <ClCompile Include="..\libavformat\img2_alias_pix.c" />
     <ClCompile Include="..\libavformat\img2_brender_pix.c" />
+    <ClCompile Include="..\libavformat\imfdec.c" />
+    <ClCompile Include="..\libavformat\imf_cpl.c" />
     <ClCompile Include="..\libavformat\ingenientdec.c" />
     <ClCompile Include="..\libavformat\ipmovie.c" />
     <ClCompile Include="..\libavformat\ipudec.c" />
@@ -314,6 +317,7 @@
     <ClCompile Include="..\libavformat\matroskadec.c" />
     <ClCompile Include="..\libavformat\matroska.c" />
     <ClCompile Include="..\libavformat\qtpalette.c" />
+    <ClCompile Include="..\libavformat\dovi_isom.c" />
     <ClCompile Include="..\libavformat\matroskaenc.c" />
     <ClCompile Include="..\libavformat\av1.c" />
     <ClCompile Include="..\libavformat\hevc.c" />
@@ -394,7 +398,6 @@
     <ClCompile Include="..\libavformat\pvfdec.c" />
     <ClCompile Include="..\libavformat\qcp.c" />
     <ClCompile Include="..\libavformat\r3d.c" />
-    <ClCompile Include="..\libavformat\rawvideodec.c" />
     <ClCompile Include="..\libavformat\realtextdec.c" />
     <ClCompile Include="..\libavformat\redspark.c" />
     <ClCompile Include="..\libavformat\rl2.c" />
@@ -417,6 +420,7 @@
     <ClCompile Include="..\libavformat\rtpenc_jpeg.c" />
     <ClCompile Include="..\libavformat\rtpenc_mpv.c" />
     <ClCompile Include="..\libavformat\rtpenc.c" />
+    <ClCompile Include="..\libavformat\rtpenc_rfc4175.c" />
     <ClCompile Include="..\libavformat\rtpenc_vc2hq.c" />
     <ClCompile Include="..\libavformat\rtpenc_vp8.c" />
     <ClCompile Include="..\libavformat\rtpenc_vp9.c" />
@@ -435,6 +439,7 @@
     <ClCompile Include="..\libavformat\sbgdec.c" />
     <ClCompile Include="..\libavformat\sccdec.c" />
     <ClCompile Include="..\libavformat\sccenc.c" />
+    <ClCompile Include="..\libavformat\scd.c" />
     <ClCompile Include="..\libavformat\sdr2.c" />
     <ClCompile Include="..\libavformat\sdsdec.c" />
     <ClCompile Include="..\libavformat\sdxdec.c" />
@@ -484,7 +489,6 @@
     <ClCompile Include="..\libavformat\ty.c" />
     <ClCompile Include="..\libavformat\txd.c" />
     <ClCompile Include="..\libavformat\uncodedframecrcenc.c" />
-    <ClCompile Include="..\libavformat\v210.c" />
     <ClCompile Include="..\libavformat\vag.c" />
     <ClCompile Include="..\libavformat\vc1dec.c" />
     <ClCompile Include="..\libavformat\vc1test.c" />
@@ -558,8 +562,14 @@
     <ClCompile Include="..\libavformat\tls_gnutls.c" />
     <ClCompile Include="..\libavformat\udp.c" />
     <ClCompile Include="..\libavformat\libssh.c" />
+    <ClCompile Include="libavformat\ac3_channel_layout_tab_wrap.c" />
+    <ClCompile Include="libavformat\dca_sample_rate_tab_wrap.c" />
     <ClCompile Include="libavformat\golomb_tab_wrap.c" />
+    <ClCompile Include="libavformat\jpegtables_wrap.c" />
     <ClCompile Include="libavformat\log2_tab_wrap.c" />
+    <ClCompile Include="libavformat\mpeg4audio_sample_rates_wrap.c" />
+    <ClCompile Include="libavformat\mpegaudiotabs_wrap.c" />
+    <ClCompile Include="libavformat\to_upper4_wrap.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\libavformat\avformat.h" />
@@ -579,6 +589,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='17.0'">v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -588,6 +599,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='17.0'">v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'" Label="Configuration">
@@ -597,6 +609,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='17.0'">v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|x64'" Label="Configuration">
@@ -606,6 +619,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='17.0'">v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -615,6 +629,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='17.0'">v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -624,6 +639,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='17.0'">v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'" Label="Configuration">
@@ -633,6 +649,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='17.0'">v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|x64'" Label="Configuration">
@@ -642,6 +659,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='17.0'">v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLLStaticDeps|Win32'" Label="Configuration">
@@ -651,6 +669,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='17.0'">v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLLStaticDeps|x64'" Label="Configuration">
@@ -660,6 +679,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='16.0'">v142</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='17.0'">v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />

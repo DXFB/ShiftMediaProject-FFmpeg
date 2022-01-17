@@ -1,5 +1,5 @@
 diff --git a/libavcodec/libx264.c b/libavcodec/libx264.c
-index 5f62c7b1d8..f8aa7a5190 100644
+index c5e0231b12..05ef8d6126 100644
 --- a/libavcodec/libx264.c
 +++ b/libavcodec/libx264.c
 @@ -34,10 +34,6 @@

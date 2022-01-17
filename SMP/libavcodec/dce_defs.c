@@ -168,22 +168,28 @@ void ff_h264_pred_init_aarch64(H264PredContext *h, int codec_id,
                                const int chroma_format_idc) {return;}
 void ff_h264_pred_init_arm(H264PredContext *h, int codec_id,
                            const int bit_depth, const int chroma_format_idc) {return;}
+void ff_h264_pred_init_loongarch(H264PredContext *h, int codec_id,
+                                 const int bit_depth, const int chroma_format_idc) {return;}
 void ff_h264_pred_init_mips(H264PredContext *h, int codec_id,
                             const int bit_depth, const int chroma_format_idc) {return;}
 void ff_h264chroma_init_aarch64(H264ChromaContext *c, int bit_depth) {return;}
 void ff_h264chroma_init_arm(H264ChromaContext *c, int bit_depth) {return;}
+void ff_h264chroma_init_loongarch(H264ChromaContext *c, int bit_depth) {return;}
 void ff_h264chroma_init_mips(H264ChromaContext *c, int bit_depth) {return;}
 void ff_h264chroma_init_ppc(H264ChromaContext *c, int bit_depth) {return;}
 void ff_h264dsp_init_aarch64(H264DSPContext *c, const int bit_depth,
                              const int chroma_format_idc) {return;}
 void ff_h264dsp_init_arm(H264DSPContext *c, const int bit_depth,
                          const int chroma_format_idc) {return;}
+void ff_h264dsp_init_loongarch(H264DSPContext *c, const int bit_depth,
+                               const int chroma_format_idc) {return;}
 void ff_h264dsp_init_mips(H264DSPContext *c, const int bit_depth,
                           const int chroma_format_idc) {return;}
 void ff_h264dsp_init_ppc(H264DSPContext *c, const int bit_depth,
                          const int chroma_format_idc) {return;}
 void ff_h264qpel_init_aarch64(H264QpelContext *c, int bit_depth) {return;}
 void ff_h264qpel_init_arm(H264QpelContext *c, int bit_depth) {return;}
+void ff_h264qpel_init_loongarch(H264QpelContext *c, int bit_depth) {return;}
 void ff_h264qpel_init_mips(H264QpelContext *c, int bit_depth) {return;}
 void ff_h264qpel_init_ppc(H264QpelContext *c, int bit_depth) {return;}
 void ff_hevc_dsp_init_aarch64(HEVCDSPContext *c, const int bit_depth) {return;}
@@ -3440,6 +3446,7 @@ void ff_hevc_v_loop_filter_luma_8_ssse3(uint8_t *pix, ptrdiff_t stride, int beta
 void ff_hpeldsp_init_aarch64(HpelDSPContext *c, int flags) {return;}
 void ff_hpeldsp_init_alpha(HpelDSPContext *c, int flags) {return;}
 void ff_hpeldsp_init_arm(HpelDSPContext *c, int flags) {return;}
+void ff_hpeldsp_init_loongarch(HpelDSPContext *c, int flags) {return;}
 void ff_hpeldsp_init_mips(HpelDSPContext *c, int flags) {return;}
 void ff_hpeldsp_init_ppc(HpelDSPContext *c, int flags) {return;}
 void ff_idctdsp_init_aarch64(IDCTDSPContext *c, AVCodecContext *avctx,
@@ -3448,6 +3455,8 @@ void ff_idctdsp_init_alpha(IDCTDSPContext *c, AVCodecContext *avctx,
                            unsigned high_bit_depth) {return;}
 void ff_idctdsp_init_arm(IDCTDSPContext *c, AVCodecContext *avctx,
                          unsigned high_bit_depth) {return;}
+void ff_idctdsp_init_loongarch(IDCTDSPContext *c, AVCodecContext *avctx,
+                               unsigned high_bit_depth) {return;}
 void ff_idctdsp_init_mips(IDCTDSPContext *c, AVCodecContext *avctx,
                           unsigned high_bit_depth) {return;}
 void ff_idctdsp_init_ppc(IDCTDSPContext *c, AVCodecContext *avctx,
@@ -3563,6 +3572,7 @@ void ff_synth_filter_init_aarch64(SynthFilterContext *c) {return;}
 void ff_synth_filter_init_arm(SynthFilterContext *c) {return;}
 void ff_vc1dsp_init_aarch64(VC1DSPContext* dsp) {return;}
 void ff_vc1dsp_init_arm(VC1DSPContext* dsp) {return;}
+void ff_vc1dsp_init_loongarch(VC1DSPContext* dsp) {return;}
 void ff_vc1dsp_init_mips(VC1DSPContext* dsp) {return;}
 #if !(HAVE_6REGS && HAVE_MMX_INLINE)
 void ff_vc1dsp_init_mmx(VC1DSPContext *dsp) {return;}
@@ -3573,6 +3583,7 @@ void ff_vc1dsp_init_mmxext(VC1DSPContext *dsp) {return;}
 void ff_vc1dsp_init_ppc(VC1DSPContext *c) {return;}
 void ff_videodsp_init_aarch64(VideoDSPContext *ctx, int bpc) {return;}
 void ff_videodsp_init_arm(VideoDSPContext *ctx, int bpc) {return;}
+void ff_videodsp_init_loongarch(VideoDSPContext *ctx, int bpc) {return;}
 void ff_videodsp_init_mips(VideoDSPContext *ctx, int bpc) {return;}
 void ff_videodsp_init_ppc(VideoDSPContext *ctx, int bpc) {return;}
 void ff_vorbisdsp_init_aarch64(VorbisDSPContext *dsp) {return;}
@@ -3587,6 +3598,7 @@ void ff_vp78dsp_init_arm(VP8DSPContext *c) {return;}
 void ff_vp78dsp_init_ppc(VP8DSPContext *c) {return;}
 void ff_vp8dsp_init_aarch64(VP8DSPContext *c) {return;}
 void ff_vp8dsp_init_arm(VP8DSPContext *c) {return;}
+void ff_vp8dsp_init_loongarch(VP8DSPContext *c) {return;}
 void ff_vp8dsp_init_mips(VP8DSPContext *c) {return;}
 #if !(ARCH_X86_64)
 void ff_vp9_iadst_iadst_16x16_add_avx2(uint8_t *dst, ptrdiff_t stride, int16_t *block, int eob) {return;}
@@ -3605,6 +3617,7 @@ void ff_vp9_idct_idct_32x32_add_avx2(uint8_t *dst, ptrdiff_t stride, int16_t *bl
 #endif
 void ff_vp9dsp_init_aarch64(VP9DSPContext *dsp, int bpp) {return;}
 void ff_vp9dsp_init_arm(VP9DSPContext *dsp, int bpp) {return;}
+void ff_vp9dsp_init_loongarch(VP9DSPContext *dsp, int bpp) {return;}
 void ff_vp9dsp_init_mips(VP9DSPContext *dsp, int bpp) {return;}
 void ff_wmv2dsp_init_mips(WMV2DSPContext *c) {return;}
 void ff_xvid_idct_init_mips(IDCTDSPContext *c, AVCodecContext *avctx,

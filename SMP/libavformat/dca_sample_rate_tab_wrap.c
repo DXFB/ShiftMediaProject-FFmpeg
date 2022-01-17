@@ -1,4 +1,4 @@
-/** libavutil DCE definitions
+/** dca_sample_rate_tab.c file wrapper for libavformat
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,22 +20,6 @@
  */
 
 #include "config.h"
-#include "stdint.h"
-
-#include "libavutil/float_dsp.h"
-#include "libavutil/cpu_internal.h"
-
-int ff_get_cpu_flags_aarch64(void) {return 0;}
-int ff_get_cpu_flags_arm(void) {return 0;}
-int ff_get_cpu_flags_loongarch(void) {return 0;}
-int ff_get_cpu_flags_mips(void) {return 0;}
-int ff_get_cpu_flags_ppc(void) {return 0;}
-size_t ff_get_cpu_max_align_aarch64(void) {return *(size_t*)(0);}
-size_t ff_get_cpu_max_align_arm(void) {return *(size_t*)(0);}
-size_t ff_get_cpu_max_align_loongarch(void) {return *(size_t*)(0);}
-size_t ff_get_cpu_max_align_mips(void) {return *(size_t*)(0);}
-size_t ff_get_cpu_max_align_ppc(void) {return *(size_t*)(0);}
-void ff_float_dsp_init_aarch64(AVFloatDSPContext *fdsp) {return;}
-void ff_float_dsp_init_arm(AVFloatDSPContext *fdsp) {return;}
-void ff_float_dsp_init_mips(AVFloatDSPContext *fdsp) {return;}
-void ff_float_dsp_init_ppc(AVFloatDSPContext *fdsp, int strict) {return;}
+#if CONFIG_SHARED
+#   include "../../libavformat/dca_sample_rate_tab.c"
+#endif

@@ -1,4 +1,4 @@
-/** reverse.c file wrapper for libavdevice
+/** jpegtables.c file wrapper for libavformat
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,5 +21,5 @@
 
 #include "config.h"
 #if CONFIG_SHARED
-#   include "../../libavdevice/reverse.c"
+#   include "../../libavformat/jpegtables.c"
 #endif

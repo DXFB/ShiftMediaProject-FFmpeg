@@ -29,6 +29,7 @@ static const AVCodec *codec_list[] = {
     &ff_avrp_encoder,
     &ff_avui_encoder,
     &ff_ayuv_encoder,
+    &ff_bitpacked_encoder,
     &ff_bmp_encoder,
     &ff_cfhd_encoder,
     &ff_cinepak_encoder,

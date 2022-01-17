@@ -322,6 +322,7 @@
 #include "libavformat/version.h"
 
 struct AVFormatContext;
+struct AVStream;
 
 struct AVDeviceInfoList;
 struct AVDeviceCapabilitiesQuery;
@@ -462,6 +463,13 @@ typedef struct AVProbeData {
 /// Demuxer will use avio_open, no opened file should be provided by the caller.
 #define AVFMT_NOFILE        0x0001
 #define AVFMT_NEEDNUMBER    0x0002 /**< Needs '%d' in filename. */
+/**
+ * The muxer/demuxer is experimental and should be used with caution.
+ *
+ * - demuxers: will not be selected automatically by probing, must be specified
+ *             explicitly.
+ */
+#define AVFMT_EXPERIMENTAL  0x0004
 #define AVFMT_SHOW_IDS      0x0008 /**< Show format stream IDs numbers. */
 #define AVFMT_GLOBALHEADER  0x0040 /**< Format wants global header. */
 #define AVFMT_NOTIMESTAMPS  0x0080 /**< Format does not need / have any timestamps. */
@@ -623,9 +631,13 @@ typedef struct AVOutputFormat {
     /**
      * Set up any necessary bitstream filtering and extract any extra data needed
      * for the global header.
+     *
+     * @note pkt might have been directly forwarded by a meta-muxer; therefore
+     *       pkt->stream_index as well as the pkt's timebase might be invalid.
      * Return 0 if more packets from this stream must be checked; 1 if not.
      */
-    int (*check_bitstream)(struct AVFormatContext *, const AVPacket *pkt);
+    int (*check_bitstream)(struct AVFormatContext *s, struct AVStream *st,
+                           const AVPacket *pkt);
 } AVOutputFormat;
 /**
  * @}
@@ -1781,6 +1793,19 @@ typedef struct AVFormatContext {
      * - decoding: set by user
      */
     int max_probe_packets;
+
+    /**
+     * A callback for closing the streams opened with AVFormatContext.io_open().
+     *
+     * Using this is preferred over io_close, because this can return an error.
+     * Therefore this callback is used instead of io_close by the generic
+     * libavformat code if io_close is NULL or the default.
+     *
+     * @param s the format context
+     * @param pb IO context to be closed and freed
+     * @return 0 on success, a negative AVERROR code on failure
+     */
+    int (*io_close2)(struct AVFormatContext *s, AVIOContext *pb);
 } AVFormatContext;
 
 /**

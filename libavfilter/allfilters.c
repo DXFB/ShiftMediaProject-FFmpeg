@@ -19,9 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavutil/thread.h"
 #include "avfilter.h"
-#include "config.h"
 
 extern const AVFilter ff_af_abench;
 extern const AVFilter ff_af_acompressor;
@@ -37,6 +35,8 @@ extern const AVFilter ff_af_adecorrelate;
 extern const AVFilter ff_af_adelay;
 extern const AVFilter ff_af_adenorm;
 extern const AVFilter ff_af_aderivative;
+extern const AVFilter ff_af_adynamicequalizer;
+extern const AVFilter ff_af_adynamicsmooth;
 extern const AVFilter ff_af_aecho;
 extern const AVFilter ff_af_aemphasis;
 extern const AVFilter ff_af_aeval;
@@ -62,6 +62,7 @@ extern const AVFilter ff_af_amix;
 extern const AVFilter ff_af_amultiply;
 extern const AVFilter ff_af_anequalizer;
 extern const AVFilter ff_af_anlmdn;
+extern const AVFilter ff_af_anlmf;
 extern const AVFilter ff_af_anlms;
 extern const AVFilter ff_af_anull;
 extern const AVFilter ff_af_apad;
@@ -85,6 +86,7 @@ extern const AVFilter ff_af_asettb;
 extern const AVFilter ff_af_ashowinfo;
 extern const AVFilter ff_af_asidedata;
 extern const AVFilter ff_af_asoftclip;
+extern const AVFilter ff_af_aspectralstats;
 extern const AVFilter ff_af_asplit;
 extern const AVFilter ff_af_asr;
 extern const AVFilter ff_af_astats;
@@ -104,7 +106,6 @@ extern const AVFilter ff_af_bandreject;
 extern const AVFilter ff_af_bass;
 extern const AVFilter ff_af_biquad;
 extern const AVFilter ff_af_bs2b;
-extern const AVFilter ff_vf_chromaber_vulkan;
 extern const AVFilter ff_af_channelmap;
 extern const AVFilter ff_af_channelsplit;
 extern const AVFilter ff_af_chorus;
@@ -180,11 +181,13 @@ extern const AVFilter ff_vf_bitplanenoise;
 extern const AVFilter ff_vf_blackdetect;
 extern const AVFilter ff_vf_blackframe;
 extern const AVFilter ff_vf_blend;
+extern const AVFilter ff_vf_blend_vulkan;
 extern const AVFilter ff_vf_bm3d;
 extern const AVFilter ff_vf_boxblur;
 extern const AVFilter ff_vf_boxblur_opencl;
 extern const AVFilter ff_vf_bwdif;
 extern const AVFilter ff_vf_cas;
+extern const AVFilter ff_vf_chromaber_vulkan;
 extern const AVFilter ff_vf_chromahold;
 extern const AVFilter ff_vf_chromakey;
 extern const AVFilter ff_vf_chromanr;
@@ -263,6 +266,7 @@ extern const AVFilter ff_vf_fieldmatch;
 extern const AVFilter ff_vf_fieldorder;
 extern const AVFilter ff_vf_fillborders;
 extern const AVFilter ff_vf_find_rect;
+extern const AVFilter ff_vf_flip_vulkan;
 extern const AVFilter ff_vf_floodfill;
 extern const AVFilter ff_vf_format;
 extern const AVFilter ff_vf_fps;
@@ -459,6 +463,7 @@ extern const AVFilter ff_vf_transpose;
 extern const AVFilter ff_vf_transpose_npp;
 extern const AVFilter ff_vf_transpose_opencl;
 extern const AVFilter ff_vf_transpose_vaapi;
+extern const AVFilter ff_vf_transpose_vulkan;
 extern const AVFilter ff_vf_trim;
 extern const AVFilter ff_vf_unpremultiply;
 extern const AVFilter ff_vf_unsharp;
@@ -491,6 +496,7 @@ extern const AVFilter ff_vf_xmedian;
 extern const AVFilter ff_vf_xstack;
 extern const AVFilter ff_vf_yadif;
 extern const AVFilter ff_vf_yadif_cuda;
+extern const AVFilter ff_vf_yadif_videotoolbox;
 extern const AVFilter ff_vf_yaepblur;
 extern const AVFilter ff_vf_zmq;
 extern const AVFilter ff_vf_zoompan;

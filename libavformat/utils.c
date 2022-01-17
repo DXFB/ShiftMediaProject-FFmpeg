@@ -239,7 +239,6 @@ int avformat_queue_attached_pictures(AVFormatContext *s)
             }
 
             ret = avpriv_packet_list_put(&si->raw_packet_buffer,
-                                         &si->raw_packet_buffer_end,
                                      &s->streams[i]->attached_pic,
                                      av_packet_ref, 0);
             if (ret < 0)
@@ -300,9 +299,9 @@ int ff_is_intra_only(enum AVCodecID id)
 void ff_flush_packet_queue(AVFormatContext *s)
 {
     FFFormatContext *const si = ffformatcontext(s);
-    avpriv_packet_list_free(&si->parse_queue,       &si->parse_queue_end);
-    avpriv_packet_list_free(&si->packet_buffer,     &si->packet_buffer_end);
-    avpriv_packet_list_free(&si->raw_packet_buffer, &si->raw_packet_buffer_end);
+    avpriv_packet_list_free(&si->parse_queue);
+    avpriv_packet_list_free(&si->packet_buffer);
+    avpriv_packet_list_free(&si->raw_packet_buffer);
 
     si->raw_packet_buffer_size = 0;
 }
@@ -361,7 +360,7 @@ enum AVCodecID ff_codec_get_id(const AVCodecTag *tags, unsigned int tag)
         if (tag == tags[i].tag)
             return tags[i].id;
     for (int i = 0; tags[i].id != AV_CODEC_ID_NONE; i++)
-        if (avpriv_toupper4(tag) == avpriv_toupper4(tags[i].tag))
+        if (ff_toupper4(tag) == ff_toupper4(tags[i].tag))
             return tags[i].id;
     return AV_CODEC_ID_NONE;
 }
@@ -605,6 +604,15 @@ int ff_stream_encode_params_copy(AVStream *dst, const AVStream *src)
     if (ret < 0)
         return ret;
 
+    ret = ff_stream_side_data_copy(dst, src);
+    if (ret < 0)
+        return ret;
+
+    return 0;
+}
+
+int ff_stream_side_data_copy(AVStream *dst, const AVStream *src)
+{
     /* Free existing side data*/
     for (int i = 0; i < dst->nb_side_data; i++)
         av_free(dst->side_data[i].data);
@@ -1151,6 +1159,7 @@ char *ff_data_to_hex(char *buff, const uint8_t *src, int s, int lowercase)
         buff[i * 2]     = hex_table[src[i] >> 4];
         buff[i * 2 + 1] = hex_table[src[i] & 0xF];
     }
+    buff[2 * s] = '\0';
 
     return buff;
 }
@@ -1263,7 +1272,7 @@ void ff_parse_key_value(const char *str, ff_parse_key_val_cb callback_get_buf,
     }
 }
 
-int ff_find_stream_index(AVFormatContext *s, int id)
+int ff_find_stream_index(const AVFormatContext *s, int id)
 {
     for (unsigned i = 0; i < s->nb_streams; i++)
         if (s->streams[i]->id == id)
@@ -1406,8 +1415,9 @@ AVRational av_guess_frame_rate(AVFormatContext *format, AVStream *st, AVFrame *f
  *         0  if st is NOT a matching stream
  *         >0 if st is a matching stream
  */
-static int match_stream_specifier(AVFormatContext *s, AVStream *st,
-                                  const char *spec, const char **indexptr, AVProgram **p)
+static int match_stream_specifier(const AVFormatContext *s, const AVStream *st,
+                                  const char *spec, const char **indexptr,
+                                  const AVProgram **p)
 {
     int match = 1;                      /* Stores if the specifier matches so far. */
     while (*spec) {
@@ -1474,32 +1484,32 @@ static int match_stream_specifier(AVFormatContext *s, AVStream *st,
                 return AVERROR(EINVAL);
             return match && (stream_id == st->id);
         } else if (*spec == 'm' && *(spec + 1) == ':') {
-            AVDictionaryEntry *tag;
+            const AVDictionaryEntry *tag;
             char *key, *val;
             int ret;
 
             if (match) {
-               spec += 2;
-               val = strchr(spec, ':');
+                spec += 2;
+                val = strchr(spec, ':');
 
-               key = val ? av_strndup(spec, val - spec) : av_strdup(spec);
-               if (!key)
-                   return AVERROR(ENOMEM);
+                key = val ? av_strndup(spec, val - spec) : av_strdup(spec);
+                if (!key)
+                    return AVERROR(ENOMEM);
 
-               tag = av_dict_get(st->metadata, key, NULL, 0);
-               if (tag) {
-                   if (!val || !strcmp(tag->value, val + 1))
-                       ret = 1;
-                   else
-                       ret = 0;
-               } else
-                   ret = 0;
+                tag = av_dict_get(st->metadata, key, NULL, 0);
+                if (tag) {
+                    if (!val || !strcmp(tag->value, val + 1))
+                        ret = 1;
+                    else
+                        ret = 0;
+                } else
+                    ret = 0;
 
-               av_freep(&key);
+                av_freep(&key);
             }
             return match && ret;
         } else if (*spec == 'u' && *(spec + 1) == '\0') {
-            AVCodecParameters *par = st->codecpar;
+            const AVCodecParameters *par = st->codecpar;
             int val;
             switch (par->codec_type) {
             case AVMEDIA_TYPE_AUDIO:
@@ -1535,7 +1545,7 @@ int avformat_match_stream_specifier(AVFormatContext *s, AVStream *st,
     int ret, index;
     char *endptr;
     const char *indexptr = NULL;
-    AVProgram *p = NULL;
+    const AVProgram *p = NULL;
     int nb_streams;
 
     ret = match_stream_specifier(s, st, spec, &indexptr, &p);
@@ -1558,7 +1568,7 @@ int avformat_match_stream_specifier(AVFormatContext *s, AVStream *st,
     /* If we requested a matching stream index, we have to ensure st is that. */
     nb_streams = p ? p->nb_stream_indexes : s->nb_streams;
     for (int i = 0; i < nb_streams && index >= 0; i++) {
-        AVStream *candidate = p ? s->streams[p->stream_index[i]] : s->streams[i];
+        const AVStream *candidate = s->streams[p ? p->stream_index[i] : i];
         ret = match_stream_specifier(s, candidate, spec, NULL, NULL);
         if (ret < 0)
             goto error;
@@ -1829,11 +1839,22 @@ int ff_format_output_open(AVFormatContext *s, const char *url, AVDictionary **op
     return 0;
 }
 
-void ff_format_io_close(AVFormatContext *s, AVIOContext **pb)
+void ff_format_io_close_default(AVFormatContext *s, AVIOContext *pb)
 {
-    if (*pb)
-        s->io_close(s, *pb);
+    avio_close(pb);
+}
+
+int ff_format_io_close(AVFormatContext *s, AVIOContext **pb)
+{
+    int ret = 0;
+    if (*pb) {
+        if (s->io_close == ff_format_io_close_default || s->io_close == NULL)
+            ret = s->io_close2(s, *pb);
+        else
+            s->io_close(s, *pb);
+    }
     *pb = NULL;
+    return ret;
 }
 
 int ff_is_http_proto(const char *filename) {
@@ -2012,4 +2033,60 @@ const char *av_disposition_to_string(int disposition)
             return opt->name;
 
     return NULL;
+}
+
+int ff_format_shift_data(AVFormatContext *s, int64_t read_start, int shift_size)
+{
+    int ret;
+    int64_t pos, pos_end;
+    uint8_t *buf, *read_buf[2];
+    int read_buf_id = 0;
+    int read_size[2];
+    AVIOContext *read_pb;
+
+    buf = av_malloc_array(shift_size, 2);
+    if (!buf)
+        return AVERROR(ENOMEM);
+    read_buf[0] = buf;
+    read_buf[1] = buf + shift_size;
+
+    /* Shift the data: the AVIO context of the output can only be used for
+     * writing, so we re-open the same output, but for reading. It also avoids
+     * a read/seek/write/seek back and forth. */
+    avio_flush(s->pb);
+    ret = s->io_open(s, &read_pb, s->url, AVIO_FLAG_READ, NULL);
+    if (ret < 0) {
+        av_log(s, AV_LOG_ERROR, "Unable to re-open %s output file for shifting data\n", s->url);
+        goto end;
+    }
+
+    /* mark the end of the shift to up to the last data we wrote, and get ready
+     * for writing */
+    pos_end = avio_tell(s->pb);
+    avio_seek(s->pb, read_start + shift_size, SEEK_SET);
+
+    avio_seek(read_pb, read_start, SEEK_SET);
+    pos = avio_tell(read_pb);
+
+#define READ_BLOCK do {                                                             \
+    read_size[read_buf_id] = avio_read(read_pb, read_buf[read_buf_id], shift_size);  \
+    read_buf_id ^= 1;                                                               \
+} while (0)
+
+    /* shift data by chunk of at most shift_size */
+    READ_BLOCK;
+    do {
+        int n;
+        READ_BLOCK;
+        n = read_size[read_buf_id];
+        if (n <= 0)
+            break;
+        avio_write(s->pb, read_buf[read_buf_id], n);
+        pos += n;
+    } while (pos < pos_end);
+    ret = ff_format_io_close(s, &read_pb);
+
+end:
+    av_free(buf);
+    return ret;
 }

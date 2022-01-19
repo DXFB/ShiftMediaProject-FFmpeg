@@ -55,6 +55,10 @@ typedef struct MFContext {
 static int mf_choose_output_type(AVCodecContext *avctx);
 static int mf_setup_context(AVCodecContext *avctx);
 
+#if HAVE_WINRT || HAVE_UWP
+DEFINE_GUID(IID_ICodecAPI, 0x901db4c7, 0x31ce, 0x41a2, 0x85,0xdc, 0x8f,0xa0,0xbf,0x41,0xb8,0xda);
+#endif
+
 #define MF_TIMEBASE (AVRational){1, 10000000}
 // Sentinel value only used by us.
 #define MF_INVALID_TIME AV_NOPTS_VALUE

@@ -124,6 +124,7 @@ OBJS-$(CONFIG_CROSSFEED_FILTER)              += af_crossfeed.o
 OBJS-$(CONFIG_CRYSTALIZER_FILTER)            += af_crystalizer.o
 OBJS-$(CONFIG_DCSHIFT_FILTER)                += af_dcshift.o
 OBJS-$(CONFIG_DEESSER_FILTER)                += af_deesser.o
+OBJS-$(CONFIG_DIALOGUENHANCE_FILTER)         += af_dialoguenhance.o
 OBJS-$(CONFIG_DRMETER_FILTER)                += af_drmeter.o
 OBJS-$(CONFIG_DYNAUDNORM_FILTER)             += af_dynaudnorm.o
 OBJS-$(CONFIG_EARWAX_FILTER)                 += af_earwax.o
@@ -376,6 +377,7 @@ OBJS-$(CONFIG_OVERLAY_CUDA_FILTER)           += vf_overlay_cuda.o framesync.o vf
 OBJS-$(CONFIG_OVERLAY_OPENCL_FILTER)         += vf_overlay_opencl.o opencl.o \
                                                 opencl/overlay.o framesync.o
 OBJS-$(CONFIG_OVERLAY_QSV_FILTER)            += vf_overlay_qsv.o framesync.o
+OBJS-$(CONFIG_OVERLAY_VAAPI_FILTER)          += vf_overlay_vaapi.o framesync.o vaapi_vpp.o
 OBJS-$(CONFIG_OVERLAY_VULKAN_FILTER)         += vf_overlay_vulkan.o vulkan.o vulkan_filter.o
 OBJS-$(CONFIG_OWDENOISE_FILTER)              += vf_owdenoise.o
 OBJS-$(CONFIG_PAD_FILTER)                    += vf_pad.o

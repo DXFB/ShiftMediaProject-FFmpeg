@@ -147,19 +147,34 @@ EXPORTS
     av_fast_mallocz
     av_fast_realloc
     av_fifo_alloc
+    av_fifo_alloc2
     av_fifo_alloc_array
+    av_fifo_auto_grow_limit
+    av_fifo_can_read
+    av_fifo_can_write
     av_fifo_drain
+    av_fifo_drain2
+    av_fifo_elem_size
     av_fifo_free
     av_fifo_freep
+    av_fifo_freep2
     av_fifo_generic_peek
     av_fifo_generic_peek_at
     av_fifo_generic_read
     av_fifo_generic_write
     av_fifo_grow
+    av_fifo_grow2
+    av_fifo_peek
+    av_fifo_peek_to_cb
+    av_fifo_read
+    av_fifo_read_to_cb
     av_fifo_realloc2
     av_fifo_reset
+    av_fifo_reset2
     av_fifo_size
     av_fifo_space
+    av_fifo_write
+    av_fifo_write_from_cb
     av_file_map
     av_file_unmap
     av_film_grain_params_alloc

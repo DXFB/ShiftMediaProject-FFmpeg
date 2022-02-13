@@ -110,6 +110,7 @@ static const AVFilter *filter_list[] = {
     &ff_af_crystalizer,
     &ff_af_dcshift,
     &ff_af_deesser,
+    &ff_af_dialoguenhance,
     &ff_af_drmeter,
     &ff_af_dynaudnorm,
     &ff_af_earwax,
@@ -205,7 +206,9 @@ static const AVFilter *filter_list[] = {
     &ff_vf_dedot,
     &ff_vf_deflate,
     &ff_vf_deflicker,
+#if CONFIG_DEINTERLACE_QSV_FILTER
     &ff_vf_deinterlace_qsv,
+#endif
     &ff_vf_dejudder,
     &ff_vf_delogo,
     &ff_vf_derain,
@@ -270,7 +273,9 @@ static const AVFilter *filter_list[] = {
     &ff_vf_hwdownload,
     &ff_vf_hwmap,
     &ff_vf_hwupload,
+#if CONFIG_HWUPLOAD_CUDA_FILTER
     &ff_vf_hwupload_cuda,
+#endif
     &ff_vf_hysteresis,
     &ff_vf_identity,
     &ff_vf_idet,
@@ -319,7 +324,9 @@ static const AVFilter *filter_list[] = {
     &ff_vf_null,
     &ff_vf_oscilloscope,
     &ff_vf_overlay,
+#if CONFIG_OVERLAY_QSV_FILTER
     &ff_vf_overlay_qsv,
+#endif
     &ff_vf_owdenoise,
     &ff_vf_pad,
     &ff_vf_palettegen,
@@ -352,7 +359,9 @@ static const AVFilter *filter_list[] = {
     &ff_vf_rotate,
     &ff_vf_sab,
     &ff_vf_scale,
+#if CONFIG_SCALE_QSV_FILTER
     &ff_vf_scale_qsv,
+#endif
     &ff_vf_scale2ref,
     &ff_vf_scdet,
     &ff_vf_scharr,
@@ -418,7 +427,9 @@ static const AVFilter *filter_list[] = {
     &ff_vf_vif,
     &ff_vf_vignette,
     &ff_vf_vmafmotion,
+#if CONFIG_VPP_QSV_FILTER
     &ff_vf_vpp_qsv,
+#endif
     &ff_vf_vstack,
     &ff_vf_w3fdif,
     &ff_vf_waveform,

@@ -19,9 +19,15 @@
  * THE SOFTWARE.
  */
 static const AVInputFormat *indev_list[] = {
+#if CONFIG_DSHOW_INDEV
     &ff_dshow_demuxer,
+#endif
+#if CONFIG_GDIGRAB_INDEV
     &ff_gdigrab_demuxer,
+#endif
     &ff_lavfi_demuxer,
+#if CONFIG_VFWCAP_INDEV
     &ff_vfwcap_demuxer,
+#endif
     &ff_libcdio_demuxer,
     NULL };

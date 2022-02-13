@@ -201,18 +201,36 @@ static const AVCodec *codec_list[] = {
     &ff_libxvid_encoder,
     &ff_aac_mf_encoder,
     &ff_ac3_mf_encoder,
+#if CONFIG_H264_AMF_ENCODER
     &ff_h264_amf_encoder,
+#endif
     &ff_h264_mf_encoder,
+#if CONFIG_H264_NVENC_ENCODER
     &ff_h264_nvenc_encoder,
+#endif
+#if CONFIG_H264_QSV_ENCODER
     &ff_h264_qsv_encoder,
+#endif
+#if CONFIG_HEVC_AMF_ENCODER
     &ff_hevc_amf_encoder,
+#endif
     &ff_hevc_mf_encoder,
+#if CONFIG_HEVC_NVENC_ENCODER
     &ff_hevc_nvenc_encoder,
+#endif
+#if CONFIG_HEVC_QSV_ENCODER
     &ff_hevc_qsv_encoder,
+#endif
+#if CONFIG_MJPEG_QSV_ENCODER
     &ff_mjpeg_qsv_encoder,
+#endif
     &ff_mp3_mf_encoder,
+#if CONFIG_MPEG2_QSV_ENCODER
     &ff_mpeg2_qsv_encoder,
+#endif
+#if CONFIG_VP9_QSV_ENCODER
     &ff_vp9_qsv_encoder,
+#endif
     &ff_aasc_decoder,
     &ff_aic_decoder,
     &ff_alias_pix_decoder,
@@ -297,10 +315,14 @@ static const AVCodec *codec_list[] = {
     &ff_h263i_decoder,
     &ff_h263p_decoder,
     &ff_h264_decoder,
+#if CONFIG_H264_QSV_DECODER
     &ff_h264_qsv_decoder,
+#endif
     &ff_hap_decoder,
     &ff_hevc_decoder,
+#if CONFIG_HEVC_QSV_DECODER
     &ff_hevc_qsv_decoder,
+#endif
     &ff_hnm4_video_decoder,
     &ff_hq_hqa_decoder,
     &ff_hqx_decoder,
@@ -337,7 +359,9 @@ static const AVCodec *codec_list[] = {
     &ff_mpeg2video_decoder,
     &ff_mpeg4_decoder,
     &ff_mpegvideo_decoder,
+#if CONFIG_MPEG2_QSV_DECODER
     &ff_mpeg2_qsv_decoder,
+#endif
     &ff_msa1_decoder,
     &ff_mscc_decoder,
     &ff_msmpeg4v1_decoder,
@@ -436,7 +460,9 @@ static const AVCodec *codec_list[] = {
     &ff_vble_decoder,
     &ff_vc1_decoder,
     &ff_vc1image_decoder,
+#if CONFIG_VC1_QSV_DECODER
     &ff_vc1_qsv_decoder,
+#endif
     &ff_vcr1_decoder,
     &ff_vmdvideo_decoder,
     &ff_vmnc_decoder,
@@ -694,18 +720,46 @@ static const AVCodec *codec_list[] = {
     &ff_xbin_decoder,
     &ff_idf_decoder,
     &ff_av1_decoder,
+#if CONFIG_AV1_CUVID_DECODER
     &ff_av1_cuvid_decoder,
+#endif
+#if CONFIG_AV1_QSV_DECODER
     &ff_av1_qsv_decoder,
+#endif
+#if CONFIG_H264_CUVID_DECODER
     &ff_h264_cuvid_decoder,
+#endif
+#if CONFIG_HEVC_CUVID_DECODER
     &ff_hevc_cuvid_decoder,
+#endif
+#if CONFIG_MJPEG_CUVID_DECODER
     &ff_mjpeg_cuvid_decoder,
+#endif
+#if CONFIG_MJPEG_QSV_DECODER
     &ff_mjpeg_qsv_decoder,
+#endif
+#if CONFIG_MPEG1_CUVID_DECODER
     &ff_mpeg1_cuvid_decoder,
+#endif
+#if CONFIG_MPEG2_CUVID_DECODER
     &ff_mpeg2_cuvid_decoder,
+#endif
+#if CONFIG_MPEG4_CUVID_DECODER
     &ff_mpeg4_cuvid_decoder,
+#endif
+#if CONFIG_VC1_CUVID_DECODER
     &ff_vc1_cuvid_decoder,
+#endif
+#if CONFIG_VP8_CUVID_DECODER
     &ff_vp8_cuvid_decoder,
+#endif
+#if CONFIG_VP8_QSV_DECODER
     &ff_vp8_qsv_decoder,
+#endif
+#if CONFIG_VP9_CUVID_DECODER
     &ff_vp9_cuvid_decoder,
+#endif
+#if CONFIG_VP9_QSV_DECODER
     &ff_vp9_qsv_decoder,
+#endif
     NULL };

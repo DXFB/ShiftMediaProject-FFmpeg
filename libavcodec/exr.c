@@ -49,6 +49,7 @@
 #include "bswapdsp.h"
 #endif
 
+#include "codec_internal.h"
 #include "exrdsp.h"
 #include "get_bits.h"
 #include "internal.h"
@@ -2340,16 +2341,17 @@ static const AVClass exr_class = {
     .version    = LIBAVUTIL_VERSION_INT,
 };
 
-const AVCodec ff_exr_decoder = {
-    .name             = "exr",
-    .long_name        = NULL_IF_CONFIG_SMALL("OpenEXR image"),
-    .type             = AVMEDIA_TYPE_VIDEO,
-    .id               = AV_CODEC_ID_EXR,
+const FFCodec ff_exr_decoder = {
+    .p.name           = "exr",
+    .p.long_name      = NULL_IF_CONFIG_SMALL("OpenEXR image"),
+    .p.type           = AVMEDIA_TYPE_VIDEO,
+    .p.id             = AV_CODEC_ID_EXR,
     .priv_data_size   = sizeof(EXRContext),
     .init             = decode_init,
     .close            = decode_end,
     .decode           = decode_frame,
-    .capabilities     = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_FRAME_THREADS |
+    .p.capabilities   = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_FRAME_THREADS |
                         AV_CODEC_CAP_SLICE_THREADS,
-    .priv_class       = &exr_class,
+    .caps_internal    = FF_CODEC_CAP_INIT_THREADSAFE,
+    .p.priv_class     = &exr_class,
 };

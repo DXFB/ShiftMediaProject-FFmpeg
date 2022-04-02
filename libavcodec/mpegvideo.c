@@ -27,6 +27,8 @@
  * The simplest mpeg encoder (well, it was the simplest!).
  */
 
+#include "config_components.h"
+
 #include "libavutil/attributes.h"
 #include "libavutil/avassert.h"
 #include "libavutil/imgutils.h"
@@ -40,11 +42,11 @@
 #include "mpeg_er.h"
 #include "mpegutils.h"
 #include "mpegvideo.h"
-#include "mpeg4video.h"
+#include "mpeg4videodec.h"
 #include "mpegvideodata.h"
 #include "qpeldsp.h"
 #include "threadframe.h"
-#include "wmv2.h"
+#include "wmv2dec.h"
 #include <limits.h>
 
 static void dct_unquantize_mpeg1_intra_c(MpegEncContext *s,
@@ -469,7 +471,7 @@ static void backup_duplicate_context(MpegEncContext *bak, MpegEncContext *src)
 #undef COPY
 }
 
-int ff_update_duplicate_context(MpegEncContext *dst, MpegEncContext *src)
+int ff_update_duplicate_context(MpegEncContext *dst, const MpegEncContext *src)
 {
     MpegEncContext bak;
     int i, ret;
@@ -789,7 +791,7 @@ av_cold int ff_mpv_common_init(MpegEncContext *s)
     if (!(s->next_picture.f    = av_frame_alloc()) ||
         !(s->last_picture.f    = av_frame_alloc()) ||
         !(s->current_picture.f = av_frame_alloc()) ||
-        !(s->new_picture.f     = av_frame_alloc()))
+        !(s->new_picture       = av_frame_alloc()))
         goto fail_nomem;
 
     if ((ret = ff_mpv_init_context_frame(s)))
@@ -900,7 +902,7 @@ void ff_mpv_common_end(MpegEncContext *s)
     ff_mpv_picture_free(s->avctx, &s->last_picture);
     ff_mpv_picture_free(s->avctx, &s->current_picture);
     ff_mpv_picture_free(s->avctx, &s->next_picture);
-    ff_mpv_picture_free(s->avctx, &s->new_picture);
+    av_frame_free(&s->new_picture);
 
     s->context_initialized      = 0;
     s->context_reinit           = 0;
@@ -1644,12 +1646,6 @@ skip_idct:
 
 void ff_mpv_reconstruct_mb(MpegEncContext *s, int16_t block[12][64])
 {
-    if (CONFIG_XVMC &&
-        s->avctx->hwaccel && s->avctx->hwaccel->decode_mb) {
-        s->avctx->hwaccel->decode_mb(s); //xvmc uses pblocks
-        return;
-    }
-
     if (s->avctx->debug & FF_DEBUG_DCT_COEFF) {
        /* print DCT coefficients */
        av_log(s->avctx, AV_LOG_DEBUG, "DCT coeffs of MB at %dx%d:\n", s->mb_x, s->mb_y);

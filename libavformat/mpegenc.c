@@ -19,6 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "config_components.h"
+
 #include <stdint.h>
 
 #include "libavutil/attributes.h"
@@ -380,14 +382,14 @@ static av_cold int mpeg_mux_init(AVFormatContext *ctx)
                     av_log(ctx, AV_LOG_INFO, "\n");
                     return AVERROR(EINVAL);
                 }
-                if (st->codecpar->channels > 8) {
+                if (st->codecpar->ch_layout.nb_channels > 8) {
                     av_log(ctx, AV_LOG_ERROR, "At most 8 channels allowed for LPCM streams.\n");
                     return AVERROR(EINVAL);
                 }
                 stream->lpcm_header[0] = 0x0c;
-                stream->lpcm_header[1] = (st->codecpar->channels - 1) | (j << 4);
+                stream->lpcm_header[1] = (st->codecpar->ch_layout.nb_channels - 1) | (j << 4);
                 stream->lpcm_header[2] = 0x80;
-                stream->lpcm_align     = st->codecpar->channels * 2;
+                stream->lpcm_align     = st->codecpar->ch_layout.nb_channels * 2;
             } else if (st->codecpar->codec_id == AV_CODEC_ID_PCM_DVD) {
                 int freq;
 
@@ -404,10 +406,10 @@ static av_cold int mpeg_mux_init(AVFormatContext *ctx)
                 stream->lpcm_header[0] = 0x0c;
                 stream->lpcm_header[1] = (freq << 4) |
                                          (((st->codecpar->bits_per_coded_sample - 16) / 4) << 6) |
-                                         st->codecpar->channels - 1;
+                                         st->codecpar->ch_layout.nb_channels - 1;
                 stream->lpcm_header[2] = 0x80;
                 stream->id = lpcm_id++;
-                stream->lpcm_align = st->codecpar->channels * st->codecpar->bits_per_coded_sample / 8;
+                stream->lpcm_align = st->codecpar->ch_layout.nb_channels * st->codecpar->bits_per_coded_sample / 8;
             } else if (st->codecpar->codec_id == AV_CODEC_ID_MLP ||
                        st->codecpar->codec_id == AV_CODEC_ID_TRUEHD) {
                        av_log(ctx, AV_LOG_ERROR, "Support for muxing audio codec %s not implemented.\n",

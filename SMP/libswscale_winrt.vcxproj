@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{6D8A6330-8EBE-49FD-9281-0A396F9F28F2}</ProjectGuid>
+    <ProjectGuid>{6D8A6330-8EBE-49FD-9281-0A396F9F28FF}</ProjectGuid>
     <RootNamespace>swscale</RootNamespace>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
@@ -28,6 +28,7 @@
 mkdir "$(OutDir)"\include\libswscale
 copy ..\libswscale\swscale.h "$(OutDir)"\include\libswscale
 copy ..\libswscale\version.h "$(OutDir)"\include\libswscale
+copy ..\libswscale\version_major.h "$(OutDir)"\include\libswscale
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -80,6 +81,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswscale
 copy ..\libswscale\swscale.h "$(OutDir)"\include\libswscale
 copy ..\libswscale\version.h "$(OutDir)"\include\libswscale
+copy ..\libswscale\version_major.h "$(OutDir)"\include\libswscale
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -133,6 +135,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswscale
 copy ..\libswscale\swscale.h "$(OutDir)"\include\libswscale
 copy ..\libswscale\version.h "$(OutDir)"\include\libswscale
+copy ..\libswscale\version_major.h "$(OutDir)"\include\libswscale
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -186,6 +189,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswscale
 copy ..\libswscale\swscale.h "$(OutDir)"\include\libswscale
 copy ..\libswscale\version.h "$(OutDir)"\include\libswscale
+copy ..\libswscale\version_major.h "$(OutDir)"\include\libswscale
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -238,6 +242,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswscale
 copy ..\libswscale\swscale.h "$(OutDir)"\include\libswscale
 copy ..\libswscale\version.h "$(OutDir)"\include\libswscale
+copy ..\libswscale\version_major.h "$(OutDir)"\include\libswscale
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -290,6 +295,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswscale
 copy ..\libswscale\swscale.h "$(OutDir)"\include\libswscale
 copy ..\libswscale\version.h "$(OutDir)"\include\libswscale
+copy ..\libswscale\version_major.h "$(OutDir)"\include\libswscale
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -343,6 +349,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswscale
 copy ..\libswscale\swscale.h "$(OutDir)"\include\libswscale
 copy ..\libswscale\version.h "$(OutDir)"\include\libswscale
+copy ..\libswscale\version_major.h "$(OutDir)"\include\libswscale
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -396,6 +403,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswscale
 copy ..\libswscale\swscale.h "$(OutDir)"\include\libswscale
 copy ..\libswscale\version.h "$(OutDir)"\include\libswscale
+copy ..\libswscale\version_major.h "$(OutDir)"\include\libswscale
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -449,6 +457,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswscale
 copy ..\libswscale\swscale.h "$(OutDir)"\include\libswscale
 copy ..\libswscale\version.h "$(OutDir)"\include\libswscale
+copy ..\libswscale\version_major.h "$(OutDir)"\include\libswscale
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -502,6 +511,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswscale
 copy ..\libswscale\swscale.h "$(OutDir)"\include\libswscale
 copy ..\libswscale\version.h "$(OutDir)"\include\libswscale
+copy ..\libswscale\version_major.h "$(OutDir)"\include\libswscale
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>

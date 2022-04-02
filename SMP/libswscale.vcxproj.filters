@@ -125,5 +125,8 @@
     <ClInclude Include="..\libswscale\version.h">
       <Filter>Header Files\libswscale</Filter>
     </ClInclude>
+    <ClInclude Include="..\libswscale\version_major.h">
+      <Filter>Header Files\libswscale</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_QSV
 #   include "../../libavutil/hwcontext_qsv.c"
 #endif

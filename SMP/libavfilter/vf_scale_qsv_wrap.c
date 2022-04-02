@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_SCALE_QSV_FILTER
 #   include "../../libavfilter/vf_scale_qsv.c"
 #endif

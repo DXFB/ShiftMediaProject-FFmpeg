@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_SHARED
 #   include "../../libavformat/dca_sample_rate_tab.c"
 #endif

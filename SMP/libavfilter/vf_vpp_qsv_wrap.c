@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_VPP_QSV_FILTER
 #   include "../../libavfilter/vf_vpp_qsv.c"
 #endif

@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_DXVA2
 #   include "../../libavutil/hwcontext_dxva2.c"
 #endif

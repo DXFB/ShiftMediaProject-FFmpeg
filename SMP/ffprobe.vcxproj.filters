@@ -21,6 +21,9 @@
     <ClCompile Include="..\fftools\cmdutils.c">
       <Filter>Source Files\fftools</Filter>
     </ClCompile>
+    <ClCompile Include="..\fftools\opt_common.c">
+      <Filter>Source Files\fftools</Filter>
+    </ClCompile>
     <ClCompile Include="..\fftools\ffprobe.c">
       <Filter>Source Files\fftools</Filter>
     </ClCompile>

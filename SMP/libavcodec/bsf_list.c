@@ -18,7 +18,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-static const AVBitStreamFilter *bitstream_filters[] = {
+static const FFBitStreamFilter *bitstream_filters[] = {
     &ff_aac_adtstoasc_bsf,
     &ff_av1_frame_merge_bsf,
     &ff_av1_frame_split_bsf,
@@ -26,6 +26,7 @@ static const AVBitStreamFilter *bitstream_filters[] = {
     &ff_chomp_bsf,
     &ff_dump_extradata_bsf,
     &ff_dca_core_bsf,
+    &ff_dv_error_marker_bsf,
     &ff_eac3_core_bsf,
     &ff_extract_extradata_bsf,
     &ff_filter_units_bsf,

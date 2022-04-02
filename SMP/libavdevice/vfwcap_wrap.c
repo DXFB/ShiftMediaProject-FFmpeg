@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_VFWCAP_INDEV
 #   include "../../libavdevice/vfwcap.c"
 #endif

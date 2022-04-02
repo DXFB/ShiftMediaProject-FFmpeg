@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_CUDA
 #   include "../../libavutil/hwcontext_cuda.c"
 #endif

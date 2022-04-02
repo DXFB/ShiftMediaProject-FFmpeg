@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_QSVDEC || CONFIG_H264_QSV_DECODER || CONFIG_HEVC_QSV_DECODER || CONFIG_MJPEG_QSV_DECODER || CONFIG_MPEG2_QSV_DECODER || CONFIG_VC1_QSV_DECODER || CONFIG_VP8_QSV_DECODER
 #   include "../../libavcodec/qsvdec.c"
 #endif

@@ -387,6 +387,7 @@ static const AVFilter *filter_list[] = {
     &ff_vf_sidedata,
     &ff_vf_signalstats,
     &ff_vf_signature,
+    &ff_vf_siti,
     &ff_vf_smartblur,
     &ff_vf_sobel,
     &ff_vf_split,

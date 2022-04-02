@@ -55,6 +55,9 @@
     <ClCompile Include="..\libavformat\id3v2.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\isom_tags.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\metadata.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
@@ -89,9 +92,6 @@
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\isom.c">
-      <Filter>Source Files\libavformat</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavformat\isom_tags.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\network.c">
@@ -485,6 +485,9 @@
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\dfa.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\dfpwmdec.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\dhav.c">
@@ -1570,6 +1573,9 @@
       <Filter>Header Files\libavformat</Filter>
     </ClInclude>
     <ClInclude Include="..\libavformat\version.h">
+      <Filter>Header Files\libavformat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libavformat\version_major.h">
       <Filter>Header Files\libavformat</Filter>
     </ClInclude>
   </ItemGroup>

@@ -59,6 +59,7 @@ copy ..\libavutil\file.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\frame.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hash.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hdr_dynamic_metadata.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hdr_dynamic_vivid_metadata.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
@@ -77,6 +78,7 @@ copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\lfg.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\log.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\macros.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mathematics.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mastering_display_metadata.h "$(OutDir)"\include\libavutil
@@ -111,7 +113,6 @@ copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\film_grain_params.h "$(OutDir)"\include\libavutil
-copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy libavutil\avconfig.h "$(OutDir)"\include\libavutil
 copy libavutil\ffversion.h "$(OutDir)"\include\libavutil
 mkdir "$(OutDir)"\licenses
@@ -197,6 +198,7 @@ copy ..\libavutil\file.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\frame.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hash.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hdr_dynamic_metadata.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hdr_dynamic_vivid_metadata.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
@@ -215,6 +217,7 @@ copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\lfg.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\log.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\macros.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mathematics.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mastering_display_metadata.h "$(OutDir)"\include\libavutil
@@ -249,7 +252,6 @@ copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\film_grain_params.h "$(OutDir)"\include\libavutil
-copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy libavutil\avconfig.h "$(OutDir)"\include\libavutil
 copy libavutil\ffversion.h "$(OutDir)"\include\libavutil
 mkdir "$(OutDir)"\licenses
@@ -336,6 +338,7 @@ copy ..\libavutil\file.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\frame.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hash.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hdr_dynamic_metadata.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hdr_dynamic_vivid_metadata.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
@@ -354,6 +357,7 @@ copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\lfg.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\log.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\macros.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mathematics.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mastering_display_metadata.h "$(OutDir)"\include\libavutil
@@ -388,7 +392,6 @@ copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\film_grain_params.h "$(OutDir)"\include\libavutil
-copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy libavutil\avconfig.h "$(OutDir)"\include\libavutil
 copy libavutil\ffversion.h "$(OutDir)"\include\libavutil
 mkdir "$(OutDir)"\licenses
@@ -475,6 +478,7 @@ copy ..\libavutil\file.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\frame.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hash.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hdr_dynamic_metadata.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hdr_dynamic_vivid_metadata.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
@@ -493,6 +497,7 @@ copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\lfg.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\log.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\macros.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mathematics.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mastering_display_metadata.h "$(OutDir)"\include\libavutil
@@ -527,7 +532,6 @@ copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\film_grain_params.h "$(OutDir)"\include\libavutil
-copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy libavutil\avconfig.h "$(OutDir)"\include\libavutil
 copy libavutil\ffversion.h "$(OutDir)"\include\libavutil
 mkdir "$(OutDir)"\licenses
@@ -613,6 +617,7 @@ copy ..\libavutil\file.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\frame.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hash.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hdr_dynamic_metadata.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hdr_dynamic_vivid_metadata.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
@@ -631,6 +636,7 @@ copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\lfg.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\log.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\macros.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mathematics.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mastering_display_metadata.h "$(OutDir)"\include\libavutil
@@ -665,7 +671,6 @@ copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\film_grain_params.h "$(OutDir)"\include\libavutil
-copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy libavutil\avconfig.h "$(OutDir)"\include\libavutil
 copy libavutil\ffversion.h "$(OutDir)"\include\libavutil
 mkdir "$(OutDir)"\licenses
@@ -751,6 +756,7 @@ copy ..\libavutil\file.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\frame.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hash.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hdr_dynamic_metadata.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hdr_dynamic_vivid_metadata.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
@@ -769,6 +775,7 @@ copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\lfg.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\log.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\macros.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mathematics.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mastering_display_metadata.h "$(OutDir)"\include\libavutil
@@ -803,7 +810,6 @@ copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\film_grain_params.h "$(OutDir)"\include\libavutil
-copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy libavutil\avconfig.h "$(OutDir)"\include\libavutil
 copy libavutil\ffversion.h "$(OutDir)"\include\libavutil
 mkdir "$(OutDir)"\licenses
@@ -890,6 +896,7 @@ copy ..\libavutil\file.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\frame.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hash.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hdr_dynamic_metadata.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hdr_dynamic_vivid_metadata.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
@@ -908,6 +915,7 @@ copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\lfg.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\log.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\macros.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mathematics.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mastering_display_metadata.h "$(OutDir)"\include\libavutil
@@ -942,7 +950,6 @@ copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\film_grain_params.h "$(OutDir)"\include\libavutil
-copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy libavutil\avconfig.h "$(OutDir)"\include\libavutil
 copy libavutil\ffversion.h "$(OutDir)"\include\libavutil
 mkdir "$(OutDir)"\licenses
@@ -1029,6 +1036,7 @@ copy ..\libavutil\file.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\frame.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hash.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hdr_dynamic_metadata.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hdr_dynamic_vivid_metadata.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
@@ -1047,6 +1055,7 @@ copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\lfg.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\log.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\macros.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mathematics.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mastering_display_metadata.h "$(OutDir)"\include\libavutil
@@ -1081,7 +1090,6 @@ copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\film_grain_params.h "$(OutDir)"\include\libavutil
-copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy libavutil\avconfig.h "$(OutDir)"\include\libavutil
 copy libavutil\ffversion.h "$(OutDir)"\include\libavutil
 mkdir "$(OutDir)"\licenses
@@ -1168,6 +1176,7 @@ copy ..\libavutil\file.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\frame.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hash.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hdr_dynamic_metadata.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hdr_dynamic_vivid_metadata.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
@@ -1186,6 +1195,7 @@ copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\lfg.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\log.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\macros.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mathematics.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mastering_display_metadata.h "$(OutDir)"\include\libavutil
@@ -1220,7 +1230,6 @@ copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\film_grain_params.h "$(OutDir)"\include\libavutil
-copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy libavutil\avconfig.h "$(OutDir)"\include\libavutil
 copy libavutil\ffversion.h "$(OutDir)"\include\libavutil
 mkdir "$(OutDir)"\licenses
@@ -1307,6 +1316,7 @@ copy ..\libavutil\file.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\frame.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hash.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hdr_dynamic_metadata.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hdr_dynamic_vivid_metadata.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
@@ -1325,6 +1335,7 @@ copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\lfg.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\log.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\macros.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mathematics.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\mastering_display_metadata.h "$(OutDir)"\include\libavutil
@@ -1359,7 +1370,6 @@ copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tea.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tx.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\film_grain_params.h "$(OutDir)"\include\libavutil
-copy ..\libavutil\lzo.h "$(OutDir)"\include\libavutil
 copy libavutil\avconfig.h "$(OutDir)"\include\libavutil
 copy libavutil\ffversion.h "$(OutDir)"\include\libavutil
 mkdir "$(OutDir)"\licenses

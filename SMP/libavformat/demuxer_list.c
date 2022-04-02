@@ -86,6 +86,7 @@ static const AVInputFormat *demuxer_list[] = {
     &ff_dcstr_demuxer,
     &ff_derf_demuxer,
     &ff_dfa_demuxer,
+    &ff_dfpwm_demuxer,
     &ff_dhav_demuxer,
     &ff_dirac_demuxer,
     &ff_dnxhd_demuxer,

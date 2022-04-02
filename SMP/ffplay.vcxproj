@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\fftools\cmdutils.c" />
+    <ClCompile Include="..\fftools\opt_common.c" />
     <ClCompile Include="..\fftools\ffplay.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

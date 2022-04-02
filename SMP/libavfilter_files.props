@@ -350,6 +350,7 @@
     <ClCompile Include="..\libavfilter\vf_signalstats.c" />
     <ClCompile Include="..\libavfilter\vf_signature.c" />
     <ClCompile Include="..\libavfilter\vf_smartblur.c" />
+    <ClCompile Include="..\libavfilter\vf_siti.c" />
     <ClCompile Include="..\libavfilter\vf_spp.c" />
     <ClCompile Include="..\libavfilter\vf_sr.c" />
     <ClCompile Include="..\libavfilter\vf_super2xsai.c" />
@@ -574,5 +575,6 @@
     <ClInclude Include="..\libavfilter\buffersink.h" />
     <ClInclude Include="..\libavfilter\buffersrc.h" />
     <ClInclude Include="..\libavfilter\version.h" />
+    <ClInclude Include="..\libavfilter\version_major.h" />
   </ItemGroup>
 </Project>

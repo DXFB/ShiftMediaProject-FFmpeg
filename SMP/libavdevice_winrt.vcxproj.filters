@@ -90,5 +90,8 @@
     <ClInclude Include="..\libavdevice\version.h">
       <Filter>Header Files\libavdevice</Filter>
     </ClInclude>
+    <ClInclude Include="..\libavdevice\version_major.h">
+      <Filter>Header Files\libavdevice</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

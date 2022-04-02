@@ -1047,6 +1047,9 @@
     <ClCompile Include="..\libavfilter\vf_smartblur.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_siti.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_spp.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -1491,6 +1494,9 @@
       <Filter>Header Files\libavfilter</Filter>
     </ClInclude>
     <ClInclude Include="..\libavfilter\version.h">
+      <Filter>Header Files\libavfilter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libavfilter\version_major.h">
       <Filter>Header Files\libavfilter</Filter>
     </ClInclude>
   </ItemGroup>

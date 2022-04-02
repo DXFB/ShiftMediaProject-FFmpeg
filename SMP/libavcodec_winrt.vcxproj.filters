@@ -402,6 +402,9 @@
     <ClCompile Include="..\libavcodec\utils.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\vlc.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\vorbis_parser.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -450,9 +453,6 @@
     <ClCompile Include="..\libavcodec\h2645_parse.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
-    <ClCompile Include="..\libavcodec\cbs_jpeg.c">
-      <Filter>Source Files\libavcodec</Filter>
-    </ClCompile>
     <ClCompile Include="..\libavcodec\cbs_mpeg2.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -466,6 +466,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\dct32_float.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\zlib_wrapper.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\dovi_rpu.c">
@@ -547,6 +550,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\dynamic_hdr10_plus.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\dynamic_hdr_vivid.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\huffman.c">
@@ -679,9 +685,6 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\texturedsp.c">
-      <Filter>Source Files\libavcodec</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavcodec\texturedspenc.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\tpeldsp.c">
@@ -1150,6 +1153,12 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\dfa.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\dfpwmdec.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\dfpwmenc.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\dnxhddec.c">
@@ -2460,6 +2469,9 @@
     <ClCompile Include="..\libavcodec\pcm.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\pcm-blurayenc.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\pcm-bluray.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -2725,6 +2737,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\dca_core_bsf.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\dv_error_marker_bsf.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\eac3_core_bsf.c">
@@ -3393,6 +3408,9 @@
       <Filter>Header Files\libavcodec</Filter>
     </ClInclude>
     <ClInclude Include="..\libavcodec\version.h">
+      <Filter>Header Files\libavcodec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libavcodec\version_major.h">
       <Filter>Header Files\libavcodec</Filter>
     </ClInclude>
     <ClInclude Include="..\libavcodec\videotoolbox.h">

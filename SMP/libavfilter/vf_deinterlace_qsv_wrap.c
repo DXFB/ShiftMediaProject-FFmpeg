@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_DEINTERLACE_QSV_FILTER
 #   include "../../libavfilter/vf_deinterlace_qsv.c"
 #endif

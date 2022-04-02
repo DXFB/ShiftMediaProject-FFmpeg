@@ -55,5 +55,6 @@
   <ItemGroup>
     <ClInclude Include="..\libswscale\swscale.h" />
     <ClInclude Include="..\libswscale\version.h" />
+    <ClInclude Include="..\libswscale\version_major.h" />
   </ItemGroup>
 </Project>

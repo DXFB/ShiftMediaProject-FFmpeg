@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{6E165FA4-44EB-4330-8394-9F0D76D8E03E}</ProjectGuid>
+    <ProjectGuid>{6E165FA4-44EB-4330-8394-9F0D76D8E03F}</ProjectGuid>
     <RootNamespace>avdevice</RootNamespace>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
@@ -25,6 +25,7 @@
 mkdir "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\avdevice.h "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\version.h "$(OutDir)"\include\libavdevice
+copy ..\libavdevice\version_major.h "$(OutDir)"\include\libavdevice
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -72,6 +73,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\avdevice.h "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\version.h "$(OutDir)"\include\libavdevice
+copy ..\libavdevice\version_major.h "$(OutDir)"\include\libavdevice
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -120,6 +122,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\avdevice.h "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\version.h "$(OutDir)"\include\libavdevice
+copy ..\libavdevice\version_major.h "$(OutDir)"\include\libavdevice
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -168,6 +171,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\avdevice.h "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\version.h "$(OutDir)"\include\libavdevice
+copy ..\libavdevice\version_major.h "$(OutDir)"\include\libavdevice
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -215,6 +219,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\avdevice.h "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\version.h "$(OutDir)"\include\libavdevice
+copy ..\libavdevice\version_major.h "$(OutDir)"\include\libavdevice
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -262,6 +267,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\avdevice.h "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\version.h "$(OutDir)"\include\libavdevice
+copy ..\libavdevice\version_major.h "$(OutDir)"\include\libavdevice
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -310,6 +316,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\avdevice.h "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\version.h "$(OutDir)"\include\libavdevice
+copy ..\libavdevice\version_major.h "$(OutDir)"\include\libavdevice
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -358,6 +365,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\avdevice.h "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\version.h "$(OutDir)"\include\libavdevice
+copy ..\libavdevice\version_major.h "$(OutDir)"\include\libavdevice
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -406,6 +414,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\avdevice.h "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\version.h "$(OutDir)"\include\libavdevice
+copy ..\libavdevice\version_major.h "$(OutDir)"\include\libavdevice
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -454,6 +463,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\avdevice.h "$(OutDir)"\include\libavdevice
 copy ..\libavdevice\version.h "$(OutDir)"\include\libavdevice
+copy ..\libavdevice\version_major.h "$(OutDir)"\include\libavdevice
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>

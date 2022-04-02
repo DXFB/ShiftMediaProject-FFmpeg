@@ -51,6 +51,7 @@ static const AVOutputFormat *muxer_list[] = {
     &ff_dash_muxer,
     &ff_data_muxer,
     &ff_daud_muxer,
+    &ff_dfpwm_muxer,
     &ff_dirac_muxer,
     &ff_dnxhd_muxer,
     &ff_dts_muxer,

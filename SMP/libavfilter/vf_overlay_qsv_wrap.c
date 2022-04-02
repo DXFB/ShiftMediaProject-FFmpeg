@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_OVERLAY_QSV_FILTER
 #   include "../../libavfilter/vf_overlay_qsv.c"
 #endif

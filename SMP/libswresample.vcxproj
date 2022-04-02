@@ -28,6 +28,7 @@
 mkdir "$(OutDir)"\include\libswresample
 copy ..\libswresample\swresample.h "$(OutDir)"\include\libswresample
 copy ..\libswresample\version.h "$(OutDir)"\include\libswresample
+copy ..\libswresample\version_major.h "$(OutDir)"\include\libswresample
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -80,6 +81,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswresample
 copy ..\libswresample\swresample.h "$(OutDir)"\include\libswresample
 copy ..\libswresample\version.h "$(OutDir)"\include\libswresample
+copy ..\libswresample\version_major.h "$(OutDir)"\include\libswresample
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -133,6 +135,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswresample
 copy ..\libswresample\swresample.h "$(OutDir)"\include\libswresample
 copy ..\libswresample\version.h "$(OutDir)"\include\libswresample
+copy ..\libswresample\version_major.h "$(OutDir)"\include\libswresample
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -186,6 +189,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswresample
 copy ..\libswresample\swresample.h "$(OutDir)"\include\libswresample
 copy ..\libswresample\version.h "$(OutDir)"\include\libswresample
+copy ..\libswresample\version_major.h "$(OutDir)"\include\libswresample
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -238,6 +242,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswresample
 copy ..\libswresample\swresample.h "$(OutDir)"\include\libswresample
 copy ..\libswresample\version.h "$(OutDir)"\include\libswresample
+copy ..\libswresample\version_major.h "$(OutDir)"\include\libswresample
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -290,6 +295,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswresample
 copy ..\libswresample\swresample.h "$(OutDir)"\include\libswresample
 copy ..\libswresample\version.h "$(OutDir)"\include\libswresample
+copy ..\libswresample\version_major.h "$(OutDir)"\include\libswresample
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -343,6 +349,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswresample
 copy ..\libswresample\swresample.h "$(OutDir)"\include\libswresample
 copy ..\libswresample\version.h "$(OutDir)"\include\libswresample
+copy ..\libswresample\version_major.h "$(OutDir)"\include\libswresample
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -396,6 +403,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswresample
 copy ..\libswresample\swresample.h "$(OutDir)"\include\libswresample
 copy ..\libswresample\version.h "$(OutDir)"\include\libswresample
+copy ..\libswresample\version_major.h "$(OutDir)"\include\libswresample
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -449,6 +457,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswresample
 copy ..\libswresample\swresample.h "$(OutDir)"\include\libswresample
 copy ..\libswresample\version.h "$(OutDir)"\include\libswresample
+copy ..\libswresample\version_major.h "$(OutDir)"\include\libswresample
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -502,6 +511,7 @@ cd $(ProjectDir)
 mkdir "$(OutDir)"\include\libswresample
 copy ..\libswresample\swresample.h "$(OutDir)"\include\libswresample
 copy ..\libswresample\version.h "$(OutDir)"\include\libswresample
+copy ..\libswresample\version_major.h "$(OutDir)"\include\libswresample
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>

@@ -18,7 +18,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-static const AVCodec *codec_list[] = {
+static const FFCodec *codec_list[] = {
     &ff_a64multi_encoder,
     &ff_a64multi5_encoder,
     &ff_alias_pix_encoder,
@@ -112,6 +112,7 @@ static const AVCodec *codec_list[] = {
     &ff_aptx_encoder,
     &ff_aptx_hd_encoder,
     &ff_dca_encoder,
+    &ff_dfpwm_encoder,
     &ff_eac3_encoder,
     &ff_flac_encoder,
     &ff_g723_1_encoder,
@@ -131,6 +132,7 @@ static const AVCodec *codec_list[] = {
     &ff_wmav1_encoder,
     &ff_wmav2_encoder,
     &ff_pcm_alaw_encoder,
+    &ff_pcm_bluray_encoder,
     &ff_pcm_dvd_encoder,
     &ff_pcm_f32be_encoder,
     &ff_pcm_f32le_encoder,
@@ -523,6 +525,7 @@ static const AVCodec *codec_list[] = {
     &ff_bmv_audio_decoder,
     &ff_cook_decoder,
     &ff_dca_decoder,
+    &ff_dfpwm_decoder,
     &ff_dolby_e_decoder,
     &ff_dsd_lsbf_decoder,
     &ff_dsd_msbf_decoder,

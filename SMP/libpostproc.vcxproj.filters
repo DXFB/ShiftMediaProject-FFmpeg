@@ -42,5 +42,8 @@
     <ClInclude Include="..\libpostproc\version.h">
       <Filter>Header Files\libpostproc</Filter>
     </ClInclude>
+    <ClInclude Include="..\libpostproc\version_major.h">
+      <Filter>Header Files\libpostproc</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

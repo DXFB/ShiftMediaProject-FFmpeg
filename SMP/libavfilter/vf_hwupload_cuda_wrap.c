@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_HWUPLOAD_CUDA_FILTER
 #   include "../../libavfilter/vf_hwupload_cuda.c"
 #endif

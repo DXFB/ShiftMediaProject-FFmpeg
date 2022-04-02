@@ -95,5 +95,8 @@
     <ClInclude Include="..\libswresample\version.h">
       <Filter>Header Files\libswresample</Filter>
     </ClInclude>
+    <ClInclude Include="..\libswresample\version_major.h">
+      <Filter>Header Files\libswresample</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -22,7 +22,6 @@
 #include "config.h"
 #include "stdint.h"
 
-#include "libavcodec/xvmc_internal.h"
 #include "libavcodec/xvididct.h"
 #include "libavcodec/wmv2dsp.h"
 #include "libavcodec/vp9dsp.h"
@@ -194,6 +193,7 @@ void ff_h264qpel_init_mips(H264QpelContext *c, int bit_depth) {return;}
 void ff_h264qpel_init_ppc(H264QpelContext *c, int bit_depth) {return;}
 void ff_hevc_dsp_init_aarch64(HEVCDSPContext *c, const int bit_depth) {return;}
 void ff_hevc_dsp_init_arm(HEVCDSPContext *c, const int bit_depth) {return;}
+void ff_hevc_dsp_init_loongarch(HEVCDSPContext *c, const int bit_depth) {return;}
 void ff_hevc_dsp_init_mips(HEVCDSPContext *c, const int bit_depth) {return;}
 void ff_hevc_dsp_init_ppc(HEVCDSPContext *c, const int bit_depth) {return;}
 #if !(ARCH_X86_64)
@@ -3622,5 +3622,3 @@ void ff_vp9dsp_init_mips(VP9DSPContext *dsp, int bpp) {return;}
 void ff_wmv2dsp_init_mips(WMV2DSPContext *c) {return;}
 void ff_xvid_idct_init_mips(IDCTDSPContext *c, AVCodecContext *avctx,
                             unsigned high_bit_depth) {return;}
-void ff_xvmc_init_block(MpegEncContext *s) {return;}
-void ff_xvmc_pack_pblocks(MpegEncContext *s, int cbp) {return;}

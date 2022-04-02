@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_GDIGRAB_INDEV
 #   include "../../libavdevice/gdigrab.c"
 #endif

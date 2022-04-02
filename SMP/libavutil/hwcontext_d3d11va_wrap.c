@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_D3D11VA
 #   include "../../libavutil/hwcontext_d3d11va.c"
 #endif

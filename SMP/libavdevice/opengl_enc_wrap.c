@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_OPENGL_OUTDEV
 #   include "../../libavdevice/opengl_enc.c"
 #endif

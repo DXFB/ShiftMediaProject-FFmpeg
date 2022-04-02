@@ -33,5 +33,6 @@
   <ItemGroup>
     <ClInclude Include="..\libavdevice\avdevice.h" />
     <ClInclude Include="..\libavdevice\version.h" />
+    <ClInclude Include="..\libavdevice\version_major.h" />
   </ItemGroup>
 </Project>

@@ -20,6 +20,7 @@
     <ClCompile Include="..\libavformat\format.c" />
     <ClCompile Include="..\libavformat\id3v1.c" />
     <ClCompile Include="..\libavformat\id3v2.c" />
+    <ClCompile Include="..\libavformat\isom_tags.c" />
     <ClCompile Include="..\libavformat\metadata.c" />
     <ClCompile Include="..\libavformat\mux.c" />
     <ClCompile Include="..\libavformat\options.c" />
@@ -32,7 +33,6 @@
     <ClCompile Include="..\libavformat\utils.c" />
     <ClCompile Include="..\libavformat\file_open.c" />
     <ClCompile Include="..\libavformat\isom.c" />
-    <ClCompile Include="..\libavformat\isom_tags.c" />
     <ClCompile Include="..\libavformat\network.c" />
     <ClCompile Include="..\libavformat\riffdec.c" />
     <ClCompile Include="..\libavformat\riffenc.c" />
@@ -164,6 +164,7 @@
     <ClCompile Include="..\libavformat\dcstr.c" />
     <ClCompile Include="..\libavformat\derf.c" />
     <ClCompile Include="..\libavformat\dfa.c" />
+    <ClCompile Include="..\libavformat\dfpwmdec.c" />
     <ClCompile Include="..\libavformat\dhav.c" />
     <ClCompile Include="..\libavformat\diracdec.c" />
     <ClCompile Include="..\libavformat\dnxhddec.c" />
@@ -527,5 +528,6 @@
     <ClInclude Include="..\libavformat\avformat.h" />
     <ClInclude Include="..\libavformat\avio.h" />
     <ClInclude Include="..\libavformat\version.h" />
+    <ClInclude Include="..\libavformat\version_major.h" />
   </ItemGroup>
 </Project>

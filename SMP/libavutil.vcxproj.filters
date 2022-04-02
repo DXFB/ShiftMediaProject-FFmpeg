@@ -159,6 +159,9 @@
     <ClCompile Include="..\libavutil\hdr_dynamic_metadata.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavutil\hdr_dynamic_vivid_metadata.c">
+      <Filter>Source Files\libavutil</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavutil\hmac.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
@@ -178,6 +181,9 @@
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
     <ClCompile Include="..\libavutil\log2_tab.c">
+      <Filter>Source Files\libavutil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavutil\lzo.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
     <ClCompile Include="..\libavutil\mathematics.c">
@@ -277,9 +283,6 @@
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
     <ClCompile Include="..\libavutil\film_grain_params.c">
-      <Filter>Source Files\libavutil</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavutil\lzo.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
     <ClCompile Include="..\compat\msvcrt\snprintf.c">
@@ -446,6 +449,9 @@
     <ClInclude Include="..\libavutil\hdr_dynamic_metadata.h">
       <Filter>Header Files\libavutil</Filter>
     </ClInclude>
+    <ClInclude Include="..\libavutil\hdr_dynamic_vivid_metadata.h">
+      <Filter>Header Files\libavutil</Filter>
+    </ClInclude>
     <ClInclude Include="..\libavutil\hmac.h">
       <Filter>Header Files\libavutil</Filter>
     </ClInclude>
@@ -498,6 +504,9 @@
       <Filter>Header Files\libavutil</Filter>
     </ClInclude>
     <ClInclude Include="..\libavutil\log.h">
+      <Filter>Header Files\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libavutil\lzo.h">
       <Filter>Header Files\libavutil</Filter>
     </ClInclude>
     <ClInclude Include="..\libavutil\macros.h">
@@ -600,9 +609,6 @@
       <Filter>Header Files\libavutil</Filter>
     </ClInclude>
     <ClInclude Include="..\libavutil\film_grain_params.h">
-      <Filter>Header Files\libavutil</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libavutil\lzo.h">
       <Filter>Header Files\libavutil</Filter>
     </ClInclude>
     <ClInclude Include="libavutil\avconfig.h">

@@ -17,5 +17,6 @@
   <ItemGroup>
     <ClInclude Include="..\libpostproc\postprocess.h" />
     <ClInclude Include="..\libpostproc\version.h" />
+    <ClInclude Include="..\libpostproc\version_major.h" />
   </ItemGroup>
 </Project>

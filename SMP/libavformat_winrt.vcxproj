@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{30A96E9B-8061-4F19-BD71-FDE7EA8F7929}</ProjectGuid>
+    <ProjectGuid>{30A96E9B-8061-4F19-BD71-FDE7EA8F792F}</ProjectGuid>
     <RootNamespace>avformat</RootNamespace>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
@@ -26,6 +26,7 @@ mkdir "$(OutDir)"\include\libavformat
 copy ..\libavformat\avformat.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\avio.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\version.h "$(OutDir)"\include\libavformat
+copy ..\libavformat\version_major.h "$(OutDir)"\include\libavformat
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -74,6 +75,7 @@ mkdir "$(OutDir)"\include\libavformat
 copy ..\libavformat\avformat.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\avio.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\version.h "$(OutDir)"\include\libavformat
+copy ..\libavformat\version_major.h "$(OutDir)"\include\libavformat
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -123,6 +125,7 @@ mkdir "$(OutDir)"\include\libavformat
 copy ..\libavformat\avformat.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\avio.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\version.h "$(OutDir)"\include\libavformat
+copy ..\libavformat\version_major.h "$(OutDir)"\include\libavformat
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -172,6 +175,7 @@ mkdir "$(OutDir)"\include\libavformat
 copy ..\libavformat\avformat.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\avio.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\version.h "$(OutDir)"\include\libavformat
+copy ..\libavformat\version_major.h "$(OutDir)"\include\libavformat
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -220,6 +224,7 @@ mkdir "$(OutDir)"\include\libavformat
 copy ..\libavformat\avformat.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\avio.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\version.h "$(OutDir)"\include\libavformat
+copy ..\libavformat\version_major.h "$(OutDir)"\include\libavformat
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -268,6 +273,7 @@ mkdir "$(OutDir)"\include\libavformat
 copy ..\libavformat\avformat.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\avio.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\version.h "$(OutDir)"\include\libavformat
+copy ..\libavformat\version_major.h "$(OutDir)"\include\libavformat
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -317,6 +323,7 @@ mkdir "$(OutDir)"\include\libavformat
 copy ..\libavformat\avformat.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\avio.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\version.h "$(OutDir)"\include\libavformat
+copy ..\libavformat\version_major.h "$(OutDir)"\include\libavformat
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -366,6 +373,7 @@ mkdir "$(OutDir)"\include\libavformat
 copy ..\libavformat\avformat.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\avio.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\version.h "$(OutDir)"\include\libavformat
+copy ..\libavformat\version_major.h "$(OutDir)"\include\libavformat
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -415,6 +423,7 @@ mkdir "$(OutDir)"\include\libavformat
 copy ..\libavformat\avformat.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\avio.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\version.h "$(OutDir)"\include\libavformat
+copy ..\libavformat\version_major.h "$(OutDir)"\include\libavformat
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>
@@ -464,6 +473,7 @@ mkdir "$(OutDir)"\include\libavformat
 copy ..\libavformat\avformat.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\avio.h "$(OutDir)"\include\libavformat
 copy ..\libavformat\version.h "$(OutDir)"\include\libavformat
+copy ..\libavformat\version_major.h "$(OutDir)"\include\libavformat
 mkdir "$(OutDir)"\licenses
 copy ..\COPYING.GPLv3 "$(OutDir)"\licenses\ffmpeg.txt</Command>
     </PostBuildEvent>

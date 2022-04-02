@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "config_components.h"
 #if CONFIG_HEVC_QSV_ENCODER
 #   include "../../libavcodec/hevc_ps_enc.c"
 #endif

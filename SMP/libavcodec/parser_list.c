@@ -18,6 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "config.h"
+#include "config_components.h"
 static const AVCodecParser *parser_list[] = {
     &ff_aac_parser,
     &ff_aac_latm_parser,

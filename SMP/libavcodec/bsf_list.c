@@ -18,6 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "config.h"
+#include "config_components.h"
 static const FFBitStreamFilter *bitstream_filters[] = {
     &ff_aac_adtstoasc_bsf,
     &ff_av1_frame_merge_bsf,

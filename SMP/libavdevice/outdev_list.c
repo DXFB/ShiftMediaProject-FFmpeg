@@ -18,6 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "config.h"
+#include "config_components.h"
 static const AVOutputFormat *outdev_list[] = {
 #if CONFIG_OPENGL_OUTDEV
     &ff_opengl_muxer,

@@ -18,6 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "config.h"
+#include "config_components.h"
 static const AVFilter *filter_list[] = {
     &ff_af_abench,
     &ff_af_acompressor,
@@ -235,6 +237,7 @@ static const AVFilter *filter_list[] = {
     &ff_vf_exposure,
     &ff_vf_extractplanes,
     &ff_vf_fade,
+    &ff_vf_feedback,
     &ff_vf_fftdnoiz,
     &ff_vf_fftfilt,
     &ff_vf_field,
@@ -336,6 +339,7 @@ static const AVFilter *filter_list[] = {
     &ff_vf_phase,
     &ff_vf_photosensitivity,
     &ff_vf_pixdesctest,
+    &ff_vf_pixelize,
     &ff_vf_pixscope,
     &ff_vf_pp,
     &ff_vf_pp7,
@@ -480,6 +484,7 @@ static const AVFilter *filter_list[] = {
     &ff_avf_showwaves,
     &ff_avf_showwavespic,
     &ff_vaf_spectrumsynth,
+    &ff_avsrc_avsynctest,
     &ff_avsrc_amovie,
     &ff_avsrc_movie,
     &ff_af_afifo,

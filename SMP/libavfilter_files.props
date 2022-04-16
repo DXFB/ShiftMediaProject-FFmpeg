@@ -253,6 +253,7 @@
     <ClCompile Include="..\libavfilter\vf_estdif.c" />
     <ClCompile Include="..\libavfilter\vf_exposure.c" />
     <ClCompile Include="..\libavfilter\vf_fade.c" />
+    <ClCompile Include="..\libavfilter\vf_feedback.c" />
     <ClCompile Include="..\libavfilter\vf_fftdnoiz.c" />
     <ClCompile Include="..\libavfilter\vf_fftfilt.c" />
     <ClCompile Include="..\libavfilter\vf_field.c" />
@@ -320,6 +321,7 @@
     <ClCompile Include="..\libavfilter\vf_phase.c" />
     <ClCompile Include="..\libavfilter\vf_photosensitivity.c" />
     <ClCompile Include="..\libavfilter\vf_pixdesctest.c" />
+    <ClCompile Include="..\libavfilter\vf_pixelize.c" />
     <ClCompile Include="..\libavfilter\vf_pp.c" />
     <ClCompile Include="..\libavfilter\vf_premultiply.c" />
     <ClCompile Include="..\libavfilter\vf_pseudocolor.c" />
@@ -398,6 +400,7 @@
     <ClCompile Include="..\libavfilter\avf_showvolume.c" />
     <ClCompile Include="..\libavfilter\avf_showwaves.c" />
     <ClCompile Include="..\libavfilter\vaf_spectrumsynth.c" />
+    <ClCompile Include="..\libavfilter\src_avsynctest.c" />
     <ClCompile Include="..\libavfilter\src_movie.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_interface.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_io_proc.c" />

@@ -18,6 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "config.h"
+#include "config_components.h"
 static const AVInputFormat *demuxer_list[] = {
     &ff_aa_demuxer,
     &ff_aac_demuxer,
@@ -346,6 +348,7 @@ static const AVInputFormat *demuxer_list[] = {
     &ff_image_svg_pipe_demuxer,
     &ff_image_sunrast_pipe_demuxer,
     &ff_image_tiff_pipe_demuxer,
+    &ff_image_vbn_pipe_demuxer,
     &ff_image_webp_pipe_demuxer,
     &ff_image_xbm_pipe_demuxer,
     &ff_image_xpm_pipe_demuxer,

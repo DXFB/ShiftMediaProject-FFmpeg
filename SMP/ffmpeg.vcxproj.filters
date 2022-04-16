@@ -18,13 +18,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\fftools\ffmpeg_opt.c">
-      <Filter>Source Files\fftools</Filter>
-    </ClCompile>
     <ClCompile Include="..\fftools\ffmpeg_filter.c">
       <Filter>Source Files\fftools</Filter>
     </ClCompile>
     <ClCompile Include="..\fftools\ffmpeg_hw.c">
+      <Filter>Source Files\fftools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fftools\ffmpeg_mux.c">
+      <Filter>Source Files\fftools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fftools\ffmpeg_opt.c">
       <Filter>Source Files\fftools</Filter>
     </ClCompile>
     <ClCompile Include="..\fftools\cmdutils.c">

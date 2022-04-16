@@ -13,7 +13,7 @@ index c303db4d09..43209af1ab 100644
  #include "libavdevice/version.h"
  
 diff --git a/libavcodec/libx264.c b/libavcodec/libx264.c
-index 989370ef70..e93568d1f2 100644
+index 4ce3791ae8..14177b3016 100644
 --- a/libavcodec/libx264.c
 +++ b/libavcodec/libx264.c
 @@ -37,10 +37,6 @@
@@ -28,7 +28,7 @@ index 989370ef70..e93568d1f2 100644
  #include <float.h>
  #include <math.h>
 diff --git a/libavcodec/mfenc.c b/libavcodec/mfenc.c
-index f30068985e..1e1a5ff4ad 100644
+index 280941cf2e..24c863138d 100644
 --- a/libavcodec/mfenc.c
 +++ b/libavcodec/mfenc.c
 @@ -56,6 +56,10 @@ typedef struct MFContext {

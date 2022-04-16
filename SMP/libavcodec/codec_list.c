@@ -18,6 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "config.h"
+#include "config_components.h"
 static const FFCodec *codec_list[] = {
     &ff_a64multi_encoder,
     &ff_a64multi5_encoder,
@@ -94,6 +96,7 @@ static const FFCodec *codec_list[] = {
     &ff_v308_encoder,
     &ff_v408_encoder,
     &ff_v410_encoder,
+    &ff_vbn_encoder,
     &ff_vc2_encoder,
     &ff_wrapped_avframe_encoder,
     &ff_wmv1_encoder,
@@ -459,6 +462,7 @@ static const FFCodec *codec_list[] = {
     &ff_v408_decoder,
     &ff_v410_decoder,
     &ff_vb_decoder,
+    &ff_vbn_decoder,
     &ff_vble_decoder,
     &ff_vc1_decoder,
     &ff_vc1image_decoder,

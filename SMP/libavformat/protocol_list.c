@@ -18,6 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "config.h"
+#include "config_components.h"
 static const URLProtocol *url_protocols[] = {
     &ff_async_protocol,
     &ff_bluray_protocol,
@@ -57,4 +59,6 @@ static const URLProtocol *url_protocols[] = {
     &ff_udp_protocol,
     &ff_udplite_protocol,
     &ff_libssh_protocol,
+    &ff_ipfs_protocol,
+    &ff_ipns_protocol,
     NULL };

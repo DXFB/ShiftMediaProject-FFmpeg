@@ -21,6 +21,7 @@
 
 #include "config.h"
 #include "stdint.h"
+#include "config_components.h"
 
 #include "libswscale/rgb2rgb.h"
 #include "libswscale/swscale_internal.h"

@@ -124,6 +124,7 @@
     <ClCompile Include="..\libavcodec\dirac.c" />
     <ClCompile Include="..\libavcodec\dv_profile.c" />
     <ClCompile Include="..\libavcodec\encode.c" />
+    <ClCompile Include="..\libavcodec\get_buffer.c" />
     <ClCompile Include="..\libavcodec\imgconvert.c" />
     <ClCompile Include="..\libavcodec\jni.c" />
     <ClCompile Include="..\libavcodec\mathtables.c" />
@@ -231,6 +232,7 @@
     <ClCompile Include="..\libavcodec\snappy.c" />
     <ClCompile Include="..\libavcodec\startcode.c" />
     <ClCompile Include="..\libavcodec\texturedsp.c" />
+    <ClCompile Include="..\libavcodec\texturedspenc.c" />
     <ClCompile Include="..\libavcodec\tpeldsp.c" />
     <ClCompile Include="..\libavcodec\vc1dsp.c" />
     <ClCompile Include="..\libavcodec\vp56dsp.c" />
@@ -746,6 +748,8 @@
     <ClCompile Include="..\libavcodec\v410dec.c" />
     <ClCompile Include="..\libavcodec\v410enc.c" />
     <ClCompile Include="..\libavcodec\vb.c" />
+    <ClCompile Include="..\libavcodec\vbndec.c" />
+    <ClCompile Include="..\libavcodec\vbnenc.c" />
     <ClCompile Include="..\libavcodec\vble.c" />
     <ClCompile Include="..\libavcodec\vc1dec.c" />
     <ClCompile Include="..\libavcodec\vc1_block.c" />

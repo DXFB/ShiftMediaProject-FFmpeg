@@ -21,6 +21,7 @@
 
 #include "config.h"
 #include "stdint.h"
+#include "config_components.h"
 
 #include "libavcodec/xvididct.h"
 #include "libavcodec/wmv2dsp.h"

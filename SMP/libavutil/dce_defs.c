@@ -21,6 +21,7 @@
 
 #include "config.h"
 #include "stdint.h"
+#include "config_components.h"
 
 #include "libavutil/float_dsp.h"
 #include "libavutil/cpu_internal.h"

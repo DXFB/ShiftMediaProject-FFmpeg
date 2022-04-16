@@ -21,6 +21,7 @@
 
 #include "config.h"
 #include "stdint.h"
+#include "config_components.h"
 
 #include "libavfilter/vf_nlmeans.h"
 

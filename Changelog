@@ -7,6 +7,10 @@ version 5.1:
 - pcm-bluray encoder
 - DFPWM audio encoder/decoder and raw muxer/demuxer
 - SITI filter
+- Vizrt Binary Image encoder/decoder
+- avsynctest source filter
+- feedback video filter
+- pixelize video filter
 
 
 version 5.0:

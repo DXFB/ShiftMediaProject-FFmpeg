@@ -2562,7 +2562,7 @@ Output only difference samples, useful to hear introduced distortions.
 By default is disabled.
 
 @item adaptive
-Set strenght of adaptive distortion applied. Default value is 0.5.
+Set strength of adaptive distortion applied. Default value is 0.5.
 Allowed range is from 0 to 1.
 
 @item iterations
@@ -12181,6 +12181,44 @@ fade=t=in:st=5.5:d=0.5
 
 @end itemize
 
+@section feedback
+Apply feedback video filter.
+
+This filter pass cropped input frames to 2nd output.
+From there it can be filtered with other video filters.
+After filter receives frame from 2nd input, that frame
+is combined on top of original frame from 1st input and passed
+to 1st output.
+
+The typical usage is filter only part of frame.
+
+The filter accepts the following options:
+@table @option
+@item x
+@item y
+Set the top left crop position.
+
+@item w
+@item h
+Set the crop size.
+@end table
+
+@subsection Examples
+
+@itemize
+@item
+Blur only top left rectangular part of video frame size 100x100 with gblur filter.
+@example
+[in][blurin]feedback=x=0:y=0:w=100:h=100[out][blurout];[blurout]gblur=8[blurin]
+@end example
+
+@item
+Draw black box on top left part of video frame of size 100x100 with drawbox filter.
+@example
+[in][blurin]feedback=x=0:y=0:w=100:h=100[out][blurout];[blurout]drawbox=x=0:y=0:w=100:h=100:t=100[blurin]
+@end example
+@end itemize
+
 @section fftdnoiz
 Denoise frames using 3D FFT (frequency domain filtering).
 
@@ -14679,6 +14717,13 @@ filter choosing the best match with the given options, and the filter will
 output the chosen camera and lens models (logged with level "info"). You must
 provide the make, camera model, and lens model as they are required.
 
+To obtain a list of available makes and models, leave out one or both of @code{make} and
+@code{model} options. The filter will send the full list to the log with level @code{INFO}.
+The first column is the make and the second column is the model.
+To obtain a list of available lenses, set any values for make and model and leave out the
+@code{lens_model} option. The filter will send the full list of lenses in the log with level
+@code{INFO}. The ffmpeg tool will exit after the list is printed.
+
 The filter accepts the following options:
 
 @table @option
@@ -14692,6 +14737,10 @@ required.
 @item lens_model
 The model of the lens (for example, "Canon EF-S 18-55mm f/3.5-5.6 IS STM"). This
 option is required.
+
+@item db_path
+The full path to the lens database folder. If not set, the filter will attempt to
+load the database from the install path when the library was built. Default is unset.
 
 @item mode
 The type of correction to apply. The following values are valid options:
@@ -16072,6 +16121,18 @@ plane, 'Cc' describes the mapping for the output stream third plane and
 
 @item format
 Set output pixel format. Default is @code{yuva444p}.
+
+@item map0s
+@item map1s
+@item map2s
+@item map3s
+Set input to output stream mapping for output Nth plane. Default is @code{0}.
+
+@item map0p
+@item map1p
+@item map2p
+@item map3p
+Set input to output plane mapping for output Nth plane. Default is @code{0}.
 @end table
 
 @subsection Examples
@@ -17801,6 +17862,35 @@ format=monow, pixdesctest
 @end example
 
 can be used to test the monowhite pixel format descriptor definition.
+
+@section pixelize
+Apply pixelization to video stream.
+
+The filter accepts the following options:
+@table @option
+@item width, w
+@item height, h
+Set block dimensions that will be used for pixelization.
+Default value is @code{16}.
+
+@item mode, m
+Set the mode of pixelization used.
+
+Possible values are:
+@table @samp
+@item avg
+@item min
+@item max
+@end table
+Default value is @code{avg}.
+
+@item planes, p
+Set what planes to filter. Default is to filter all planes.
+@end table
+
+@subsection Commands
+
+This filter supports all options as @ref{commands}.
 
 @section pixscope
 
@@ -21394,9 +21484,8 @@ The filter accepts the following options:
 @table @option
 
 @item layout
-Set the grid size (i.e. the number of lines and columns). For the syntax of
-this option, check the
-@ref{video size syntax,,"Video size" section in the ffmpeg-utils manual,ffmpeg-utils}.
+Set the grid size in the form @code{COLUMNSxROWS}. Range is upto UINT_MAX cells.
+Default is @code{6x5}.
 
 @item nb_frames
 Set the maximum number of frames to render in the given area. It must be less
@@ -21404,12 +21493,12 @@ than or equal to @var{w}x@var{h}. The default value is @code{0}, meaning all
 the area will be used.
 
 @item margin
-Set the outer border margin in pixels.
+Set the outer border margin in pixels. Range is 0 to 1024. Default is @code{0}.
 
 @item padding
 Set the inner border thickness (i.e. the number of pixels between frames). For
 more advanced padding options (such as having different values for the edges),
-refer to the pad video filter.
+refer to the pad video filter. Range is 0 to 1024. Default is @code{0}.
 
 @item color
 Specify the color of the unused area. For the syntax of this option, check the
@@ -21418,12 +21507,12 @@ The default value of @var{color} is "black".
 
 @item overlap
 Set the number of frames to overlap when tiling several successive frames together.
-The value must be between @code{0} and @var{nb_frames - 1}.
+The value must be between @code{0} and @var{nb_frames - 1}. Default is @code{0}.
 
 @item init_padding
 Set the number of frames to initially be empty before displaying first output frame.
 This controls how soon will one get first output frame.
-The value must be between @code{0} and @var{nb_frames - 1}.
+The value must be between @code{0} and @var{nb_frames - 1}. Default is @code{0}.
 @end table
 
 @subsection Examples
@@ -25862,7 +25951,7 @@ supposed to be generated forever.
 Set speed of gradients rotation.
 
 @item type, t
-Set type of gradients, can be @code{linear} or @code{radial}.
+Set type of gradients, can be @code{linear} or @code{radial} or @code{circular} or @code{spiral}.
 @end table
 
 
@@ -28589,6 +28678,9 @@ Allowed range is from 10 to 200.
 @item limit
 Set upper limit of input audio samples volume in dBFS. Default is 0 dBFS.
 Allowed range is from -100 to 100.
+
+@item opacity
+Set opacity strength when using pixel format output with alpha component.
 @end table
 
 The usage is very similar to the showwaves filter; see the examples in that
@@ -28770,6 +28862,9 @@ Allowed range is from 10 to 200.
 @item limit
 Set upper limit of input audio samples volume in dBFS. Default is 0 dBFS.
 Allowed range is from -100 to 100.
+
+@item opacity
+Set opacity strength when using pixel format output with alpha component.
 @end table
 
 @subsection Examples
@@ -29263,6 +29358,43 @@ Below is a description of the currently available multimedia sources.
 
 This is the same as @ref{movie} source, except it selects an audio
 stream by default.
+
+@section avsynctest
+Generate an Audio/Video Sync Test.
+
+Generated stream periodically shows flash video frame and emits beep in audio.
+Useful to inspect A/V sync issues.
+
+It accepts the following options:
+
+@table @option
+@item size, s
+Set output video size. Default value is @code{hd720}.
+
+@item framerate, fr
+Set output video frame rate. Default value is @code{30}.
+
+@item samplerate, sr
+Set output audio sample rate. Default value is @code{44100}.
+
+@item amplitude, a
+Set output audio beep amplitude. Default value is @code{0.7}.
+
+@item period, p
+Set output audio beep period in seconds. Default value is @code{3}.
+
+@item delay, dl
+Set output video flash delay in number of frames. Default value is @code{0}.
+
+@item cycle, c
+Enable cycling of video delays, by default is disabled.
+
+@item duration, d
+Set stream output duration. By default duration is unlimited.
+
+@item fg, bg, ag
+Set foreground/background/additional color.
+@end table
 
 @anchor{movie}
 @section movie

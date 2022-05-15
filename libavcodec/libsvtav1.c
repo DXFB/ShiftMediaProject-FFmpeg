@@ -205,6 +205,33 @@ static int config_enc_params(EbSvtAv1EncConfiguration *param,
     else
         param->color_range = !!(desc->flags & AV_PIX_FMT_FLAG_RGB);
 
+#if SVT_AV1_CHECK_VERSION(1, 0, 0)
+    if (avctx->chroma_sample_location != AVCHROMA_LOC_UNSPECIFIED) {
+        const char *name =
+            av_chroma_location_name(avctx->chroma_sample_location);
+
+        switch (avctx->chroma_sample_location) {
+        case AVCHROMA_LOC_LEFT:
+            param->chroma_sample_position = EB_CSP_VERTICAL;
+            break;
+        case AVCHROMA_LOC_TOPLEFT:
+            param->chroma_sample_position = EB_CSP_COLOCATED;
+            break;
+        default:
+            if (!name)
+                break;
+
+            av_log(avctx, AV_LOG_WARNING,
+                   "Specified chroma sample location %s is unsupported "
+                   "on the AV1 bit stream level. Usage of a container that "
+                   "allows passing this information - such as Matroska - "
+                   "is recommended.\n",
+                   name);
+            break;
+        }
+    }
+#endif
+
     if (avctx->profile != FF_PROFILE_UNKNOWN)
         param->profile = avctx->profile;
 
@@ -270,7 +297,20 @@ static int config_enc_params(EbSvtAv1EncConfiguration *param,
         param->profile = FF_PROFILE_AV1_HIGH;
     }
 
-    avctx->bit_rate                 = param->target_bit_rate;
+    avctx->bit_rate       = param->rate_control_mode > 0 ?
+                            param->target_bit_rate : 0;
+    avctx->rc_max_rate    = param->max_bit_rate;
+    avctx->rc_buffer_size = param->vbv_bufsize;
+
+    if (avctx->bit_rate || avctx->rc_max_rate || avctx->rc_buffer_size) {
+        AVCPBProperties *cpb_props = ff_add_cpb_side_data(avctx);
+        if (!cpb_props)
+            return AVERROR(ENOMEM);
+
+        cpb_props->buffer_size = avctx->rc_buffer_size;
+        cpb_props->max_bitrate = avctx->rc_max_rate;
+        cpb_props->avg_bitrate = avctx->bit_rate;
+    }
 
     return 0;
 }
@@ -403,6 +443,16 @@ static int eb_send_frame(AVCodecContext *avctx, const AVFrame *frame)
     headerPtr->flags         = 0;
     headerPtr->p_app_private = NULL;
     headerPtr->pts           = frame->pts;
+
+    switch (frame->pict_type) {
+    case AV_PICTURE_TYPE_I:
+        headerPtr->pic_type = EB_AV1_KEY_PICTURE;
+        break;
+    default:
+        // Actually means auto, or default.
+        headerPtr->pic_type = EB_AV1_INVALID_PICTURE;
+        break;
+    }
 
     svt_av1_enc_send_picture(svt_enc->svt_handle, headerPtr);
 

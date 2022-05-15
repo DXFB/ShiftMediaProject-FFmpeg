@@ -30,8 +30,11 @@
 #include "libavutil/channel_layout.h"
 #include "libavutil/common.h"
 #include "libavutil/float_dsp.h"
+#include "libavutil/frame.h"
 #include "libavutil/intreadwrite.h"
+#include "libavutil/log.h"
 #include "libavutil/opt.h"
+#include "libavutil/rational.h"
 #include "libavutil/xga_font_data.h"
 
 #include "audio.h"
@@ -39,24 +42,73 @@
 #include "filters.h"
 #include "formats.h"
 #include "internal.h"
-#include "af_afir.h"
+#include "af_afirdsp.h"
 
-static void fcmul_add_c(float *sum, const float *t, const float *c, ptrdiff_t len)
-{
-    int n;
+typedef struct AudioFIRSegment {
+    int nb_partitions;
+    int part_size;
+    int block_size;
+    int fft_length;
+    int coeff_size;
+    int input_size;
+    int input_offset;
 
-    for (n = 0; n < len; n++) {
-        const float cre = c[2 * n    ];
-        const float cim = c[2 * n + 1];
-        const float tre = t[2 * n    ];
-        const float tim = t[2 * n + 1];
+    int *output_offset;
+    int *part_index;
 
-        sum[2 * n    ] += tre * cre - tim * cim;
-        sum[2 * n + 1] += tre * cim + tim * cre;
-    }
+    AVFrame *sumin;
+    AVFrame *sumout;
+    AVFrame *blockin;
+    AVFrame *blockout;
+    AVFrame *buffer;
+    AVFrame *coeff;
+    AVFrame *input;
+    AVFrame *output;
 
-    sum[2 * n] += t[2 * n] * c[2 * n];
-}
+    AVTXContext **tx, **itx;
+    av_tx_fn tx_fn, itx_fn;
+} AudioFIRSegment;
+
+typedef struct AudioFIRContext {
+    const AVClass *class;
+
+    float wet_gain;
+    float dry_gain;
+    float length;
+    int gtype;
+    float ir_gain;
+    int ir_format;
+    float max_ir_len;
+    int response;
+    int w, h;
+    AVRational frame_rate;
+    int ir_channel;
+    int minp;
+    int maxp;
+    int nb_irs;
+    int selir;
+
+    float gain;
+
+    int eof_coeffs[32];
+    int have_coeffs;
+    int nb_taps;
+    int nb_channels;
+    int nb_coef_channels;
+    int one2many;
+
+    AudioFIRSegment seg[1024];
+    int nb_segments;
+
+    AVFrame *in;
+    AVFrame *ir[32];
+    AVFrame *video;
+    int min_part_size;
+    int64_t pts;
+
+    AudioFIRDSPContext afirdsp;
+    AVFloatDSPContext *fdsp;
+} AudioFIRContext;
 
 static void direct(const float *in, const AVComplexFloat *ir, int len, float *out)
 {
@@ -813,14 +865,6 @@ static int config_video(AVFilterLink *outlink)
         return AVERROR(ENOMEM);
 
     return 0;
-}
-
-void ff_afir_init(AudioFIRDSPContext *dsp)
-{
-    dsp->fcmul_add = fcmul_add_c;
-
-    if (ARCH_X86)
-        ff_afir_init_x86(dsp);
 }
 
 static av_cold int init(AVFilterContext *ctx)

@@ -13,6 +13,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libpostproc\postprocess.c" />
+    <ClCompile Include="..\libpostproc\version.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\libpostproc\postprocess.h" />

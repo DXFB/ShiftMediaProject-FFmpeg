@@ -41,6 +41,7 @@ static const AVOutputFormat *muxer_list[] = {
     &ff_asf_stream_muxer,
     &ff_au_muxer,
     &ff_avi_muxer,
+    &ff_avif_muxer,
     &ff_avm2_muxer,
     &ff_avs2_muxer,
     &ff_avs3_muxer,

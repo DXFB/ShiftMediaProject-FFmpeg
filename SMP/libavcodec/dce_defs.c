@@ -1927,6 +1927,9 @@ void ff_hevc_put_hevc_qpel_h16_10_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _s
 void ff_hevc_put_hevc_qpel_h16_12_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my,int width) {return;}
 #endif
 #if !(ARCH_X86_64)
+void ff_hevc_put_hevc_qpel_h16_8_avx512icl(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my, int width) {return;}
+#endif
+#if !(ARCH_X86_64)
 void ff_hevc_put_hevc_qpel_h16_8_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my,int width) {return;}
 #endif
 #if !(ARCH_X86_64)
@@ -1954,6 +1957,9 @@ void ff_hevc_put_hevc_qpel_h32_12_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _s
 void ff_hevc_put_hevc_qpel_h32_8_avx2(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my,int width) {return;}
 #endif
 #if !(ARCH_X86_64)
+void ff_hevc_put_hevc_qpel_h32_8_avx512icl(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my, int width) {return;}
+#endif
+#if !(ARCH_X86_64)
 void ff_hevc_put_hevc_qpel_h32_8_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my,int width) {return;}
 #endif
 #if !(ARCH_X86_64)
@@ -1978,6 +1984,9 @@ void ff_hevc_put_hevc_qpel_h4_10_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _sr
 void ff_hevc_put_hevc_qpel_h4_12_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my,int width) {return;}
 #endif
 #if !(ARCH_X86_64)
+void ff_hevc_put_hevc_qpel_h4_8_avx512icl(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my, int width) {return;}
+#endif
+#if !(ARCH_X86_64)
 void ff_hevc_put_hevc_qpel_h4_8_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my,int width) {return;}
 #endif
 #if !(ARCH_X86_64)
@@ -1993,6 +2002,9 @@ void ff_hevc_put_hevc_qpel_h64_12_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _s
 void ff_hevc_put_hevc_qpel_h64_8_avx2(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my,int width) {return;}
 #endif
 #if !(ARCH_X86_64)
+void ff_hevc_put_hevc_qpel_h64_8_avx512icl(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my, int width) {return;}
+#endif
+#if !(ARCH_X86_64)
 void ff_hevc_put_hevc_qpel_h64_8_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my,int width) {return;}
 #endif
 #if !(ARCH_X86_64)
@@ -2000,6 +2012,9 @@ void ff_hevc_put_hevc_qpel_h8_10_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _sr
 #endif
 #if !(ARCH_X86_64)
 void ff_hevc_put_hevc_qpel_h8_12_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my,int width) {return;}
+#endif
+#if !(ARCH_X86_64)
+void ff_hevc_put_hevc_qpel_h8_8_avx512icl(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my, int width) {return;}
 #endif
 #if !(ARCH_X86_64)
 void ff_hevc_put_hevc_qpel_h8_8_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my,int width) {return;}
@@ -2087,6 +2102,9 @@ void ff_hevc_put_hevc_qpel_hv8_10_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _s
 #endif
 #if !(ARCH_X86_64)
 void ff_hevc_put_hevc_qpel_hv8_12_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my,int width) {return;}
+#endif
+#if !(ARCH_X86_64)
+void ff_hevc_put_hevc_qpel_hv8_8_avx512icl(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my, int width) {return;}
 #endif
 #if !(ARCH_X86_64)
 void ff_hevc_put_hevc_qpel_hv8_8_sse4(int16_t *dst, uint8_t *_src, ptrdiff_t _srcstride, int height, intptr_t mx, intptr_t my,int width) {return;}

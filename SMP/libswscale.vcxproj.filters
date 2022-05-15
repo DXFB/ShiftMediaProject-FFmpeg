@@ -87,6 +87,9 @@
     <ClCompile Include="..\libswscale\utils.c">
       <Filter>Source Files\libswscale</Filter>
     </ClCompile>
+    <ClCompile Include="..\libswscale\version.c">
+      <Filter>Source Files\libswscale</Filter>
+    </ClCompile>
     <ClCompile Include="..\libswscale\yuv2rgb.c">
       <Filter>Source Files\libswscale</Filter>
     </ClCompile>

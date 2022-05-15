@@ -13,9 +13,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libavformat\allformats.c" />
+    <ClCompile Include="..\libavformat\avformat.c" />
     <ClCompile Include="..\libavformat\avio.c" />
     <ClCompile Include="..\libavformat\aviobuf.c" />
     <ClCompile Include="..\libavformat\demux.c" />
+    <ClCompile Include="..\libavformat\demux_utils.c" />
     <ClCompile Include="..\libavformat\dump.c" />
     <ClCompile Include="..\libavformat\format.c" />
     <ClCompile Include="..\libavformat\id3v1.c" />
@@ -23,6 +25,7 @@
     <ClCompile Include="..\libavformat\isom_tags.c" />
     <ClCompile Include="..\libavformat\metadata.c" />
     <ClCompile Include="..\libavformat\mux.c" />
+    <ClCompile Include="..\libavformat\mux_utils.c" />
     <ClCompile Include="..\libavformat\options.c" />
     <ClCompile Include="..\libavformat\os_support.c" />
     <ClCompile Include="..\libavformat\protocols.c" />
@@ -31,6 +34,7 @@
     <ClCompile Include="..\libavformat\seek.c" />
     <ClCompile Include="..\libavformat\url.c" />
     <ClCompile Include="..\libavformat\utils.c" />
+    <ClCompile Include="..\libavformat\version.c" />
     <ClCompile Include="..\libavformat\file_open.c" />
     <ClCompile Include="..\libavformat\isom.c" />
     <ClCompile Include="..\libavformat\network.c" />
@@ -113,6 +117,7 @@
     <ClCompile Include="..\libavformat\asfdec_f.c" />
     <ClCompile Include="..\libavformat\asf.c" />
     <ClCompile Include="..\libavformat\asfcrypt.c" />
+    <ClCompile Include="..\libavformat\asf_tags.c" />
     <ClCompile Include="..\libavformat\avlanguage.c" />
     <ClCompile Include="..\libavformat\asfdec_o.c" />
     <ClCompile Include="..\libavformat\asfenc.c" />
@@ -238,6 +243,7 @@
     <ClCompile Include="..\libavformat\img2enc.c" />
     <ClCompile Include="..\libavformat\img2_alias_pix.c" />
     <ClCompile Include="..\libavformat\img2_brender_pix.c" />
+    <ClCompile Include="..\libavformat\jpegxl_probe.c" />
     <ClCompile Include="..\libavformat\imfdec.c" />
     <ClCompile Include="..\libavformat\imf_cpl.c" />
     <ClCompile Include="..\libavformat\ingenientdec.c" />

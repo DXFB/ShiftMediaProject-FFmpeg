@@ -40,6 +40,9 @@
     <ClCompile Include="..\libavdevice\utils.c">
       <Filter>Source Files\libavdevice</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavdevice\version.c">
+      <Filter>Source Files\libavdevice</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavdevice\file_open.c">
       <Filter>Source Files\libavdevice</Filter>
     </ClCompile>

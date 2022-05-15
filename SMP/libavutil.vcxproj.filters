@@ -279,6 +279,9 @@
     <ClCompile Include="..\libavutil\tx_int32.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavutil\version.c">
+      <Filter>Source Files\libavutil</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavutil\video_enc_params.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>

@@ -31,6 +31,7 @@
     <ClCompile Include="..\libswscale\swscale.c" />
     <ClCompile Include="..\libswscale\swscale_unscaled.c" />
     <ClCompile Include="..\libswscale\utils.c" />
+    <ClCompile Include="..\libswscale\version.c" />
     <ClCompile Include="..\libswscale\yuv2rgb.c" />
     <ClCompile Include="..\libswscale\vscale.c" />
     <ClCompile Include="..\libswscale\x86\hscale_fast_bilinear_simd.c" />

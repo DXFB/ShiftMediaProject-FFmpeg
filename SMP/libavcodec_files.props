@@ -137,6 +137,7 @@
     <ClCompile Include="..\libavcodec\qsv_api.c" />
     <ClCompile Include="..\libavcodec\raw.c" />
     <ClCompile Include="..\libavcodec\utils.c" />
+    <ClCompile Include="..\libavcodec\version.c" />
     <ClCompile Include="..\libavcodec\vlc.c" />
     <ClCompile Include="..\libavcodec\vorbis_parser.c" />
     <ClCompile Include="..\libavcodec\xiph.c" />
@@ -943,6 +944,7 @@
     <ClCompile Include="..\libavcodec\null_bsf.c" />
     <ClCompile Include="..\libavcodec\opus_metadata_bsf.c" />
     <ClCompile Include="..\libavcodec\pcm_rechunk_bsf.c" />
+    <ClCompile Include="..\libavcodec\pgs_frame_merge_bsf.c" />
     <ClCompile Include="..\libavcodec\prores_metadata_bsf.c" />
     <ClCompile Include="..\libavcodec\remove_extradata_bsf.c" />
     <ClCompile Include="..\libavcodec\setts_bsf.c" />

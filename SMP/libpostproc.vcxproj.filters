@@ -34,6 +34,9 @@
     <ClCompile Include="..\libpostproc\postprocess.c">
       <Filter>Source Files\libpostproc</Filter>
     </ClCompile>
+    <ClCompile Include="..\libpostproc\version.c">
+      <Filter>Source Files\libpostproc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\libpostproc\postprocess.h">

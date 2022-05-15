@@ -65,6 +65,7 @@
     <ClCompile Include="..\libavfilter\framequeue.c" />
     <ClCompile Include="..\libavfilter\graphdump.c" />
     <ClCompile Include="..\libavfilter\graphparser.c" />
+    <ClCompile Include="..\libavfilter\version.c" />
     <ClCompile Include="..\libavfilter\video.c" />
     <ClCompile Include="..\libavfilter\pthread.c" />
     <ClCompile Include="..\libavfilter\dnn_filter_common.c" />
@@ -193,6 +194,8 @@
     <ClCompile Include="..\libavfilter\vf_bitplanenoise.c" />
     <ClCompile Include="..\libavfilter\vf_blackdetect.c" />
     <ClCompile Include="..\libavfilter\vf_blackframe.c" />
+    <ClCompile Include="..\libavfilter\vf_blurdetect.c" />
+    <ClCompile Include="..\libavfilter\edge_common.c" />
     <ClCompile Include="..\libavfilter\vf_bm3d.c" />
     <ClCompile Include="..\libavfilter\vf_boxblur.c" />
     <ClCompile Include="..\libavfilter\boxblur.c" />
@@ -211,6 +214,7 @@
     <ClCompile Include="..\libavfilter\vf_colorize.c" />
     <ClCompile Include="..\libavfilter\vf_colorkey.c" />
     <ClCompile Include="..\libavfilter\vf_colorlevels.c" />
+    <ClCompile Include="..\libavfilter\vf_colormap.c" />
     <ClCompile Include="..\libavfilter\vf_colormatrix.c" />
     <ClCompile Include="..\libavfilter\vf_colorspace.c" />
     <ClCompile Include="..\libavfilter\colorspace.c" />
@@ -308,6 +312,7 @@
     <ClCompile Include="..\libavfilter\vf_monochrome.c" />
     <ClCompile Include="..\libavfilter\vf_morpho.c" />
     <ClCompile Include="..\libavfilter\vf_mpdecimate.c" />
+    <ClCompile Include="..\libavfilter\vf_multiply.c" />
     <ClCompile Include="..\libavfilter\vf_negate.c" />
     <ClCompile Include="..\libavfilter\vf_nnedi.c" />
     <ClCompile Include="..\libavfilter\vf_noise.c" />

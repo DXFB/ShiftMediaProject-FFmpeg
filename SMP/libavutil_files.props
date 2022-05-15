@@ -93,6 +93,7 @@
     <ClCompile Include="..\libavutil\tx.c" />
     <ClCompile Include="..\libavutil\tx_double.c" />
     <ClCompile Include="..\libavutil\tx_int32.c" />
+    <ClCompile Include="..\libavutil\version.c" />
     <ClCompile Include="..\libavutil\video_enc_params.c" />
     <ClCompile Include="..\libavutil\film_grain_params.c" />
     <ClCompile Include="..\compat\msvcrt\snprintf.c" />

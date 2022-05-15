@@ -23,6 +23,7 @@
     <ClCompile Include="..\libswresample\resample_dsp.c" />
     <ClCompile Include="..\libswresample\swresample.c" />
     <ClCompile Include="..\libswresample\swresample_frame.c" />
+    <ClCompile Include="..\libswresample\version.c" />
     <ClCompile Include="..\libswresample\soxr_resample.c" />
     <ClCompile Include="..\libswresample\x86\audio_convert_init.c" />
     <ClCompile Include="..\libswresample\x86\rematrix_init.c" />

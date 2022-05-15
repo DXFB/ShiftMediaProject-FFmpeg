@@ -49,6 +49,7 @@ static const FFBitStreamFilter *bitstream_filters[] = {
     &ff_null_bsf,
     &ff_opus_metadata_bsf,
     &ff_pcm_rechunk_bsf,
+    &ff_pgs_frame_merge_bsf,
     &ff_prores_metadata_bsf,
     &ff_remove_extradata_bsf,
     &ff_setts_bsf,

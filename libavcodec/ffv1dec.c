@@ -187,6 +187,9 @@ static int decode_slice_header(const FFV1Context *f, FFV1Context *fs)
          || (unsigned)fs->slice_y + (uint64_t)fs->slice_height > f->height)
         return -1;
 
+    if (fs->ac == AC_GOLOMB_RICE && fs->slice_width >= (1<<23))
+        return AVERROR_INVALIDDATA;
+
     for (i = 0; i < f->plane_count; i++) {
         PlaneContext * const p = &fs->plane[i];
         int idx = get_symbol(c, state, 0);
@@ -874,6 +877,14 @@ static int decode_frame(AVCodecContext *avctx, AVFrame *rframe,
             return AVERROR_INVALIDDATA;
         }
         p->key_frame = 0;
+    }
+
+    if (f->ac != AC_GOLOMB_RICE) {
+        if (buf_size < avctx->width * avctx->height / (128*8))
+            return AVERROR_INVALIDDATA;
+    } else {
+        if (buf_size < avctx->height / 8)
+            return AVERROR_INVALIDDATA;
     }
 
     ret = ff_thread_get_ext_buffer(avctx, &f->picture, AV_GET_BUFFER_FLAG_REF);

@@ -118,6 +118,7 @@ typedef struct OptionsContext {
     float readrate;
     int accurate_seek;
     int thread_queue_size;
+    int input_sync_ref;
 
     SpecifierOpt *ts_scale;
     int        nb_ts_scale;
@@ -176,6 +177,8 @@ typedef struct OptionsContext {
     int        nb_qscale;
     SpecifierOpt *forced_key_frames;
     int        nb_forced_key_frames;
+    SpecifierOpt *fps_mode;
+    int        nb_fps_mode;
     SpecifierOpt *force_fps;
     int        nb_force_fps;
     SpecifierOpt *frame_aspect_ratios;
@@ -408,6 +411,7 @@ typedef struct InputFile {
                              at the moment when looping happens */
     AVRational time_base; /* time base of the duration */
     int64_t input_ts_offset;
+    int input_sync_ref;
 
     int64_t ts_offset;
     int64_t last_ts;
@@ -456,7 +460,7 @@ typedef struct OutputStream {
     int source_index;        /* InputStream index */
     AVStream *st;            /* stream in the output file */
     int encoding_needed;     /* true if encoding needed for this stream */
-    int frame_number;
+    int64_t frame_number;
     /* input pts and corresponding output pts
        for A/V sync */
     struct InputStream *sync_ist; /* input stream to sync against */
@@ -479,8 +483,8 @@ typedef struct OutputStream {
     AVFrame *filtered_frame;
     AVFrame *last_frame;
     AVPacket *pkt;
-    int last_dropped;
-    int last_nb0_frames[3];
+    int64_t last_dropped;
+    int64_t last_nb0_frames[3];
 
     void  *hwaccel_ctx;
 
@@ -489,6 +493,7 @@ typedef struct OutputStream {
     AVRational max_frame_rate;
     enum VideoSyncMethod vsync_method;
     int is_cfr;
+    const char *fps_mode;
     int force_fps;
     int top_field_first;
     int rotate_overridden;
@@ -551,6 +556,8 @@ typedef struct OutputStream {
     // number of frames/samples sent to the encoder
     uint64_t frames_encoded;
     uint64_t samples_encoded;
+    // number of packets received from the encoder
+    uint64_t packets_encoded;
 
     /* packet quality factor */
     int quality;

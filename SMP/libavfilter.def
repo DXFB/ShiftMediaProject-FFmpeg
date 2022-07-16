@@ -25,6 +25,7 @@ EXPORTS
     av_buffersrc_parameters_set
     av_buffersrc_write_frame
     av_filter_iterate
+    av_fopen_utf8
     avfilter_config_links
     avfilter_configuration
     avfilter_filter_pad_count

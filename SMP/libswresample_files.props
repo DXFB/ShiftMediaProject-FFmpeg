@@ -29,7 +29,6 @@
     <ClCompile Include="..\libswresample\x86\rematrix_init.c" />
     <ClCompile Include="..\libswresample\x86\resample_init.c" />
     <ClCompile Include="libswresample\log2_tab_wrap.c" />
-    <ClCompile Include="libswresample\dce_defs.c" />
     <ClCompile Include="..\libswresample\rematrix.c">
       <ObjectFileName>$(IntDir)\libswresample_rematrix.obj</ObjectFileName>
     </ClCompile>

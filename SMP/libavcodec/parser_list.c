@@ -61,6 +61,7 @@ static const AVCodecParser *parser_list[] = {
     &ff_opus_parser,
     &ff_png_parser,
     &ff_pnm_parser,
+    &ff_qoi_parser,
     &ff_rv30_parser,
     &ff_rv40_parser,
     &ff_sbc_parser,

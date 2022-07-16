@@ -115,6 +115,9 @@ EXPORTS
     av_crc
     av_crc_get_table
     av_crc_init
+    av_csp_luma_coeffs_from_avcsp
+    av_csp_primaries_desc_from_id
+    av_csp_primaries_id_from_desc
     av_d2q
     av_d2str
     av_default_get_category
@@ -525,10 +528,16 @@ EXPORTS
     av_tx_uninit
     av_usleep
     av_utf8_decode
+    av_uuid_parse
+    av_uuid_parse_range
+    av_uuid_unparse
+    av_uuid_urn_parse
     av_vbprintf
     av_version_info
     av_video_enc_params_alloc
     av_video_enc_params_create_side_data
+    av_vk_frame_alloc
+    av_vkfmt_from_pixfmt
     av_vlog
     av_write_image_line
     av_write_image_line2

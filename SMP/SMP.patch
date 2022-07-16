@@ -1,5 +1,5 @@
 diff --git a/fftools/opt_common.c b/fftools/opt_common.c
-index c303db4d09..43209af1ab 100644
+index ae5e28a5af..bbe86950b9 100644
 --- a/fftools/opt_common.c
 +++ b/fftools/opt_common.c
 @@ -48,6 +48,9 @@
@@ -12,26 +12,11 @@ index c303db4d09..43209af1ab 100644
  #include "libavdevice/avdevice.h"
  #include "libavdevice/version.h"
  
-diff --git a/libavcodec/libx264.c b/libavcodec/libx264.c
-index 4ce3791ae8..14177b3016 100644
---- a/libavcodec/libx264.c
-+++ b/libavcodec/libx264.c
-@@ -37,10 +37,6 @@
- #include "atsc_a53.h"
- #include "sei.h"
- 
--#if defined(_MSC_VER)
--#define X264_API_IMPORTS 1
--#endif
--
- #include <x264.h>
- #include <float.h>
- #include <math.h>
 diff --git a/libavcodec/mfenc.c b/libavcodec/mfenc.c
-index 280941cf2e..24c863138d 100644
+index bbe78605a9..680ffa01a6 100644
 --- a/libavcodec/mfenc.c
 +++ b/libavcodec/mfenc.c
-@@ -56,6 +56,10 @@ typedef struct MFContext {
+@@ -59,6 +59,10 @@ typedef struct MFContext {
  static int mf_choose_output_type(AVCodecContext *avctx);
  static int mf_setup_context(AVCodecContext *avctx);
  

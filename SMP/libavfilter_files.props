@@ -58,6 +58,7 @@
     <ClCompile Include="..\libavfilter\avfiltergraph.c" />
     <ClCompile Include="..\libavfilter\buffersink.c" />
     <ClCompile Include="..\libavfilter\buffersrc.c" />
+    <ClCompile Include="..\libavfilter\colorspace.c" />
     <ClCompile Include="..\libavfilter\drawutils.c" />
     <ClCompile Include="..\libavfilter\fifo.c" />
     <ClCompile Include="..\libavfilter\formats.c" />
@@ -67,6 +68,7 @@
     <ClCompile Include="..\libavfilter\graphparser.c" />
     <ClCompile Include="..\libavfilter\version.c" />
     <ClCompile Include="..\libavfilter\video.c" />
+    <ClCompile Include="..\libavfilter\file_open.c" />
     <ClCompile Include="..\libavfilter\pthread.c" />
     <ClCompile Include="..\libavfilter\dnn_filter_common.c" />
     <ClCompile Include="..\libavfilter\f_bench.c" />
@@ -174,6 +176,7 @@
     <ClCompile Include="..\libavfilter\af_surround.c" />
     <ClCompile Include="..\libavfilter\af_tremolo.c" />
     <ClCompile Include="..\libavfilter\af_vibrato.c" />
+    <ClCompile Include="..\libavfilter\af_virtualbass.c" />
     <ClCompile Include="..\libavfilter\af_volumedetect.c" />
     <ClCompile Include="..\libavfilter\asrc_afirsrc.c" />
     <ClCompile Include="..\libavfilter\asrc_anoisesrc.c" />
@@ -194,6 +197,7 @@
     <ClCompile Include="..\libavfilter\vf_bitplanenoise.c" />
     <ClCompile Include="..\libavfilter\vf_blackdetect.c" />
     <ClCompile Include="..\libavfilter\vf_blackframe.c" />
+    <ClCompile Include="..\libavfilter\vf_blockdetect.c" />
     <ClCompile Include="..\libavfilter\vf_blurdetect.c" />
     <ClCompile Include="..\libavfilter\edge_common.c" />
     <ClCompile Include="..\libavfilter\vf_bm3d.c" />
@@ -217,7 +221,6 @@
     <ClCompile Include="..\libavfilter\vf_colormap.c" />
     <ClCompile Include="..\libavfilter\vf_colormatrix.c" />
     <ClCompile Include="..\libavfilter\vf_colorspace.c" />
-    <ClCompile Include="..\libavfilter\colorspace.c" />
     <ClCompile Include="..\libavfilter\vf_colortemperature.c" />
     <ClCompile Include="..\libavfilter\vf_convolve.c" />
     <ClCompile Include="..\libavfilter\vf_copy.c" />

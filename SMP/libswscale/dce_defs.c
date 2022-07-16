@@ -23,27 +23,9 @@
 #include "stdint.h"
 #include "config_components.h"
 
-#include "libswscale/rgb2rgb.h"
-#include "libswscale/swscale_internal.h"
 
-SwsFunc ff_yuv2rgb_init_ppc(SwsContext *c) {return *(SwsFunc*)(0);}
-void ff_get_unscaled_swscale_aarch64(SwsContext *c) {return;}
-void ff_get_unscaled_swscale_arm(SwsContext *c) {return;}
-void ff_get_unscaled_swscale_ppc(SwsContext *c) {return;}
-void ff_sws_init_swscale_aarch64(SwsContext *c) {return;}
-void ff_sws_init_swscale_arm(SwsContext *c) {return;}
-void ff_sws_init_swscale_ppc(SwsContext *c) {return;}
-void ff_yuv2rgb_init_tables_ppc(SwsContext *c, const int inv_table[4],
-                                int brightness, int contrast, int saturation) {return;}
-#if !(HAVE_AMD3DNOW_INLINE)
-void rgb2rgb_init_3dnow() {return;}
-#endif
-void rgb2rgb_init_aarch64(void) {return;}
 #if !(HAVE_AVX_INLINE)
 void rgb2rgb_init_avx() {return;}
-#endif
-#if !(HAVE_MMX_INLINE)
-void rgb2rgb_init_mmx() {return;}
 #endif
 #if !(HAVE_MMXEXT_INLINE)
 void rgb2rgb_init_mmxext() {return;}

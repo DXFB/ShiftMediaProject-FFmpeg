@@ -45,6 +45,7 @@ copy ..\libavutil\channel_layout.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\csp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
@@ -107,6 +108,7 @@ copy ..\libavutil\timecode.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\uuid.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
@@ -187,6 +189,7 @@ copy ..\libavutil\channel_layout.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\csp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
@@ -249,6 +252,7 @@ copy ..\libavutil\timecode.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\uuid.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
@@ -330,6 +334,7 @@ copy ..\libavutil\channel_layout.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\csp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
@@ -392,6 +397,7 @@ copy ..\libavutil\timecode.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\uuid.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
@@ -473,6 +479,7 @@ copy ..\libavutil\channel_layout.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\csp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
@@ -535,6 +542,7 @@ copy ..\libavutil\timecode.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\uuid.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
@@ -615,6 +623,7 @@ copy ..\libavutil\channel_layout.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\csp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
@@ -677,6 +686,7 @@ copy ..\libavutil\timecode.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\uuid.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
@@ -757,6 +767,7 @@ copy ..\libavutil\channel_layout.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\csp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
@@ -819,6 +830,7 @@ copy ..\libavutil\timecode.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\uuid.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
@@ -900,6 +912,7 @@ copy ..\libavutil\channel_layout.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\csp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
@@ -962,6 +975,7 @@ copy ..\libavutil\timecode.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\uuid.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
@@ -1043,6 +1057,7 @@ copy ..\libavutil\channel_layout.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\csp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
@@ -1105,6 +1120,7 @@ copy ..\libavutil\timecode.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\uuid.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
@@ -1186,6 +1202,7 @@ copy ..\libavutil\channel_layout.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\csp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
@@ -1248,6 +1265,7 @@ copy ..\libavutil\timecode.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\uuid.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil
@@ -1329,6 +1347,7 @@ copy ..\libavutil\channel_layout.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\common.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\cpu.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\crc.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\csp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\des.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\detection_bbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\dict.h "$(OutDir)"\include\libavutil
@@ -1391,6 +1410,7 @@ copy ..\libavutil\timecode.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\timestamp.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\tree.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\twofish.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\uuid.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\version.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\video_enc_params.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\xtea.h "$(OutDir)"\include\libavutil

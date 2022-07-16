@@ -647,6 +647,8 @@
     <ClCompile Include="..\libavcodec\qdm2.c" />
     <ClCompile Include="..\libavcodec\qdmc.c" />
     <ClCompile Include="..\libavcodec\qdrw.c" />
+    <ClCompile Include="..\libavcodec\qoidec.c" />
+    <ClCompile Include="..\libavcodec\qoienc.c" />
     <ClCompile Include="..\libavcodec\qpeg.c" />
     <ClCompile Include="..\libavcodec\qtrle.c" />
     <ClCompile Include="..\libavcodec\qtrleenc.c" />
@@ -867,6 +869,7 @@
     <ClCompile Include="..\libavcodec\adx_parser.c" />
     <ClCompile Include="..\libavcodec\amr_parser.c" />
     <ClCompile Include="..\libavcodec\av1_parser.c" />
+    <ClCompile Include="..\libavcodec\avs2.c" />
     <ClCompile Include="..\libavcodec\avs2_parser.c" />
     <ClCompile Include="..\libavcodec\avs3_parser.c" />
     <ClCompile Include="..\libavcodec\bmp_parser.c" />
@@ -902,6 +905,7 @@
     <ClCompile Include="..\libavcodec\opus_parser.c" />
     <ClCompile Include="..\libavcodec\png_parser.c" />
     <ClCompile Include="..\libavcodec\pnm_parser.c" />
+    <ClCompile Include="..\libavcodec\qoi_parser.c" />
     <ClCompile Include="..\libavcodec\rv34_parser.c" />
     <ClCompile Include="..\libavcodec\sbc_parser.c" />
     <ClCompile Include="..\libavcodec\sipr_parser.c" />

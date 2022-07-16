@@ -23,7 +23,6 @@
 #include "stdint.h"
 #include "config_components.h"
 
-#include "libavfilter/vf_nlmeans.h"
 
 #if !(ARCH_X86_64)
 void ff_atadenoise_filter_row8_serial_sse4(const uint8_t *src, uint8_t *dst,
@@ -53,7 +52,6 @@ void ff_compute_weights_line_avx2(const uint32_t *const iia,
 void ff_multiply3x3_sse2(int16_t *data[3], ptrdiff_t stride, int w, int h,
                          const int16_t coeff[3][3][8]) {return;}
 #endif
-void ff_nlmeans_init_aarch64(NLMeansDSPContext *dsp) {return;}
 #if !(ARCH_X86_64)
 void ff_rgb2yuv_420p10_sse2(uint8_t *yuv_out[3], const ptrdiff_t yuv_stride[3], int16_t *rgb_in[3], ptrdiff_t rgb_stride, int w, int h, const int16_t coeff[3][3][8], const int16_t yuv_offset[8]) {return;}
 #endif

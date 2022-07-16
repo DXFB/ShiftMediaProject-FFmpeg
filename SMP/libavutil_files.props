@@ -38,6 +38,7 @@
     <ClCompile Include="..\libavutil\color_utils.c" />
     <ClCompile Include="..\libavutil\cpu.c" />
     <ClCompile Include="..\libavutil\crc.c" />
+    <ClCompile Include="..\libavutil\csp.c" />
     <ClCompile Include="..\libavutil\des.c" />
     <ClCompile Include="..\libavutil\detection_bbox.c" />
     <ClCompile Include="..\libavutil\dict.c" />
@@ -93,9 +94,11 @@
     <ClCompile Include="..\libavutil\tx.c" />
     <ClCompile Include="..\libavutil\tx_double.c" />
     <ClCompile Include="..\libavutil\tx_int32.c" />
+    <ClCompile Include="..\libavutil\uuid.c" />
     <ClCompile Include="..\libavutil\version.c" />
     <ClCompile Include="..\libavutil\video_enc_params.c" />
     <ClCompile Include="..\libavutil\film_grain_params.c" />
+    <ClCompile Include="..\libavutil\hwcontext_stub.c" />
     <ClCompile Include="..\compat\msvcrt\snprintf.c" />
     <ClCompile Include="..\compat\strtod.c" />
     <ClCompile Include="..\compat\getopt.c" />
@@ -109,7 +112,6 @@
     <ClCompile Include="libavutil\hwcontext_d3d11va_wrap.c" />
     <ClCompile Include="libavutil\hwcontext_dxva2_wrap.c" />
     <ClCompile Include="libavutil\hwcontext_qsv_wrap.c" />
-    <ClCompile Include="libavutil\dce_defs.c" />
     <ClCompile Include="..\libavutil\float_dsp.c">
       <ObjectFileName>$(IntDir)\libavutil_float_dsp.obj</ObjectFileName>
     </ClCompile>
@@ -152,6 +154,7 @@
     <ClInclude Include="..\libavutil\common.h" />
     <ClInclude Include="..\libavutil\cpu.h" />
     <ClInclude Include="..\libavutil\crc.h" />
+    <ClInclude Include="..\libavutil\csp.h" />
     <ClInclude Include="..\libavutil\des.h" />
     <ClInclude Include="..\libavutil\detection_bbox.h" />
     <ClInclude Include="..\libavutil\dict.h" />
@@ -214,6 +217,7 @@
     <ClInclude Include="..\libavutil\timestamp.h" />
     <ClInclude Include="..\libavutil\tree.h" />
     <ClInclude Include="..\libavutil\twofish.h" />
+    <ClInclude Include="..\libavutil\uuid.h" />
     <ClInclude Include="..\libavutil\version.h" />
     <ClInclude Include="..\libavutil\video_enc_params.h" />
     <ClInclude Include="..\libavutil\xtea.h" />

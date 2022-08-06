@@ -3062,6 +3062,21 @@ static int mov_read_stts(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     st->nb_frames= total_sample_count;
     if (duration)
         st->duration= FFMIN(st->duration, duration);
+
+    // All samples have zero duration. They have higher chance be chose by
+    // mov_find_next_sample, which leads to seek again and again.
+    //
+    // It's AVERROR_INVALIDDATA actually, but such files exist in the wild.
+    // So only mark data stream as discarded for safety.
+    if (!duration && sc->stts_count &&
+            st->codecpar->codec_type == AVMEDIA_TYPE_DATA) {
+        av_log(c->fc, AV_LOG_WARNING,
+               "All samples in data stream index:id [%d:%d] have zero "
+               "duration, stream set to be discarded by default. Override "
+               "using AVStream->discard or -discard for ffmpeg command.\n",
+               st->index, st->id);
+        st->discard = AVDISCARD_ALL;
+    }
     sc->track_end = duration;
     return 0;
 }
@@ -7540,6 +7555,8 @@ static int mov_read_iloc(MOVContext *c, AVIOContext *pb, MOVAtom atom)
 
     for (int i = 0; i < item_count; i++) {
         int item_id = (version < 2) ? avio_rb16(pb) : avio_rb32(pb);
+        if (avio_feof(pb))
+            return AVERROR_INVALIDDATA;
         if (version > 0)
             avio_rb16(pb);  // construction_method.
         avio_rb16(pb);  // data_reference_index.

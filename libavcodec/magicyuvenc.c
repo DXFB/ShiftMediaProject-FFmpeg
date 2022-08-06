@@ -458,11 +458,12 @@ static int magy_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     }
 
     if (s->correlate) {
-        uint8_t *r, *g, *b, *decorrelated[2] = { s->decorrelate_buf[0],
+        uint8_t *decorrelated[2] = { s->decorrelate_buf[0],
                                                  s->decorrelate_buf[1] };
         const int decorrelate_linesize = FFALIGN(width, 16);
         const uint8_t *const data[4] = { decorrelated[0], frame->data[0],
                                          decorrelated[1], frame->data[3] };
+        const uint8_t *r, *g, *b;
         const int linesize[4]  = { decorrelate_linesize, frame->linesize[0],
                                    decorrelate_linesize, frame->linesize[3] };
 
@@ -579,5 +580,5 @@ const FFCodec ff_magicyuv_encoder = {
                           AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV444P, AV_PIX_FMT_YUVA444P, AV_PIX_FMT_GRAY8,
                           AV_PIX_FMT_NONE
                       },
-    .caps_internal    = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal    = FF_CODEC_CAP_INIT_CLEANUP,
 };

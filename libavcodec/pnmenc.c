@@ -40,7 +40,6 @@ static int pnm_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     PHMEncContext *s = avctx->priv_data;
     uint8_t *bytestream, *bytestream_start, *bytestream_end;
     int i, h, h1, c, n, linesize, ret;
-    uint8_t *ptr, *ptr1, *ptr2;
     int size = av_image_get_buffer_size(avctx->pix_fmt,
                                         avctx->width, avctx->height, 1);
 
@@ -135,9 +134,9 @@ static int pnm_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
 
     if ((avctx->pix_fmt == AV_PIX_FMT_GBRPF32LE ||
          avctx->pix_fmt == AV_PIX_FMT_GBRPF32BE) && c == 'F') {
-        float *r = (float *)p->data[2];
-        float *g = (float *)p->data[0];
-        float *b = (float *)p->data[1];
+        const float *r = (const float *)p->data[2];
+        const float *g = (const float *)p->data[0];
+        const float *b = (const float *)p->data[1];
 
         for (int i = 0; i < avctx->height; i++) {
             for (int j = 0; j < avctx->width; j++) {
@@ -164,9 +163,9 @@ static int pnm_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
             g += p->linesize[0] / 4;
         }
     } else if (avctx->pix_fmt == AV_PIX_FMT_GBRPF32 && c == 'H') {
-        float *r = (float *)p->data[2];
-        float *g = (float *)p->data[0];
-        float *b = (float *)p->data[1];
+        const float *r = (const float *)p->data[2];
+        const float *g = (const float *)p->data[0];
+        const float *b = (const float *)p->data[1];
 
         for (int i = 0; i < avctx->height; i++) {
             for (int j = 0; j < avctx->width; j++) {
@@ -192,7 +191,7 @@ static int pnm_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
             g += p->linesize[0] / 4;
         }
     } else {
-        ptr      = p->data[0];
+        const uint8_t *ptr = p->data[0];
         linesize = p->linesize[0];
         for (i = 0; i < h; i++) {
             memcpy(bytestream, ptr, n);
@@ -202,10 +201,9 @@ static int pnm_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     }
 
     if (avctx->pix_fmt == AV_PIX_FMT_YUV420P || avctx->pix_fmt == AV_PIX_FMT_YUV420P16BE) {
+        const uint8_t *ptr1 = p->data[1], *ptr2 = p->data[2];
         h >>= 1;
         n >>= 1;
-        ptr1 = p->data[1];
-        ptr2 = p->data[2];
         for (i = 0; i < h; i++) {
             memcpy(bytestream, ptr1, n);
             bytestream += n;
@@ -232,7 +230,6 @@ const FFCodec ff_pgm_encoder = {
     .p.pix_fmts     = (const enum AVPixelFormat[]){
         AV_PIX_FMT_GRAY8, AV_PIX_FMT_GRAY16BE, AV_PIX_FMT_NONE
     },
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };
 #endif
 
@@ -247,7 +244,6 @@ const FFCodec ff_pgmyuv_encoder = {
     .p.pix_fmts     = (const enum AVPixelFormat[]){
         AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV420P16BE, AV_PIX_FMT_NONE
     },
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };
 #endif
 
@@ -262,7 +258,6 @@ const FFCodec ff_ppm_encoder = {
     .p.pix_fmts     = (const enum AVPixelFormat[]){
         AV_PIX_FMT_RGB24, AV_PIX_FMT_RGB48BE, AV_PIX_FMT_NONE
     },
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };
 #endif
 
@@ -276,7 +271,6 @@ const FFCodec ff_pbm_encoder = {
     FF_CODEC_ENCODE_CB(pnm_encode_frame),
     .p.pix_fmts     = (const enum AVPixelFormat[]){ AV_PIX_FMT_MONOWHITE,
                                                   AV_PIX_FMT_NONE },
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };
 #endif
 
@@ -293,7 +287,6 @@ const FFCodec ff_pfm_encoder = {
                                                     AV_PIX_FMT_GBRPF32BE,
                                                     AV_PIX_FMT_GRAYF32BE,
                                                     AV_PIX_FMT_NONE },
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };
 #endif
 
@@ -319,6 +312,5 @@ const FFCodec ff_phm_encoder = {
     .p.pix_fmts     = (const enum AVPixelFormat[]){ AV_PIX_FMT_GBRPF32,
                                                     AV_PIX_FMT_GRAYF32,
                                                     AV_PIX_FMT_NONE },
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };
 #endif

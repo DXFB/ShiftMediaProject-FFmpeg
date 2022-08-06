@@ -110,7 +110,7 @@ static av_cold int encode_init(AVCodecContext *avctx)
 static int apply_window_and_mdct(AVCodecContext *avctx, const AVFrame *frame)
 {
     WMACodecContext *s = avctx->priv_data;
-    float **audio      = (float **) frame->extended_data;
+    const float *const *audio = (const float *const *) frame->extended_data;
     int len            = frame->nb_samples;
     int window_index   = s->frame_len_bits - s->block_len_bits;
     FFTContext *mdct   = &s->mdct_ctx[window_index];
@@ -444,7 +444,7 @@ const FFCodec ff_wmav1_encoder = {
     .close          = ff_wma_end,
     .p.sample_fmts  = (const enum AVSampleFormat[]) { AV_SAMPLE_FMT_FLTP,
                                                       AV_SAMPLE_FMT_NONE },
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
 };
 #endif
 #if CONFIG_WMAV2_ENCODER
@@ -459,6 +459,6 @@ const FFCodec ff_wmav2_encoder = {
     .close          = ff_wma_end,
     .p.sample_fmts  = (const enum AVSampleFormat[]) { AV_SAMPLE_FMT_FLTP,
                                                       AV_SAMPLE_FMT_NONE },
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
 };
 #endif

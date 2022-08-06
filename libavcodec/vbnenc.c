@@ -116,7 +116,7 @@ static int vbn_encode(AVCodecContext *avctx, AVPacket *pkt,
         ctx->enc.tex_data.out = pkt->data + VBN_HEADER_SIZE;
         avctx->execute2(avctx, ff_texturedsp_compress_thread, &ctx->enc, NULL, ctx->enc.slice_count);
     } else {
-        uint8_t *flipped = frame->data[0] + frame->linesize[0] * (frame->height - 1);
+        const uint8_t *flipped = frame->data[0] + frame->linesize[0] * (frame->height - 1);
         av_image_copy_plane(pkt->data + VBN_HEADER_SIZE, linesize, flipped, -frame->linesize[0], linesize, frame->height);
     }
 
@@ -161,6 +161,5 @@ const FFCodec ff_vbn_encoder = {
     .p.pix_fmts     = (const enum AVPixelFormat[]) {
         AV_PIX_FMT_RGBA, AV_PIX_FMT_RGB24, AV_PIX_FMT_NONE,
     },
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE |
-                      FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
 };

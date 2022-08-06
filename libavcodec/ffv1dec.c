@@ -883,7 +883,14 @@ static int decode_frame(AVCodecContext *avctx, AVFrame *rframe,
         if (buf_size < avctx->width * avctx->height / (128*8))
             return AVERROR_INVALIDDATA;
     } else {
-        if (buf_size < avctx->height / 8)
+        int w = avctx->width;
+        int s = 1 + w / (1<<23);
+
+        w /= s;
+
+        for (i = 0; w > (1<<ff_log2_run[i]); i++)
+            w -= ff_log2_run[i];
+        if (buf_size < (avctx->height + i + 6) / 8 * s)
             return AVERROR_INVALIDDATA;
     }
 
@@ -1075,6 +1082,6 @@ const FFCodec ff_ffv1_decoder = {
     .update_thread_context = ONLY_IF_THREADS_ENABLED(update_thread_context),
     .p.capabilities = AV_CODEC_CAP_DR1 /*| AV_CODEC_CAP_DRAW_HORIZ_BAND*/ |
                       AV_CODEC_CAP_FRAME_THREADS | AV_CODEC_CAP_SLICE_THREADS,
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP |
+    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP |
                       FF_CODEC_CAP_ALLOCATE_PROGRESS,
 };

@@ -40,7 +40,7 @@ static int v408_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
                              const AVFrame *pic, int *got_packet)
 {
     uint8_t *dst;
-    uint8_t *y, *u, *v, *a;
+    const uint8_t *y, *u, *v, *a;
     int i, j, ret;
 
     ret = ff_get_encode_buffer(avctx, pkt, avctx->width * avctx->height * 4, 0);
@@ -89,7 +89,6 @@ const FFCodec ff_ayuv_encoder = {
     .init         = v408_encode_init,
     FF_CODEC_ENCODE_CB(v408_encode_frame),
     .p.pix_fmts   = pix_fmt,
-    .caps_internal = FF_CODEC_CAP_INIT_THREADSAFE,
 };
 #endif
 #if CONFIG_V408_ENCODER
@@ -102,6 +101,5 @@ const FFCodec ff_v408_encoder = {
     .init         = v408_encode_init,
     FF_CODEC_ENCODE_CB(v408_encode_frame),
     .p.pix_fmts   = pix_fmt,
-    .caps_internal = FF_CODEC_CAP_INIT_THREADSAFE,
 };
 #endif

@@ -508,7 +508,7 @@ static int gif_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
 
     if (!s->image) {
         av_frame_unref(s->last_frame);
-        ret = av_frame_ref(s->last_frame, (AVFrame*)pict);
+        ret = av_frame_ref(s->last_frame, pict);
         if (ret < 0)
             return ret;
     }
@@ -566,5 +566,5 @@ const FFCodec ff_gif_encoder = {
         AV_PIX_FMT_GRAY8, AV_PIX_FMT_PAL8, AV_PIX_FMT_NONE
     },
     .p.priv_class   = &gif_class,
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
 };

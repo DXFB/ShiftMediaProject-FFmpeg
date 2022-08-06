@@ -2584,6 +2584,10 @@ static int decode_extension_payload(AACContext *ac, GetBitContext *gb, int cnt,
             ac->avctx->profile = FF_PROFILE_AAC_HE;
         }
         res = AAC_RENAME(ff_decode_sbr_extension)(ac, &che->sbr, gb, crc_flag, cnt, elem_type);
+        if (ac->oc[1].m4ac.ps == 1 && !ac->warned_he_aac_mono) {
+            av_log(ac->avctx, AV_LOG_VERBOSE, "Treating HE-AAC mono as stereo.\n");
+            ac->warned_he_aac_mono = 1;
+        }
         break;
     case EXT_DYNAMIC_RANGE:
         res = decode_dynamic_range(&ac->che_drc, gb);
@@ -3091,7 +3095,7 @@ static void spectral_to_sample(AACContext *ac, int samples)
                     /* preparation for resampler */
                     for(j = 0; j<samples; j++){
                         che->ch[0].ret[j] = (int32_t)av_clip64((int64_t)che->ch[0].ret[j]*128, INT32_MIN, INT32_MAX-0x8000)+0x8000;
-                        if(type == TYPE_CPE)
+                        if (type == TYPE_CPE || (type == TYPE_SCE && ac->oc[1].m4ac.ps == 1))
                             che->ch[1].ret[j] = (int32_t)av_clip64((int64_t)che->ch[1].ret[j]*128, INT32_MIN, INT32_MAX-0x8000)+0x8000;
                     }
                 }
@@ -3417,9 +3421,6 @@ static int aac_decode_frame_int(AVCodecContext *avctx, AVFrame *frame,
         avctx->frame_size = samples;
         ac->oc[1].status = OC_LOCKED;
     }
-
-    if (multiplier)
-        avctx->internal->skip_samples_multiplier = 2;
 
     if (!ac->frame->data[0] && samples) {
         av_log(avctx, AV_LOG_ERROR, "no frame data found\n");

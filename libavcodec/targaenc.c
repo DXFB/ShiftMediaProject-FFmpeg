@@ -72,7 +72,7 @@ static int targa_encode_normal(uint8_t *outbuf, const AVFrame *pic, int bpp, int
 {
     int i, n = bpp * w;
     uint8_t *out = outbuf;
-    uint8_t *ptr = pic->data[0];
+    const uint8_t *ptr = pic->data[0];
 
     for(i=0; i < h; i++) {
         memcpy(out, ptr, n);
@@ -215,5 +215,4 @@ const FFCodec ff_targa_encoder = {
         AV_PIX_FMT_BGR24, AV_PIX_FMT_BGRA, AV_PIX_FMT_RGB555LE, AV_PIX_FMT_GRAY8, AV_PIX_FMT_PAL8,
         AV_PIX_FMT_NONE
     },
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };

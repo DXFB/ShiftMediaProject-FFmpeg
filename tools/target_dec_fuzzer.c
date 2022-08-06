@@ -246,6 +246,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     case AV_CODEC_ID_LOCO:        maxpixels  /= 1024;  break;
     case AV_CODEC_ID_VORBIS:      maxsamples /= 1024;  break;
     case AV_CODEC_ID_LSCR:        maxpixels  /= 16;    break;
+    case AV_CODEC_ID_MMVIDEO:     maxpixels  /= 256;   break;
     case AV_CODEC_ID_MOTIONPIXELS:maxpixels  /= 256;   break;
     case AV_CODEC_ID_MP4ALS:      maxsamples /= 65536; break;
     case AV_CODEC_ID_MSA1:        maxpixels  /= 16384; break;
@@ -253,6 +254,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     case AV_CODEC_ID_MSS2:        maxpixels  /= 16384; break;
     case AV_CODEC_ID_MSZH:        maxpixels  /= 128;   break;
     case AV_CODEC_ID_MVC2:        maxpixels  /= 128;   break;
+    case AV_CODEC_ID_MWSC:        maxpixels  /= 256;   break;
     case AV_CODEC_ID_MXPEG:       maxpixels  /= 128;   break;
     case AV_CODEC_ID_OPUS:        maxsamples /= 16384; break;
     case AV_CODEC_ID_PNG:         maxpixels  /= 128;   break;
@@ -336,7 +338,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
         if ((flags & 0x10) && c->p.id != AV_CODEC_ID_H264)
             ctx->flags2 |= AV_CODEC_FLAG2_FAST;
         if (flags & 0x80)
-            ctx->flags2 |= AV_CODEC_FLAG2_EXPORT_MVS;
+            ctx->export_side_data |= AV_CODEC_EXPORT_DATA_MVS;
 
         if (flags & 0x40)
             av_force_cpu_flags(0);
@@ -404,6 +406,12 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
             ctx->debug |= FF_DEBUG_QP;
         if (flags64 &4)
             ctx->debug |= FF_DEBUG_MB_TYPE;
+        if (flags64 & 8)
+            ctx->export_side_data |= AV_CODEC_EXPORT_DATA_VIDEO_ENC_PARAMS;
+        if (flags64 & 0x10)
+            ctx->err_recognition |= AV_EF_CRCCHECK;
+
+        ctx->workaround_bugs = bytestream2_get_le32(&gbc);
 
         if (extradata_size < size) {
             ctx->extradata = av_mallocz(extradata_size + AV_INPUT_BUFFER_PADDING_SIZE);

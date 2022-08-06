@@ -2,6 +2,13 @@ Entries are sorted chronologically from oldest to youngest within each release,
 releases are sorted from youngest to oldest.
 
 version <next>:
+- Radiance HDR image support
+- ddagrab (Desktop Duplication) video capture filter
+- ffmpeg -shortest_buf_duration option
+- ffmpeg now requires threading to be built
+- ffmpeg now runs every muxer in a separate thread
+- Add new mode to cropdetect filter to detect crop-area based on motion vectors and edges
+- VAAPI hwaccel for 8bit 444 HEVC and VP9
 
 
 version 5.1:

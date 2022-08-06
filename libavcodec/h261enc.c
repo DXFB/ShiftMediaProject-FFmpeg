@@ -139,7 +139,7 @@ void ff_h261_reorder_mb_index(MpegEncContext *s)
         s->mb_y += 3 * index;
 
         ff_init_block_index(s);
-        ff_update_block_index(s);
+        ff_update_block_index(s, 8, 0, 1);
     }
 }
 
@@ -410,7 +410,7 @@ const FFCodec ff_h261_encoder = {
     .init           = ff_mpv_encode_init,
     FF_CODEC_ENCODE_CB(ff_mpv_encode_picture),
     .close          = ff_mpv_encode_end,
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
     .p.pix_fmts     = (const enum AVPixelFormat[]) { AV_PIX_FMT_YUV420P,
                                                      AV_PIX_FMT_NONE },
 };

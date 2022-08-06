@@ -44,7 +44,7 @@ static int v410_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
                              const AVFrame *pic, int *got_packet)
 {
     uint8_t *dst;
-    uint16_t *y, *u, *v;
+    const uint16_t *y, *u, *v;
     uint32_t val;
     int i, j, ret;
 
@@ -83,5 +83,4 @@ const FFCodec ff_v410_encoder = {
     .init         = v410_encode_init,
     FF_CODEC_ENCODE_CB(v410_encode_frame),
     .p.pix_fmts   = (const enum AVPixelFormat[]){ AV_PIX_FMT_YUV444P10, AV_PIX_FMT_NONE },
-    .caps_internal = FF_CODEC_CAP_INIT_THREADSAFE,
 };

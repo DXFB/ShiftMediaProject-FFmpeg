@@ -72,7 +72,8 @@ static int bmp_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
     uint32_t palette256[256];
     int pad_bytes_per_row, pal_entries = 0, compression = BMP_RGB;
     int bit_count = avctx->bits_per_coded_sample;
-    uint8_t *ptr, *buf;
+    const uint8_t *ptr;
+    uint8_t *buf;
 
     switch (avctx->pix_fmt) {
     case AV_PIX_FMT_RGB444:
@@ -170,5 +171,4 @@ const FFCodec ff_bmp_encoder = {
         AV_PIX_FMT_MONOBLACK,
         AV_PIX_FMT_NONE
     },
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };

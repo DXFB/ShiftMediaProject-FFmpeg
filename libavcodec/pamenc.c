@@ -28,7 +28,8 @@ static int pam_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
                             const AVFrame *p, int *got_packet)
 {
     int i, h, w, n, linesize, depth, maxval, ret, header_size;
-    uint8_t *bytestream, *ptr;
+    uint8_t *bytestream;
+    const uint8_t *ptr;
     const char *tuple_type;
     char header[100];
 
@@ -141,5 +142,4 @@ const FFCodec ff_pam_encoder = {
         AV_PIX_FMT_GRAY16BE, AV_PIX_FMT_YA16BE,
         AV_PIX_FMT_MONOBLACK, AV_PIX_FMT_NONE
     },
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
 };

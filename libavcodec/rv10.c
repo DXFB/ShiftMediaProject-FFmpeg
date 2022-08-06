@@ -531,7 +531,7 @@ static int rv10_decode_packet(AVCodecContext *avctx, const uint8_t *buf,
     /* decode each macroblock */
     for (s->mb_num_left = mb_count; s->mb_num_left > 0; s->mb_num_left--) {
         int ret;
-        ff_update_block_index(s);
+        ff_update_block_index(s, 8, s->avctx->lowres, 1);
         ff_tlog(avctx, "**mb x=%d y=%d\n", s->mb_x, s->mb_y);
 
         s->mv_dir  = MV_DIR_FORWARD;
@@ -691,7 +691,6 @@ const FFCodec ff_rv10_decoder = {
     .close          = rv10_decode_end,
     FF_CODEC_DECODE_CB(rv10_decode_frame),
     .p.capabilities = AV_CODEC_CAP_DR1,
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
     .p.max_lowres   = 3,
     .p.pix_fmts     = (const enum AVPixelFormat[]) {
         AV_PIX_FMT_YUV420P,
@@ -709,7 +708,6 @@ const FFCodec ff_rv20_decoder = {
     .close          = rv10_decode_end,
     FF_CODEC_DECODE_CB(rv10_decode_frame),
     .p.capabilities = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_DELAY,
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
     .flush          = ff_mpeg_flush,
     .p.max_lowres   = 3,
     .p.pix_fmts     = (const enum AVPixelFormat[]) {

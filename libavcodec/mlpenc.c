@@ -1202,7 +1202,7 @@ static void input_data_internal(MLPEncodeContext *ctx, const uint8_t *samples,
 }
 
 /** Wrapper function for inputting data in two different bit-depths. */
-static void input_data(MLPEncodeContext *ctx, void *samples, int nb_samples)
+static void input_data(MLPEncodeContext *ctx, const void *samples, int nb_samples)
 {
     input_data_internal(ctx, samples, nb_samples, ctx->avctx->sample_fmt == AV_SAMPLE_FMT_S32);
 }
@@ -2069,7 +2069,7 @@ static int mlp_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
     int bytes_written = 0;
     int channels = avctx->ch_layout.nb_channels;
     int restart_frame, ret;
-    uint8_t *data;
+    const uint8_t *data;
 
     if (!frame && !ctx->last_frames)
         ctx->last_frames = (ctx->afq.remaining_samples + avctx->frame_size - 1) / avctx->frame_size;
@@ -2224,7 +2224,7 @@ const FFCodec ff_mlp_encoder = {
     .p.channel_layouts      = ff_mlp_channel_layouts,
 #endif
     .p.ch_layouts           = ff_mlp_ch_layouts,
-    .caps_internal          = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal          = FF_CODEC_CAP_INIT_CLEANUP,
 };
 #endif
 #if CONFIG_TRUEHD_ENCODER
@@ -2249,6 +2249,6 @@ const FFCodec ff_truehd_encoder = {
                                   AV_CHANNEL_LAYOUT_5POINT1_BACK,
                                   { 0 }
                               },
-    .caps_internal          = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal          = FF_CODEC_CAP_INIT_CLEANUP,
 };
 #endif

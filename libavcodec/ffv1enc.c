@@ -270,7 +270,7 @@ static inline void put_vlc_symbol(PutBitContext *pb, VlcState *const state,
 #define RENAME(name) name ## 32
 #include "ffv1enc_template.c"
 
-static int encode_plane(FFV1Context *s, uint8_t *src, int w, int h,
+static int encode_plane(FFV1Context *s, const uint8_t *src, int w, int h,
                          int stride, int plane_index, int pixel_stride)
 {
     int x, y, i, ret;
@@ -1310,5 +1310,5 @@ const FFCodec ff_ffv1_encoder = {
 
     },
     .p.priv_class   = &ffv1_class,
-    .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP,
+    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
 };

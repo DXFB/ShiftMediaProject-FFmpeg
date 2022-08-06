@@ -1950,7 +1950,7 @@ static void vp3_draw_horiz_band(Vp3DecodeContext *s, int y)
 static void await_reference_row(Vp3DecodeContext *s, Vp3Fragment *fragment,
                                 int motion_y, int y)
 {
-    ThreadFrame *ref_frame;
+    const ThreadFrame *ref_frame;
     int ref_row;
     int border = motion_y & 1;
 
@@ -3181,7 +3181,7 @@ const FFCodec ff_theora_decoder = {
                              AV_CODEC_CAP_FRAME_THREADS,
     .flush                 = vp3_decode_flush,
     .update_thread_context = ONLY_IF_THREADS_ENABLED(vp3_update_thread_context),
-    .caps_internal         = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP |
+    .caps_internal         = FF_CODEC_CAP_INIT_CLEANUP |
                              FF_CODEC_CAP_EXPORTS_CROPPING | FF_CODEC_CAP_ALLOCATE_PROGRESS,
 };
 #endif
@@ -3199,7 +3199,7 @@ const FFCodec ff_vp3_decoder = {
                              AV_CODEC_CAP_FRAME_THREADS,
     .flush                 = vp3_decode_flush,
     .update_thread_context = ONLY_IF_THREADS_ENABLED(vp3_update_thread_context),
-    .caps_internal         = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP |
+    .caps_internal         = FF_CODEC_CAP_INIT_CLEANUP |
                              FF_CODEC_CAP_ALLOCATE_PROGRESS,
 };
 
@@ -3217,7 +3217,7 @@ const FFCodec ff_vp4_decoder = {
                              AV_CODEC_CAP_FRAME_THREADS,
     .flush                 = vp3_decode_flush,
     .update_thread_context = ONLY_IF_THREADS_ENABLED(vp3_update_thread_context),
-    .caps_internal         = FF_CODEC_CAP_INIT_THREADSAFE | FF_CODEC_CAP_INIT_CLEANUP |
+    .caps_internal         = FF_CODEC_CAP_INIT_CLEANUP |
                              FF_CODEC_CAP_ALLOCATE_PROGRESS,
 };
 #endif

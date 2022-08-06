@@ -39,7 +39,7 @@ typedef struct {
 // Licensed in the public domain
 
 // note, len denotes how many compressed bytes there are (uncompressed bytes / 8).
-static void au_compress(DFPWMState *state, int len, uint8_t *outbuf, uint8_t *inbuf)
+static void au_compress(DFPWMState *state, int len, uint8_t *outbuf, const uint8_t *inbuf)
 {
     unsigned d = 0;
     for (int i = 0; i < len; i++) {
@@ -117,5 +117,4 @@ const FFCodec ff_dfpwm_encoder = {
     FF_CODEC_ENCODE_CB(dfpwm_enc_frame),
     .p.sample_fmts   = (const enum AVSampleFormat[]){AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_NONE},
     .p.capabilities  = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_VARIABLE_FRAME_SIZE,
-    .caps_internal   = FF_CODEC_CAP_INIT_THREADSAFE,
 };

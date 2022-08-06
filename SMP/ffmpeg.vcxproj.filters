@@ -30,6 +30,15 @@
     <ClCompile Include="..\fftools\ffmpeg_opt.c">
       <Filter>Source Files\fftools</Filter>
     </ClCompile>
+    <ClCompile Include="..\fftools\objpool.c">
+      <Filter>Source Files\fftools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fftools\sync_queue.c">
+      <Filter>Source Files\fftools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fftools\thread_queue.c">
+      <Filter>Source Files\fftools</Filter>
+    </ClCompile>
     <ClCompile Include="..\fftools\cmdutils.c">
       <Filter>Source Files\fftools</Filter>
     </ClCompile>

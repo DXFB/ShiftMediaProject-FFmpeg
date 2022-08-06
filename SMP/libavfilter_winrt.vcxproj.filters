@@ -1401,6 +1401,9 @@
     <ClCompile Include="libavfilter\vf_vpp_qsv_wrap.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="libavfilter\vsrc_ddagrab_wrap.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="libavfilter\dce_defs.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>

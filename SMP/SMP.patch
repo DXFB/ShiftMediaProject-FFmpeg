@@ -13,7 +13,7 @@ index ae5e28a5af..bbe86950b9 100644
  #include "libavdevice/version.h"
  
 diff --git a/libavcodec/mfenc.c b/libavcodec/mfenc.c
-index bbe78605a9..680ffa01a6 100644
+index d5c241d169..6d4006726b 100644
 --- a/libavcodec/mfenc.c
 +++ b/libavcodec/mfenc.c
 @@ -59,6 +59,10 @@ typedef struct MFContext {

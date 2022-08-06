@@ -468,6 +468,7 @@
     <ClCompile Include="libavfilter\vf_overlay_qsv_wrap.c" />
     <ClCompile Include="libavfilter\vf_scale_qsv_wrap.c" />
     <ClCompile Include="libavfilter\vf_vpp_qsv_wrap.c" />
+    <ClCompile Include="libavfilter\vsrc_ddagrab_wrap.c" />
     <ClCompile Include="libavfilter\dce_defs.c" />
     <ClCompile Include="..\libavfilter\scene_sad.c">
       <ObjectFileName>$(IntDir)\libavfilter_scene_sad.obj</ObjectFileName>

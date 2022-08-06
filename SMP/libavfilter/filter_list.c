@@ -459,6 +459,9 @@ static const AVFilter *filter_list[] = {
     &ff_vsrc_color,
     &ff_vsrc_colorchart,
     &ff_vsrc_colorspectrum,
+#if CONFIG_DDAGRAB_FILTER
+    &ff_vsrc_ddagrab,
+#endif
     &ff_vsrc_gradients,
     &ff_vsrc_haldclutsrc,
     &ff_vsrc_life,

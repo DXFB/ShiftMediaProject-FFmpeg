@@ -24,6 +24,8 @@
 #include "libavutil/avutil.h"
 #include "libavutil/samplefmt.h"
 
+#include "version_major.h"
+
 /**
  * @addtogroup lavc_core
  * @{
@@ -251,7 +253,9 @@ enum AVCodecID {
     AV_CODEC_ID_AVRP,
     AV_CODEC_ID_012V,
     AV_CODEC_ID_AVUI,
+#if FF_API_AYUV_CODECID
     AV_CODEC_ID_AYUV,
+#endif
     AV_CODEC_ID_TARGA_Y216,
     AV_CODEC_ID_V308,
     AV_CODEC_ID_V408,
@@ -313,6 +317,7 @@ enum AVCodecID {
     AV_CODEC_ID_QOI,
     AV_CODEC_ID_PHM,
     AV_CODEC_ID_RADIANCE_HDR,
+    AV_CODEC_ID_WBMP,
 
     /* various PCM "codecs" */
     AV_CODEC_ID_FIRST_AUDIO = 0x10000,     ///< A dummy id pointing at the start of audio codecs

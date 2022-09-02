@@ -30,11 +30,10 @@
 
 #include "avcodec.h"
 #include "codec_internal.h"
-#include "internal.h"
+#include "decode.h"
 #include "get_bits.h"
 #include "put_bits.h"
 #include "lossless_audiodsp.h"
-#include "wma.h"
 #include "wma_common.h"
 
 /** current decoder limitations */
@@ -783,7 +782,6 @@ static void revert_cdlms ## bits (WmallDecodeCtx *s, int ch, \
             s->channel_residues[ch][icoef] = input; \
         } \
     } \
-    if (bits <= 16) emms_c(); \
 }
 
 CD_LMS(16, WMALL_COEFF_PAD_SIZE)

@@ -34,19 +34,16 @@
 #endif
 
 #include "libavutil/attributes.h"
-#include "libavutil/avstring.h"
 #include "libavutil/error.h"
 #include "libavutil/intreadwrite.h"
-#include "libavutil/imgutils.h"
 #include "libavutil/opt.h"
 #include "libavutil/reverse.h"
 #include "avcodec.h"
 #include "bytestream.h"
 #include "codec_internal.h"
+#include "decode.h"
 #include "faxcompr.h"
-#include "internal.h"
 #include "lzw.h"
-#include "mathops.h"
 #include "tiff.h"
 #include "tiff_data.h"
 #include "mjpegdec.h"
@@ -1370,7 +1367,7 @@ static int tiff_decode_tag(TiffContext *s, AVFrame *frame)
         } else
             s->strippos = off;
         s->strips = count;
-        if (s->strips == 1)
+        if (s->strips == s->bppcount)
             s->rps = s->height;
         s->sot = type;
         break;

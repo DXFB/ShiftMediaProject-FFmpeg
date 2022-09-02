@@ -42,6 +42,7 @@
 #include "bytestream.h"
 #include "cabac_functions.h"
 #include "codec_internal.h"
+#include "decode.h"
 #include "golomb.h"
 #include "hevc.h"
 #include "hevc_data.h"
@@ -3498,7 +3499,7 @@ static int hevc_decode_frame(AVCodecContext *avctx, AVFrame *rframe,
         }
     } else {
         /* verify the SEI checksum */
-        if (avctx->err_recognition & AV_EF_CRCCHECK && s->is_decoded &&
+        if (avctx->err_recognition & AV_EF_CRCCHECK && s->ref && s->is_decoded &&
             s->sei.picture_hash.is_md5) {
             ret = verify_md5(s, s->ref->frame);
             if (ret < 0 && avctx->err_recognition & AV_EF_EXPLODE) {

@@ -25,9 +25,9 @@
 
 #include "avcodec.h"
 #include "codec_internal.h"
+#include "decode.h"
 #include "get_bits.h"
 #include "hwconfig.h"
-#include "internal.h"
 #include "profiles.h"
 #include "thread.h"
 #include "threadframe.h"
@@ -1293,17 +1293,13 @@ static int decode_tiles(AVCodecContext *avctx,
                 data += 4;
                 size -= 4;
             }
-            if (tile_size > size) {
-                ff_thread_report_progress(&s->s.frames[CUR_FRAME].tf, INT_MAX, 0);
+            if (tile_size > size)
                 return AVERROR_INVALIDDATA;
-            }
             ret = ff_vpx_init_range_decoder(&td->c_b[tile_col], data, tile_size);
             if (ret < 0)
                 return ret;
-            if (vpx_rac_get_prob_branchy(&td->c_b[tile_col], 128)) { // marker bit
-                ff_thread_report_progress(&s->s.frames[CUR_FRAME].tf, INT_MAX, 0);
+            if (vpx_rac_get_prob_branchy(&td->c_b[tile_col], 128)) // marker bit
                 return AVERROR_INVALIDDATA;
-            }
             data += tile_size;
             size -= tile_size;
         }

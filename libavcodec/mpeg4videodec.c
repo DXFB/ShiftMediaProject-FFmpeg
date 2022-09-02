@@ -38,6 +38,7 @@
 #include "mpeg4video.h"
 #include "mpeg4videodata.h"
 #include "mpeg4videodec.h"
+#include "mpeg4videodefs.h"
 #include "h263.h"
 #include "h263data.h"
 #include "h263dec.h"
@@ -3534,6 +3535,7 @@ static int mpeg4_update_thread_context(AVCodecContext *dst,
     s->vol_sprite_usage          = s1->vol_sprite_usage;
     s->sprite_brightness_change  = s1->sprite_brightness_change;
     s->num_sprite_warping_points = s1->num_sprite_warping_points;
+    s->m.data_partitioning       = s1->m.data_partitioning;
     s->rvlc                      = s1->rvlc;
     s->resync_marker             = s1->resync_marker;
     s->t_frame                   = s1->t_frame;

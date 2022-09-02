@@ -13,11 +13,22 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\fftools">
+    <Filter Include="Resource Files\fftools">
       <UniqueIdentifier>{cac6df1e-4a60-495c-8daa-5707dc1216ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\fftools">
+      <UniqueIdentifier>{9fee14b2-1b77-463a-bd6b-60efdcf8850f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="..\fftools\fftoolsres.rc">
+      <Filter>Resource Files\fftools</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\fftools\ffmpeg_demux.c">
+      <Filter>Source Files\fftools</Filter>
+    </ClCompile>
     <ClCompile Include="..\fftools\ffmpeg_filter.c">
       <Filter>Source Files\fftools</Filter>
     </ClCompile>

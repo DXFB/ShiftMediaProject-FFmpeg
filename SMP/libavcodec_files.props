@@ -435,7 +435,9 @@
     <ClCompile Include="..\libavcodec\escape130.c" />
     <ClCompile Include="..\libavcodec\evrcdec.c" />
     <ClCompile Include="..\libavcodec\exr.c" />
+    <ClCompile Include="..\libavcodec\half2float.c" />
     <ClCompile Include="..\libavcodec\exrenc.c" />
+    <ClCompile Include="..\libavcodec\float2half.c" />
     <ClCompile Include="..\libavcodec\fastaudio.c" />
     <ClCompile Include="..\libavcodec\ffv1dec.c" />
     <ClCompile Include="..\libavcodec\ffv1.c" />
@@ -794,6 +796,8 @@
     <ClCompile Include="..\libavcodec\wavpack.c" />
     <ClCompile Include="..\libavcodec\wavpackdata.c" />
     <ClCompile Include="..\libavcodec\wavpackenc.c" />
+    <ClCompile Include="..\libavcodec\wbmpdec.c" />
+    <ClCompile Include="..\libavcodec\wbmpenc.c" />
     <ClCompile Include="..\libavcodec\wcmv.c" />
     <ClCompile Include="..\libavcodec\webp.c" />
     <ClCompile Include="..\libavcodec\webvttdec.c" />

@@ -212,6 +212,7 @@
 %endif
 %define HAVE_FAST_CLZ 1
 %define HAVE_FAST_CMOV 1
+%define HAVE_FAST_FLOAT16 0
 %define HAVE_LOCAL_ALIGNED 1
 %define HAVE_SIMD_ALIGN_16 1
 %define HAVE_SIMD_ALIGN_32 1
@@ -586,6 +587,7 @@
 %define CONFIG_CUDA_SDK 0
 %define CONFIG_LIBNPP 0
 %define CONFIG_LIBMFX 1
+%define CONFIG_LIBVPL 0
 %define CONFIG_MMAL 0
 %define CONFIG_OMX 0
 %define CONFIG_OPENCL 0

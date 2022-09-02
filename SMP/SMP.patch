@@ -1,5 +1,5 @@
 diff --git a/fftools/opt_common.c b/fftools/opt_common.c
-index ae5e28a5af..bbe86950b9 100644
+index 7cd8b1c66e..0f7955fb15 100644
 --- a/fftools/opt_common.c
 +++ b/fftools/opt_common.c
 @@ -48,6 +48,9 @@

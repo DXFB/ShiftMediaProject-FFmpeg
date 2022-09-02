@@ -22,6 +22,7 @@
 #ifndef SMP_CONFIG_H
 #define SMP_CONFIG_H
 #ifdef _WIN32
+#   define WIN32_LEAN_AND_MEAN
 #   include <sdkddkver.h>
 #   include <winapifamily.h>
 #endif
@@ -247,6 +248,7 @@
 #endif
 #define HAVE_FAST_CLZ 1
 #define HAVE_FAST_CMOV 1
+#define HAVE_FAST_FLOAT16 0
 #define HAVE_LOCAL_ALIGNED 1
 #define HAVE_SIMD_ALIGN_16 1
 #define HAVE_SIMD_ALIGN_32 1
@@ -693,6 +695,7 @@
 #else
 #   define CONFIG_LIBMFX 0
 #endif
+#define CONFIG_LIBVPL 0
 #define CONFIG_MMAL 0
 #define CONFIG_OMX 0
 #define CONFIG_OPENCL 0

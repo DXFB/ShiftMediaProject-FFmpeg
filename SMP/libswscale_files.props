@@ -25,6 +25,7 @@
     <ClCompile Include="..\libswscale\hscale.c" />
     <ClCompile Include="..\libswscale\hscale_fast_bilinear.c" />
     <ClCompile Include="..\libswscale\gamma.c" />
+    <ClCompile Include="..\libswscale\half2float.c" />
     <ClCompile Include="..\libswscale\options.c" />
     <ClCompile Include="..\libswscale\rgb2rgb.c" />
     <ClCompile Include="..\libswscale\slice.c" />

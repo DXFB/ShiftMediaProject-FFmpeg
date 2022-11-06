@@ -22,8 +22,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "config_components.h"
-
 #include "libavutil/thread.h"
 
 #include "avcodec.h"
@@ -38,7 +36,6 @@
 #include "h263dec.h"
 #include "mpeg4videodec.h"
 #include "msmpeg4data.h"
-#include "wmv2dec.h"
 
 #define DC_VLC_BITS 9
 #define V2_INTRA_CBPC_VLC_BITS 3
@@ -391,8 +388,7 @@ av_cold int ff_msmpeg4_decode_init(AVCodecContext *avctx)
         s->decode_mb= msmpeg4v34_decode_mb;
         break;
     case 5:
-        if (CONFIG_WMV2_DECODER)
-            s->decode_mb= ff_wmv2_decode_mb;
+        break;
     case 6:
         //FIXME + TODO VC1 decode mb
         break;
@@ -687,9 +683,9 @@ int ff_msmpeg4_decode_block(MpegEncContext * s, int16_t * block,
         }
         if (s->ac_pred) {
             if (dc_pred_dir == 0)
-                scan_table = s->intra_v_scantable.permutated; /* left */
+                scan_table = s->permutated_intra_v_scantable; /* left */
             else
-                scan_table = s->intra_h_scantable.permutated; /* top */
+                scan_table = s->permutated_intra_h_scantable; /* top */
         } else {
             scan_table = s->intra_scantable.permutated;
         }
@@ -866,7 +862,7 @@ void ff_msmpeg4_decode_motion(MpegEncContext *s, int *mx_ptr, int *my_ptr)
 
 const FFCodec ff_msmpeg4v1_decoder = {
     .p.name         = "msmpeg4v1",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 1"),
+    CODEC_LONG_NAME("MPEG-4 part 2 Microsoft variant version 1"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_MSMPEG4V1,
     .priv_data_size = sizeof(MpegEncContext),
@@ -884,7 +880,7 @@ const FFCodec ff_msmpeg4v1_decoder = {
 
 const FFCodec ff_msmpeg4v2_decoder = {
     .p.name         = "msmpeg4v2",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 2"),
+    CODEC_LONG_NAME("MPEG-4 part 2 Microsoft variant version 2"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_MSMPEG4V2,
     .priv_data_size = sizeof(MpegEncContext),
@@ -902,7 +898,7 @@ const FFCodec ff_msmpeg4v2_decoder = {
 
 const FFCodec ff_msmpeg4v3_decoder = {
     .p.name         = "msmpeg4",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 3"),
+    CODEC_LONG_NAME("MPEG-4 part 2 Microsoft variant version 3"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_MSMPEG4V3,
     .priv_data_size = sizeof(MpegEncContext),
@@ -920,7 +916,7 @@ const FFCodec ff_msmpeg4v3_decoder = {
 
 const FFCodec ff_wmv1_decoder = {
     .p.name         = "wmv1",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("Windows Media Video 7"),
+    CODEC_LONG_NAME("Windows Media Video 7"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_WMV1,
     .priv_data_size = sizeof(MpegEncContext),

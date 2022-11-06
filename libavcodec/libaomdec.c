@@ -113,15 +113,19 @@ static int set_pix_fmt(AVCodecContext *avctx, struct aom_image *img)
     case AOM_IMG_FMT_I444:
     case AOM_IMG_FMT_I44416:
         if (img->bit_depth == 8) {
-            avctx->pix_fmt = AV_PIX_FMT_YUV444P;
+            avctx->pix_fmt = avctx->colorspace == AVCOL_SPC_RGB ?
+                             AV_PIX_FMT_GBRP : AV_PIX_FMT_YUV444P;
             avctx->profile = FF_PROFILE_AV1_HIGH;
             return 0;
         } else if (img->bit_depth == 10) {
             avctx->pix_fmt = AV_PIX_FMT_YUV444P10;
+            avctx->pix_fmt = avctx->colorspace == AVCOL_SPC_RGB ?
+                             AV_PIX_FMT_GBRP10 : AV_PIX_FMT_YUV444P10;
             avctx->profile = FF_PROFILE_AV1_HIGH;
             return 0;
         } else if (img->bit_depth == 12) {
-            avctx->pix_fmt = AV_PIX_FMT_YUV444P12;
+            avctx->pix_fmt = avctx->colorspace == AVCOL_SPC_RGB ?
+                             AV_PIX_FMT_GBRP12 : AV_PIX_FMT_YUV444P12;
             avctx->profile = FF_PROFILE_AV1_PROFESSIONAL;
             return 0;
         } else {
@@ -227,7 +231,7 @@ static av_cold int av1_init(AVCodecContext *avctx)
 
 const FFCodec ff_libaom_av1_decoder = {
     .p.name         = "libaom-av1",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("libaom AV1"),
+    CODEC_LONG_NAME("libaom AV1"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_AV1,
     .priv_data_size = sizeof(AV1DecodeContext),

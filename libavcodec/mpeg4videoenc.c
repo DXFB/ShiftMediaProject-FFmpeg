@@ -175,7 +175,7 @@ static inline int decide_ac_pred(MpegEncContext *s, int16_t block[6][64],
                     ac_val1[i + 8] = level;
                 }
             }
-            st[n] = s->intra_h_scantable.permutated;
+            st[n] = s->permutated_intra_h_scantable;
         } else {
             const int xy = s->mb_x - 1 + s->mb_y * s->mb_stride;
             /* left prediction */
@@ -197,7 +197,7 @@ static inline int decide_ac_pred(MpegEncContext *s, int16_t block[6][64],
                     ac_val1[i + 8] = block[n][s->idsp.idct_permutation[i]];
                 }
             }
-            st[n] = s->intra_v_scantable.permutated;
+            st[n] = s->permutated_intra_v_scantable;
         }
 
         for (i = 63; i > 0; i--)  // FIXME optimize
@@ -1394,7 +1394,7 @@ static const AVClass mpeg4enc_class = {
 
 const FFCodec ff_mpeg4_encoder = {
     .p.name         = "mpeg4",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("MPEG-4 part 2"),
+    CODEC_LONG_NAME("MPEG-4 part 2"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_MPEG4,
     .priv_data_size = sizeof(MpegEncContext),

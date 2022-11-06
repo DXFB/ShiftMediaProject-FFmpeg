@@ -577,7 +577,7 @@ static int flac_decode_frame(AVCodecContext *avctx, AVFrame *frame,
 
     /* check that there is at least the smallest decodable amount of data.
        this amount corresponds to the smallest valid FLAC frame possible.
-       FF F8 69 02 00 00 9A 00 00 34 46 */
+       FF F8 69 02 00 00 9A 00 00 34 */
     if (buf_size < FLAC_MIN_FRAME_SIZE)
         return buf_size;
 
@@ -653,7 +653,7 @@ static const AVClass flac_decoder_class = {
 
 const FFCodec ff_flac_decoder = {
     .p.name         = "flac",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("FLAC (Free Lossless Audio Codec)"),
+    CODEC_LONG_NAME("FLAC (Free Lossless Audio Codec)"),
     .p.type         = AVMEDIA_TYPE_AUDIO,
     .p.id           = AV_CODEC_ID_FLAC,
     .priv_data_size = sizeof(FLACContext),

@@ -1012,7 +1012,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
         return AVERROR(ENOMEM);
 
     f->version = AV_RL32(avctx->extradata) >> 16;
-    ff_blockdsp_init(&f->bdsp, avctx);
+    ff_blockdsp_init(&f->bdsp);
     ff_bswapdsp_init(&f->bbdsp);
     f->avctx = avctx;
 
@@ -1028,7 +1028,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
 const FFCodec ff_fourxm_decoder = {
     .p.name         = "4xm",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("4X Movie"),
+    CODEC_LONG_NAME("4X Movie"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_4XM,
     .priv_data_size = sizeof(FourXContext),

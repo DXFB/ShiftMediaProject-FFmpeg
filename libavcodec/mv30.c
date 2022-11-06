@@ -670,7 +670,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
     avctx->pix_fmt = AV_PIX_FMT_YUV420P;
     avctx->color_range = AVCOL_RANGE_JPEG;
 
-    ff_blockdsp_init(&s->bdsp, avctx);
+    ff_blockdsp_init(&s->bdsp);
 
     s->prev_frame = av_frame_alloc();
     if (!s->prev_frame)
@@ -703,7 +703,7 @@ static av_cold int decode_close(AVCodecContext *avctx)
 
 const FFCodec ff_mv30_decoder = {
     .p.name           = "mv30",
-    .p.long_name      = NULL_IF_CONFIG_SMALL("MidiVid 3.0"),
+    CODEC_LONG_NAME("MidiVid 3.0"),
     .p.type           = AVMEDIA_TYPE_VIDEO,
     .p.id             = AV_CODEC_ID_MV30,
     .priv_data_size   = sizeof(MV30Context),

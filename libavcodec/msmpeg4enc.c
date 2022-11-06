@@ -279,15 +279,15 @@ void ff_msmpeg4_encode_picture_header(MpegEncContext * s, int picture_number)
 
 void ff_msmpeg4_encode_ext_header(MpegEncContext * s)
 {
-        unsigned fps = s->avctx->time_base.den / s->avctx->time_base.num / FFMAX(s->avctx->ticks_per_frame, 1);
-        put_bits(&s->pb, 5, FFMIN(fps, 31)); //yes 29.97 -> 29
+    unsigned fps = s->avctx->time_base.den / s->avctx->time_base.num / FFMAX(s->avctx->ticks_per_frame, 1);
+    put_bits(&s->pb, 5, FFMIN(fps, 31)); //yes 29.97 -> 29
 
-        put_bits(&s->pb, 11, FFMIN(s->bit_rate/1024, 2047));
+    put_bits(&s->pb, 11, FFMIN(s->bit_rate / 1024, 2047));
 
-        if(s->msmpeg4_version>=3)
-            put_bits(&s->pb, 1, s->flipflop_rounding);
-        else
-            av_assert0(s->flipflop_rounding==0);
+    if (s->msmpeg4_version >= 3)
+        put_bits(&s->pb, 1, s->flipflop_rounding);
+    else
+        av_assert0(!s->flipflop_rounding);
 }
 
 void ff_msmpeg4_encode_motion(MpegEncContext * s,
@@ -678,7 +678,7 @@ void ff_msmpeg4_encode_block(MpegEncContext * s, int16_t * block, int n)
 
 const FFCodec ff_msmpeg4v2_encoder = {
     .p.name         = "msmpeg4v2",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 2"),
+    CODEC_LONG_NAME("MPEG-4 part 2 Microsoft variant version 2"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_MSMPEG4V2,
     .p.pix_fmts     = (const enum AVPixelFormat[]){ AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE },
@@ -692,7 +692,7 @@ const FFCodec ff_msmpeg4v2_encoder = {
 
 const FFCodec ff_msmpeg4v3_encoder = {
     .p.name         = "msmpeg4",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 3"),
+    CODEC_LONG_NAME("MPEG-4 part 2 Microsoft variant version 3"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_MSMPEG4V3,
     .p.pix_fmts     = (const enum AVPixelFormat[]){ AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE },
@@ -706,7 +706,7 @@ const FFCodec ff_msmpeg4v3_encoder = {
 
 const FFCodec ff_wmv1_encoder = {
     .p.name         = "wmv1",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("Windows Media Video 7"),
+    CODEC_LONG_NAME("Windows Media Video 7"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_WMV1,
     .p.pix_fmts     = (const enum AVPixelFormat[]){ AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE },

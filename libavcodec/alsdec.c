@@ -1028,7 +1028,7 @@ static int read_block(ALSDecContext *ctx, ALSBlockData *bd)
 
     *bd->shift_lsbs = 0;
 
-    if (get_bits_left(gb) < 1)
+    if (get_bits_left(gb) < 7)
         return AVERROR_INVALIDDATA;
 
     // read block type flag and read the samples accordingly
@@ -1660,7 +1660,8 @@ static int read_frame_data(ALSDecContext *ctx, unsigned int ra_frame)
 
     if (!sconf->mc_coding || ctx->js_switch) {
         int independent_bs = !sconf->joint_stereo;
-
+        if (get_bits_left(gb) < 7*channels*ctx->num_blocks)
+            return AVERROR_INVALIDDATA;
         for (c = 0; c < channels; c++) {
             js_blocks[0] = 0;
             js_blocks[1] = 0;
@@ -2181,7 +2182,7 @@ static av_cold void flush(AVCodecContext *avctx)
 
 const FFCodec ff_als_decoder = {
     .p.name         = "als",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("MPEG-4 Audio Lossless Coding (ALS)"),
+    CODEC_LONG_NAME("MPEG-4 Audio Lossless Coding (ALS)"),
     .p.type         = AVMEDIA_TYPE_AUDIO,
     .p.id           = AV_CODEC_ID_MP4ALS,
     .priv_data_size = sizeof(ALSDecContext),

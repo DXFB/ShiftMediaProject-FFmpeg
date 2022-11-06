@@ -33,6 +33,7 @@
 #include "fft.h"
 #include "mathops.h"
 #include "vorbis.h"
+#include "vorbis_data.h"
 #include "vorbis_enc_data.h"
 
 #include "audio_frame_queue.h"
@@ -1297,7 +1298,7 @@ static av_cold int vorbis_encode_init(AVCodecContext *avctx)
 
 const FFCodec ff_vorbis_encoder = {
     .p.name         = "vorbis",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("Vorbis"),
+    CODEC_LONG_NAME("Vorbis"),
     .p.type         = AVMEDIA_TYPE_AUDIO,
     .p.id           = AV_CODEC_ID_VORBIS,
     .p.capabilities = AV_CODEC_CAP_DR1 | AV_CODEC_CAP_DELAY |

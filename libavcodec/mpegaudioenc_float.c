@@ -26,7 +26,7 @@
 
 const FFCodec ff_mp2_encoder = {
     .p.name                = "mp2",
-    .p.long_name           = NULL_IF_CONFIG_SMALL("MP2 (MPEG audio layer 2)"),
+    CODEC_LONG_NAME("MP2 (MPEG audio layer 2)"),
     .p.type                = AVMEDIA_TYPE_AUDIO,
     .p.id                  = AV_CODEC_ID_MP2,
     .p.capabilities        = AV_CODEC_CAP_DR1,
@@ -38,11 +38,7 @@ const FFCodec ff_mp2_encoder = {
     .p.supported_samplerates = (const int[]){
         44100, 48000,  32000, 22050, 24000, 16000, 0
     },
-#if FF_API_OLD_CHANNEL_LAYOUT
-    .p.channel_layouts     = (const uint64_t[]){ AV_CH_LAYOUT_MONO,
-                                                 AV_CH_LAYOUT_STEREO,
-                                                 0 },
-#endif
+    CODEC_OLD_CHANNEL_LAYOUTS(AV_CH_LAYOUT_MONO, AV_CH_LAYOUT_STEREO)
     .p.ch_layouts          = (const AVChannelLayout[]){ AV_CHANNEL_LAYOUT_MONO,
                                                         AV_CHANNEL_LAYOUT_STEREO,
                                                         { 0 } },

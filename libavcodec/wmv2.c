@@ -29,19 +29,19 @@ av_cold void ff_wmv2_common_init(MpegEncContext *s)
 {
     WMV2Context *const w = s->private_ctx;
 
-    ff_blockdsp_init(&s->bdsp, s->avctx);
+    ff_blockdsp_init(&s->bdsp);
     ff_wmv2dsp_init(&w->wdsp);
     s->idsp.perm_type = w->wdsp.idct_perm;
     ff_init_scantable_permutation(s->idsp.idct_permutation,
                                   w->wdsp.idct_perm);
     ff_init_scantable(s->idsp.idct_permutation, &s->intra_scantable,
                       ff_wmv1_scantable[1]);
-    ff_init_scantable(s->idsp.idct_permutation, &s->intra_h_scantable,
-                      ff_wmv1_scantable[2]);
-    ff_init_scantable(s->idsp.idct_permutation, &s->intra_v_scantable,
-                      ff_wmv1_scantable[3]);
     ff_init_scantable(s->idsp.idct_permutation, &s->inter_scantable,
                       ff_wmv1_scantable[0]);
+    ff_permute_scantable(s->permutated_intra_h_scantable, ff_wmv1_scantable[2],
+                         s->idsp.idct_permutation);
+    ff_permute_scantable(s->permutated_intra_v_scantable, ff_wmv1_scantable[3],
+                         s->idsp.idct_permutation);
     s->idsp.idct_put = w->wdsp.idct_put;
     s->idsp.idct_add = w->wdsp.idct_add;
     s->idsp.idct     = NULL;

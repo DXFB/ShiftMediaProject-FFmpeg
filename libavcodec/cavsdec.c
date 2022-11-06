@@ -521,7 +521,7 @@ static inline int dequant(AVSContext *h, int16_t *level_buf, uint8_t *run_buf,
 {
     int round = 1 << (shift - 1);
     int pos = -1;
-    const uint8_t *scantab = h->scantable.permutated;
+    const uint8_t *scantab = h->permutated_scantable;
 
     /* inverse scan and dequantization */
     while (--coeff_num >= 0) {
@@ -1317,7 +1317,7 @@ static int cavs_decode_frame(AVCodecContext *avctx, AVFrame *rframe,
 
 const FFCodec ff_cavs_decoder = {
     .p.name         = "cavs",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("Chinese AVS (Audio Video Standard) (AVS1-P2, JiZhun profile)"),
+    CODEC_LONG_NAME("Chinese AVS (Audio Video Standard) (AVS1-P2, JiZhun profile)"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_CAVS,
     .priv_data_size = sizeof(AVSContext),

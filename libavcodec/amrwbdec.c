@@ -24,6 +24,8 @@
  * AMR wideband decoder
  */
 
+#include "config.h"
+
 #include "libavutil/channel_layout.h"
 #include "libavutil/common.h"
 #include "libavutil/lfg.h"
@@ -42,7 +44,9 @@
 #include "amr.h"
 
 #include "amrwbdata.h"
+#if ARCH_MIPS
 #include "mips/amrwbdec_mips.h"
+#endif /* ARCH_MIPS */
 
 typedef struct AMRWBContext {
     AMRWBFrame                             frame; ///< AMRWB parameters decoded from bitstream
@@ -1293,7 +1297,7 @@ static int amrwb_decode_frame(AVCodecContext *avctx, AVFrame *frame,
 
 const FFCodec ff_amrwb_decoder = {
     .p.name         = "amrwb",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("AMR-WB (Adaptive Multi-Rate WideBand)"),
+    CODEC_LONG_NAME("AMR-WB (Adaptive Multi-Rate WideBand)"),
     .p.type         = AVMEDIA_TYPE_AUDIO,
     .p.id           = AV_CODEC_ID_AMR_WB,
     .priv_data_size = sizeof(AMRWBChannelsContext),

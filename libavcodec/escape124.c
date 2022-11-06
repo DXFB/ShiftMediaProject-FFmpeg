@@ -178,8 +178,8 @@ static void insert_mb_into_sb(SuperBlock* sb, MacroBlock mb, unsigned index) {
    dst[4] = mb.pixels32[1];
 }
 
-static void copy_superblock(uint16_t* dest, unsigned dest_stride,
-                            uint16_t* src, unsigned src_stride)
+static void copy_superblock(uint16_t* dest, ptrdiff_t dest_stride,
+                            uint16_t* src,  ptrdiff_t src_stride)
 {
     unsigned y;
     if (src)
@@ -211,7 +211,7 @@ static int escape124_decode_frame(AVCodecContext *avctx, AVFrame *frame,
              superblocks_per_row = avctx->width / 8, skip = -1;
 
     uint16_t* old_frame_data, *new_frame_data;
-    unsigned old_stride, new_stride;
+    ptrdiff_t old_stride, new_stride;
 
     int ret;
 
@@ -377,7 +377,7 @@ static int escape124_decode_frame(AVCodecContext *avctx, AVFrame *frame,
 
 const FFCodec ff_escape124_decoder = {
     .p.name         = "escape124",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("Escape 124"),
+    CODEC_LONG_NAME("Escape 124"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_ESCAPE124,
     .priv_data_size = sizeof(Escape124Context),

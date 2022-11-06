@@ -108,14 +108,12 @@ int ff_flv_decode_picture_header(MpegEncContext *s)
                s->h263_flv - 1, s->qscale, s->picture_number);
     }
 
-    s->y_dc_scale_table = s->c_dc_scale_table = ff_mpeg1_dc_scale_table;
-
     return 0;
 }
 
 const FFCodec ff_flv_decoder = {
     .p.name         = "flv",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("FLV / Sorenson Spark / Sorenson H.263 (Flash Video)"),
+    CODEC_LONG_NAME("FLV / Sorenson Spark / Sorenson H.263 (Flash Video)"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_FLV1,
     .priv_data_size = sizeof(MpegEncContext),

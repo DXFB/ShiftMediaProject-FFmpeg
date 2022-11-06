@@ -1037,15 +1037,16 @@ static int svq3_decode_slice_header(AVCodecContext *avctx)
         }
         memcpy(s->slice_buf, s->gb.buffer + s->gb.index / 8, slice_bytes);
 
+        if (length > 0) {
+            memmove(s->slice_buf, &s->slice_buf[slice_length], length - 1);
+        }
+
         if (s->watermark_key) {
             uint32_t header = AV_RL32(&s->slice_buf[1]);
             AV_WL32(&s->slice_buf[1], header ^ s->watermark_key);
         }
         init_get_bits(&s->gb_slice, s->slice_buf, slice_bits);
 
-        if (length > 0) {
-            memmove(s->slice_buf, &s->slice_buf[slice_length], length - 1);
-        }
         skip_bits_long(&s->gb, slice_bytes * 8);
     }
 
@@ -1588,7 +1589,7 @@ static av_cold int svq3_decode_end(AVCodecContext *avctx)
 
 const FFCodec ff_svq3_decoder = {
     .p.name         = "svq3",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("Sorenson Vector Quantizer 3 / Sorenson Video 3 / SVQ3"),
+    CODEC_LONG_NAME("Sorenson Vector Quantizer 3 / Sorenson Video 3 / SVQ3"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_SVQ3,
     .priv_data_size = sizeof(SVQ3Context),

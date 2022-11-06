@@ -82,6 +82,14 @@ static const struct profile_names vp9_profiles[] = {
     { MFX_PROFILE_VP9_3,                        "vp9 3"                     },
 };
 
+static const struct profile_names av1_profiles[] = {
+#if QSV_VERSION_ATLEAST(1, 34)
+    { MFX_PROFILE_AV1_MAIN,                     "av1 main"                  },
+    { MFX_PROFILE_AV1_HIGH,                     "av1 high"                  },
+    { MFX_PROFILE_AV1_PRO,                      "av1 professional"          },
+#endif
+};
+
 typedef struct QSVPacket {
     AVPacket        pkt;
     mfxSyncPoint   *sync;
@@ -112,6 +120,11 @@ static const char *print_profile(enum AVCodecID codec_id, mfxU16 profile)
     case AV_CODEC_ID_VP9:
         profiles = vp9_profiles;
         num_profiles = FF_ARRAY_ELEMS(vp9_profiles);
+        break;
+
+    case AV_CODEC_ID_AV1:
+        profiles = av1_profiles;
+        num_profiles = FF_ARRAY_ELEMS(av1_profiles);
         break;
 
     default:
@@ -429,6 +442,88 @@ static void dump_video_mjpeg_param(AVCodecContext *avctx, QSVEncContext *q)
            info->FrameInfo.FrameRateExtD, info->FrameInfo.FrameRateExtN);
 }
 
+#if QSV_HAVE_EXT_AV1_PARAM
+static void dump_video_av1_param(AVCodecContext *avctx, QSVEncContext *q,
+                                 mfxExtBuffer **coding_opts)
+{
+    mfxInfoMFX *info = &q->param.mfx;
+    mfxExtAV1TileParam *av1_tile_param = (mfxExtAV1TileParam *)coding_opts[0];
+    mfxExtAV1BitstreamParam *av1_bs_param = (mfxExtAV1BitstreamParam *)coding_opts[1];
+    mfxExtCodingOption2 *co2 = (mfxExtCodingOption2*)coding_opts[2];
+    mfxExtCodingOption3 *co3 = (mfxExtCodingOption3*)coding_opts[3];
+
+    av_log(avctx, AV_LOG_VERBOSE, "profile: %s; level: %"PRIu16"\n",
+           print_profile(avctx->codec_id, info->CodecProfile), info->CodecLevel);
+
+    av_log(avctx, AV_LOG_VERBOSE,
+           "GopPicSize: %"PRIu16"; GopRefDist: %"PRIu16"; GopOptFlag:%s%s; IdrInterval: %"PRIu16"\n",
+           info->GopPicSize, info->GopRefDist,
+           info->GopOptFlag & MFX_GOP_CLOSED ? " closed" : "",
+           info->GopOptFlag & MFX_GOP_STRICT ? " strict" : "",
+           info->IdrInterval);
+
+    av_log(avctx, AV_LOG_VERBOSE, "TargetUsage: %"PRIu16"; RateControlMethod: %s\n",
+           info->TargetUsage, print_ratecontrol(info->RateControlMethod));
+
+    if (info->RateControlMethod == MFX_RATECONTROL_CBR ||
+        info->RateControlMethod == MFX_RATECONTROL_VBR)
+        av_log(avctx, AV_LOG_VERBOSE,
+               "BufferSizeInKB: %"PRIu16"; InitialDelayInKB: %"PRIu16"; TargetKbps: %"PRIu16"; MaxKbps: %"PRIu16"; BRCParamMultiplier: %"PRIu16"\n",
+               info->BufferSizeInKB, info->InitialDelayInKB, info->TargetKbps, info->MaxKbps, info->BRCParamMultiplier);
+    else if (info->RateControlMethod == MFX_RATECONTROL_CQP)
+        av_log(avctx, AV_LOG_VERBOSE, "QPI: %"PRIu16"; QPP: %"PRIu16"; QPB: %"PRIu16"\n",
+               info->QPI, info->QPP, info->QPB);
+    else if (info->RateControlMethod == MFX_RATECONTROL_ICQ)
+        av_log(avctx, AV_LOG_VERBOSE, "ICQQuality: %"PRIu16"\n", info->ICQQuality);
+    else
+        av_log(avctx, AV_LOG_VERBOSE, "Unsupported ratecontrol method: %d \n", info->RateControlMethod);
+
+    av_log(avctx, AV_LOG_VERBOSE, "NumRefFrame: %"PRIu16"\n", info->NumRefFrame);
+
+    av_log(avctx, AV_LOG_VERBOSE,
+           "IntRefType: %"PRIu16"; IntRefCycleSize: %"PRIu16
+           "; IntRefQPDelta: %"PRId16"; IntRefCycleDist: %"PRId16"\n",
+           co2->IntRefType, co2->IntRefCycleSize,
+           co2->IntRefQPDelta, co3->IntRefCycleDist);
+
+    av_log(avctx, AV_LOG_VERBOSE, "MaxFrameSize: %d;\n", co2->MaxFrameSize);
+
+    av_log(avctx, AV_LOG_VERBOSE,
+           "BitrateLimit: %s; MBBRC: %s; ExtBRC: %s\n",
+           print_threestate(co2->BitrateLimit), print_threestate(co2->MBBRC),
+           print_threestate(co2->ExtBRC));
+
+    av_log(avctx, AV_LOG_VERBOSE, "VDENC: %s\n", print_threestate(info->LowPower));
+
+    switch (co2->BRefType) {
+    case MFX_B_REF_OFF:     av_log(avctx, AV_LOG_VERBOSE, "BRefType: off\n");       break;
+    case MFX_B_REF_PYRAMID: av_log(avctx, AV_LOG_VERBOSE, "BRefType: pyramid\n");   break;
+    default:                av_log(avctx, AV_LOG_VERBOSE, "BRefType: auto\n");      break;
+    }
+
+    switch (co3->PRefType) {
+    case MFX_P_REF_DEFAULT: av_log(avctx, AV_LOG_VERBOSE, "PRefType: default\n");   break;
+    case MFX_P_REF_SIMPLE:  av_log(avctx, AV_LOG_VERBOSE, "PRefType: simple\n");    break;
+    case MFX_P_REF_PYRAMID: av_log(avctx, AV_LOG_VERBOSE, "PRefType: pyramid\n");   break;
+    default:                av_log(avctx, AV_LOG_VERBOSE, "PRefType: unknown\n");   break;
+    }
+
+    av_log(avctx, AV_LOG_VERBOSE,
+           "MinQPI: %"PRIu8"; MaxQPI: %"PRIu8"; MinQPP: %"PRIu8"; MaxQPP: %"PRIu8"; MinQPB: %"PRIu8"; MaxQPB: %"PRIu8"\n",
+           co2->MinQPI, co2->MaxQPI, co2->MinQPP, co2->MaxQPP, co2->MinQPB, co2->MaxQPB);
+
+    av_log(avctx, AV_LOG_VERBOSE, "FrameRateExtD: %"PRIu32"; FrameRateExtN: %"PRIu32" \n",
+           info->FrameInfo.FrameRateExtD, info->FrameInfo.FrameRateExtN);
+
+    av_log(avctx, AV_LOG_VERBOSE,
+           "NumTileRows: %"PRIu16"; NumTileColumns: %"PRIu16"; NumTileGroups: %"PRIu16"\n",
+           av1_tile_param->NumTileRows, av1_tile_param->NumTileColumns, av1_tile_param->NumTileGroups);
+
+    av_log(avctx, AV_LOG_VERBOSE, "WriteIVFHeaders: %s \n",
+           print_threestate(av1_bs_param->WriteIVFHeaders));
+}
+#endif
+
 static int select_rc_mode(AVCodecContext *avctx, QSVEncContext *q)
 {
     const char *rc_desc;
@@ -479,7 +574,10 @@ static int select_rc_mode(AVCodecContext *avctx, QSVEncContext *q)
         rc_desc = "constant bitrate (CBR)";
     }
 #if QSV_HAVE_AVBR
-    else if (!avctx->rc_max_rate) {
+    else if (!avctx->rc_max_rate &&
+             (avctx->codec_id == AV_CODEC_ID_H264 || avctx->codec_id == AV_CODEC_ID_HEVC) &&
+             q->avbr_accuracy &&
+             q->avbr_convergence) {
         rc_mode = MFX_RATECONTROL_AVBR;
         rc_desc = "average variable bitrate (AVBR)";
     }
@@ -550,7 +648,7 @@ static int init_video_param_jpeg(AVCodecContext *avctx, QSVEncContext *q)
     if (!desc)
         return AVERROR_BUG;
 
-    ret = ff_qsv_map_pixfmt(sw_format, &q->param.mfx.FrameInfo.FourCC);
+    ret = ff_qsv_map_pixfmt(sw_format, &q->param.mfx.FrameInfo.FourCC, &q->param.mfx.FrameInfo.Shift);
     if (ret < 0)
         return AVERROR_BUG;
 
@@ -564,7 +662,6 @@ static int init_video_param_jpeg(AVCodecContext *avctx, QSVEncContext *q)
                                             !desc->log2_chroma_w + !desc->log2_chroma_h;
     q->param.mfx.FrameInfo.BitDepthLuma   = desc->comp[0].depth;
     q->param.mfx.FrameInfo.BitDepthChroma = desc->comp[0].depth;
-    q->param.mfx.FrameInfo.Shift          = desc->comp[0].depth > 8;
 
     q->param.mfx.FrameInfo.Width  = FFALIGN(avctx->width, 16);
     q->param.mfx.FrameInfo.Height = FFALIGN(avctx->height, 16);
@@ -636,6 +733,7 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
     q->param.mfx.CodecProfile       = q->profile;
     q->param.mfx.TargetUsage        = avctx->compression_level;
     q->param.mfx.GopPicSize         = FFMAX(0, avctx->gop_size);
+    q->old_gop_size                 = avctx->gop_size;
     q->param.mfx.GopRefDist         = FFMAX(-1, avctx->max_b_frames) + 1;
     q->param.mfx.GopOptFlag         = avctx->flags & AV_CODEC_FLAG_CLOSED_GOP ?
                                       MFX_GOP_CLOSED : MFX_GOP_STRICT;
@@ -649,7 +747,7 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
     if (!desc)
         return AVERROR_BUG;
 
-    ret = ff_qsv_map_pixfmt(sw_format, &q->param.mfx.FrameInfo.FourCC);
+    ret = ff_qsv_map_pixfmt(sw_format, &q->param.mfx.FrameInfo.FourCC, &q->param.mfx.FrameInfo.Shift);
     if (ret < 0)
         return AVERROR_BUG;
 
@@ -663,7 +761,6 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
                                             !desc->log2_chroma_w + !desc->log2_chroma_h;
     q->param.mfx.FrameInfo.BitDepthLuma   = desc->comp[0].depth;
     q->param.mfx.FrameInfo.BitDepthChroma = desc->comp[0].depth;
-    q->param.mfx.FrameInfo.Shift          = desc->comp[0].depth > 8;
 
     // If the minor version is greater than or equal to 19,
     // then can use the same alignment settings as H.264 for HEVC
@@ -701,6 +798,7 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
         q->param.mfx.FrameInfo.FrameRateExtN  = avctx->time_base.den;
         q->param.mfx.FrameInfo.FrameRateExtD  = avctx->time_base.num;
     }
+    q->old_framerate = avctx->framerate;
 
     ret = select_rc_mode(avctx, q);
     if (ret < 0)
@@ -713,6 +811,10 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
     max_bitrate_kbps           = avctx->rc_max_rate / 1000;
     brc_param_multiplier       = (FFMAX(FFMAX3(target_bitrate_kbps, max_bitrate_kbps, buffer_size_in_kilobytes),
                                   initial_delay_in_kilobytes) + 0x10000) / 0x10000;
+    q->old_rc_buffer_size = avctx->rc_buffer_size;
+    q->old_rc_initial_buffer_occupancy = avctx->rc_initial_buffer_occupancy;
+    q->old_bit_rate = avctx->bit_rate;
+    q->old_rc_max_rate = avctx->rc_max_rate;
 
     switch (q->param.mfx.RateControlMethod) {
     case MFX_RATECONTROL_CBR:
@@ -734,10 +836,15 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
         break;
     case MFX_RATECONTROL_CQP:
         quant = avctx->global_quality / FF_QP2LAMBDA;
-
-        q->param.mfx.QPI = av_clip(quant * fabs(avctx->i_quant_factor) + avctx->i_quant_offset, 0, 51);
-        q->param.mfx.QPP = av_clip(quant, 0, 51);
-        q->param.mfx.QPB = av_clip(quant * fabs(avctx->b_quant_factor) + avctx->b_quant_offset, 0, 51);
+        if (avctx->codec_id == AV_CODEC_ID_AV1) {
+            q->param.mfx.QPI = av_clip_uintp2(quant * fabs(avctx->i_quant_factor) + avctx->i_quant_offset, 8);
+            q->param.mfx.QPP = av_clip_uintp2(quant, 8);
+            q->param.mfx.QPB = av_clip_uintp2(quant * fabs(avctx->b_quant_factor) + avctx->b_quant_offset, 8);
+        } else {
+            q->param.mfx.QPI = av_clip(quant * fabs(avctx->i_quant_factor) + avctx->i_quant_offset, 0, 51);
+            q->param.mfx.QPP = av_clip(quant, 0, 51);
+            q->param.mfx.QPB = av_clip(quant * fabs(avctx->b_quant_factor) + avctx->b_quant_offset, 0, 51);
+        }
         q->old_global_quality = avctx->global_quality;
         q->old_i_quant_factor = avctx->i_quant_factor;
         q->old_i_quant_offset = avctx->i_quant_offset;
@@ -775,6 +882,7 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
 
         q->extco.PicTimingSEI         = q->pic_timing_sei ?
                                         MFX_CODINGOPTION_ON : MFX_CODINGOPTION_UNKNOWN;
+        q->old_pic_timing_sei = q->pic_timing_sei;
 
         if (q->rdo >= 0)
             q->extco.RateDistortionOpt = q->rdo > 0 ? MFX_CODINGOPTION_ON : MFX_CODINGOPTION_OFF;
@@ -824,12 +932,16 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
                 q->extco2.ExtBRC = q->extbrc ? MFX_CODINGOPTION_ON : MFX_CODINGOPTION_OFF;
             if (q->max_frame_size >= 0)
                 q->extco2.MaxFrameSize = q->max_frame_size;
+            q->old_max_frame_size = q->max_frame_size;
             if (q->int_ref_type >= 0)
                 q->extco2.IntRefType = q->int_ref_type;
+            q->old_int_ref_type = q->int_ref_type;
             if (q->int_ref_cycle_size >= 0)
                 q->extco2.IntRefCycleSize = q->int_ref_cycle_size;
+            q->old_int_ref_cycle_size = q->int_ref_cycle_size;
             if (q->int_ref_qp_delta != INT16_MIN)
                 q->extco2.IntRefQPDelta = q->int_ref_qp_delta;
+            q->old_int_ref_qp_delta = q->int_ref_qp_delta;
             if (q->max_slice_size >= 0)
                 q->extco2.MaxSliceSize = q->max_slice_size;
             q->extco2.DisableDeblockingIdc = q->dblk_idc;
@@ -853,24 +965,46 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
                 q->extco2.MinQPI = avctx->qmin > 51 ? 51 : avctx->qmin;
                 q->extco2.MinQPP = q->extco2.MinQPB = q->extco2.MinQPI;
             }
+            q->old_qmin = avctx->qmin;
             if (avctx->qmax >= 0) {
                 q->extco2.MaxQPI = avctx->qmax > 51 ? 51 : avctx->qmax;
                 q->extco2.MaxQPP = q->extco2.MaxQPB = q->extco2.MaxQPI;
             }
+            q->old_qmax = avctx->qmax;
             if (q->min_qp_i >= 0)
                 q->extco2.MinQPI = q->min_qp_i > 51 ? 51 : q->min_qp_i;
+            q->old_min_qp_i = q->min_qp_i;
             if (q->max_qp_i >= 0)
                 q->extco2.MaxQPI = q->max_qp_i > 51 ? 51 : q->max_qp_i;
+            q->old_max_qp_i = q->max_qp_i;
             if (q->min_qp_p >= 0)
                 q->extco2.MinQPP = q->min_qp_p > 51 ? 51 : q->min_qp_p;
+            q->old_min_qp_p = q->min_qp_p;
             if (q->max_qp_p >= 0)
                 q->extco2.MaxQPP = q->max_qp_p > 51 ? 51 : q->max_qp_p;
+            q->old_max_qp_p = q->max_qp_p;
             if (q->min_qp_b >= 0)
                 q->extco2.MinQPB = q->min_qp_b > 51 ? 51 : q->min_qp_b;
+            q->old_min_qp_b = q->min_qp_b;
             if (q->max_qp_b >= 0)
                 q->extco2.MaxQPB = q->max_qp_b > 51 ? 51 : q->max_qp_b;
+            q->old_max_qp_b = q->max_qp_b;
             if (q->mbbrc >= 0)
                 q->extco2.MBBRC = q->mbbrc ? MFX_CODINGOPTION_ON : MFX_CODINGOPTION_OFF;
+
+            q->extco2.Header.BufferId = MFX_EXTBUFF_CODING_OPTION2;
+            q->extco2.Header.BufferSz = sizeof(q->extco2);
+
+            q->extparam_internal[q->nb_extparam_internal++] = (mfxExtBuffer *)&q->extco2;
+        } else if (avctx->codec_id == AV_CODEC_ID_AV1) {
+            if (q->extbrc >= 0)
+                q->extco2.ExtBRC = q->extbrc ? MFX_CODINGOPTION_ON : MFX_CODINGOPTION_OFF;
+            if (q->b_strategy >= 0)
+                q->extco2.BRefType = q->b_strategy ? MFX_B_REF_PYRAMID : MFX_B_REF_OFF;
+            if (q->adaptive_i >= 0)
+                q->extco2.AdaptiveI = q->adaptive_i ? MFX_CODINGOPTION_ON : MFX_CODINGOPTION_OFF;
+            if (q->adaptive_b >= 0)
+                q->extco2.AdaptiveB = q->adaptive_b ? MFX_CODINGOPTION_ON : MFX_CODINGOPTION_OFF;
 
             q->extco2.Header.BufferId = MFX_EXTBUFF_CODING_OPTION2;
             q->extco2.Header.BufferSz = sizeof(q->extco2);
@@ -918,8 +1052,10 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
             }
             if (q->int_ref_cycle_dist >= 0)
                 q->extco3.IntRefCycleDist = q->int_ref_cycle_dist;
+            q->old_int_ref_cycle_dist = q->int_ref_cycle_dist;
             if (q->low_delay_brc >= 0)
                 q->extco3.LowDelayBRC = q->low_delay_brc ? MFX_CODINGOPTION_ON : MFX_CODINGOPTION_OFF;
+            q->old_low_delay_brc = q->low_delay_brc;
             if (q->max_frame_size_i >= 0)
                 q->extco3.MaxFrameSizeI = q->max_frame_size_i;
             if (q->max_frame_size_p >= 0)
@@ -949,6 +1085,27 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
 #endif
         q->extparam_internal[q->nb_extparam_internal++] = (mfxExtBuffer *)&q->extvp9param;
     }
+
+#if QSV_HAVE_EXT_AV1_PARAM
+    if (avctx->codec_id == AV_CODEC_ID_AV1) {
+        if (QSV_RUNTIME_VERSION_ATLEAST(q->ver, 2, 5)) {
+            q->extav1tileparam.Header.BufferId = MFX_EXTBUFF_AV1_TILE_PARAM;
+            q->extav1tileparam.Header.BufferSz = sizeof(q->extav1tileparam);
+            q->extav1tileparam.NumTileColumns  = q->tile_cols;
+            q->extav1tileparam.NumTileRows     = q->tile_rows;
+            q->extparam_internal[q->nb_extparam_internal++] = (mfxExtBuffer *)&q->extav1tileparam;
+
+            q->extav1bsparam.Header.BufferId = MFX_EXTBUFF_AV1_BITSTREAM_PARAM;
+            q->extav1bsparam.Header.BufferSz = sizeof(q->extav1bsparam);
+            q->extav1bsparam.WriteIVFHeaders = MFX_CODINGOPTION_OFF;
+            q->extparam_internal[q->nb_extparam_internal++] = (mfxExtBuffer *)&q->extav1bsparam;
+        } else {
+            av_log(avctx, AV_LOG_ERROR,
+                   "This version of runtime doesn't support AV1 encoding\n");
+            return AVERROR_UNKNOWN;
+        }
+    }
+#endif
 
     if (avctx->codec_id == AV_CODEC_ID_HEVC) {
         q->exthevctiles.Header.BufferId = MFX_EXTBUFF_HEVC_TILES;
@@ -1057,6 +1214,56 @@ static int qsv_retrieve_enc_vp9_params(AVCodecContext *avctx, QSVEncContext *q)
 
     dump_video_vp9_param(avctx, q, ext_buffers);
 
+    return 0;
+}
+
+static int qsv_retrieve_enc_av1_params(AVCodecContext *avctx, QSVEncContext *q)
+{
+#if QSV_HAVE_EXT_AV1_PARAM
+    int ret = 0;
+    mfxExtAV1TileParam av1_extend_tile_buf = {
+         .Header.BufferId = MFX_EXTBUFF_AV1_TILE_PARAM,
+         .Header.BufferSz = sizeof(av1_extend_tile_buf),
+    };
+    mfxExtAV1BitstreamParam av1_bs_param = {
+         .Header.BufferId = MFX_EXTBUFF_AV1_BITSTREAM_PARAM,
+         .Header.BufferSz = sizeof(av1_bs_param),
+    };
+
+    mfxExtCodingOption2 co2 = {
+        .Header.BufferId = MFX_EXTBUFF_CODING_OPTION2,
+        .Header.BufferSz = sizeof(co2),
+    };
+
+    mfxExtCodingOption3 co3 = {
+        .Header.BufferId = MFX_EXTBUFF_CODING_OPTION3,
+        .Header.BufferSz = sizeof(co3),
+    };
+
+    mfxExtBuffer *ext_buffers[] = {
+        (mfxExtBuffer*)&av1_extend_tile_buf,
+        (mfxExtBuffer*)&av1_bs_param,
+        (mfxExtBuffer*)&co2,
+        (mfxExtBuffer*)&co3,
+    };
+
+    if (!QSV_RUNTIME_VERSION_ATLEAST(q->ver, 2, 5)) {
+        av_log(avctx, AV_LOG_ERROR,
+               "This version of runtime doesn't support AV1 encoding\n");
+        return AVERROR_UNKNOWN;
+    }
+
+    q->param.ExtParam    = ext_buffers;
+    q->param.NumExtParam = FF_ARRAY_ELEMS(ext_buffers);
+
+    ret = MFXVideoENCODE_GetVideoParam(q->session, &q->param);
+    if (ret < 0)
+        return ff_qsv_print_error(avctx, ret,
+                                  "Error calling GetVideoParam");
+
+    q->packet_size = q->param.mfx.BufferSizeInKB * q->param.mfx.BRCParamMultiplier * 1000;
+    dump_video_av1_param(avctx, q, ext_buffers);
+#endif
     return 0;
 }
 
@@ -1398,6 +1605,9 @@ int ff_qsv_enc_init(AVCodecContext *avctx, QSVEncContext *q)
     case AV_CODEC_ID_VP9:
         ret = qsv_retrieve_enc_vp9_params(avctx, q);
         break;
+    case AV_CODEC_ID_AV1:
+        ret = qsv_retrieve_enc_av1_params(avctx, q);
+        break;
     default:
         ret = qsv_retrieve_enc_params(avctx, q);
         break;
@@ -1412,25 +1622,16 @@ int ff_qsv_enc_init(AVCodecContext *avctx, QSVEncContext *q)
     return 0;
 }
 
-static void free_encoder_ctrl_payloads(mfxEncodeCtrl* enc_ctrl)
+static void free_encoder_ctrl(mfxEncodeCtrl* enc_ctrl)
 {
     if (enc_ctrl) {
-        int i;
-        for (i = 0; i < enc_ctrl->NumPayload && i < QSV_MAX_ENC_PAYLOAD; i++) {
+        for (int i = 0; i < enc_ctrl->NumPayload && i < QSV_MAX_ENC_PAYLOAD; i++)
             av_freep(&enc_ctrl->Payload[i]);
-        }
-        enc_ctrl->NumPayload = 0;
-    }
-}
 
-static void free_encoder_ctrl_extparam(mfxEncodeCtrl* enc_ctrl)
-{
-    if (enc_ctrl) {
-        int i;
-        for (i = 0; i < enc_ctrl->NumExtParam && i < QSV_MAX_ENC_EXTPARAM; i++) {
-            if (enc_ctrl->ExtParam[i])
-                av_freep(&(enc_ctrl->ExtParam[i]));
-        }
+        for (int i = 0; i < enc_ctrl->NumExtParam && i < QSV_MAX_ENC_EXTPARAM; i++)
+            av_freep(&enc_ctrl->ExtParam[i]);
+
+        enc_ctrl->NumPayload = 0;
         enc_ctrl->NumExtParam = 0;
     }
 }
@@ -1440,8 +1641,7 @@ static void clear_unused_frames(QSVEncContext *q)
     QSVFrame *cur = q->work_frames;
     while (cur) {
         if (cur->used && !cur->surface.Data.Locked) {
-            free_encoder_ctrl_payloads(&cur->enc_ctrl);
-            free_encoder_ctrl_extparam(&cur->enc_ctrl);
+            free_encoder_ctrl(&cur->enc_ctrl);
             //do not reuse enc_ctrl from previous frame
             memset(&cur->enc_ctrl, 0, sizeof(cur->enc_ctrl));
             cur->enc_ctrl.Payload = cur->payloads;
@@ -1492,6 +1692,64 @@ static int get_free_frame(QSVEncContext *q, QSVFrame **f)
     return 0;
 }
 
+static int qsvenc_fill_padding_area(AVFrame *frame, int new_w, int new_h)
+{
+    const AVPixFmtDescriptor *desc;
+    int max_step[4], filled[4] = { 0 };
+
+    desc = av_pix_fmt_desc_get(frame->format);
+    av_assert0(desc);
+    av_image_fill_max_pixsteps(max_step, NULL, desc);
+
+    for (int i = 0; i < desc->nb_components; i++) {
+        const AVComponentDescriptor *comp = &desc->comp[i];
+        int sheight, dheight, plane = comp->plane;
+        ptrdiff_t swidth = av_image_get_linesize(frame->format,
+                                                 frame->width,
+                                                 plane);
+        ptrdiff_t dwidth = av_image_get_linesize(frame->format,
+                                                 new_w,
+                                                 plane);
+
+        if (swidth < 0 || dwidth < 0) {
+            av_log(NULL, AV_LOG_ERROR, "av_image_get_linesize failed\n");
+            return AVERROR(EINVAL);
+        }
+
+        if (filled[plane])
+            continue;
+
+        sheight = frame->height;
+        dheight = new_h;
+
+        if (plane) {
+            sheight = AV_CEIL_RSHIFT(frame->height, desc->log2_chroma_h);
+            dheight = AV_CEIL_RSHIFT(new_h, desc->log2_chroma_h);
+        }
+
+        // Fill right padding
+        if (new_w > frame->width) {
+            for (int j = 0; j < sheight; j++) {
+                void *line_ptr = frame->data[plane] + j * frame->linesize[plane] + swidth;
+
+                av_memcpy_backptr(line_ptr,
+                                  max_step[plane],
+                                  new_w - frame->width);
+            }
+        }
+
+        // Fill bottom padding
+        for (int j = sheight; j < dheight; j++)
+            memcpy(frame->data[plane] + j * frame->linesize[plane],
+                   frame->data[plane] + (sheight - 1) * frame->linesize[plane],
+                   dwidth);
+
+        filled[plane] = 1;
+    }
+
+    return 0;
+}
+
 static int submit_frame(QSVEncContext *q, const AVFrame *frame,
                         QSVFrame **new_frame)
 {
@@ -1521,8 +1779,9 @@ static int submit_frame(QSVEncContext *q, const AVFrame *frame,
         /* and to make allocation continious for data[0]/data[1] */
          if ((frame->height & 31 || frame->linesize[0] & (q->width_align - 1)) ||
             (frame->data[1] - frame->data[0] != frame->linesize[0] * FFALIGN(qf->frame->height, q->height_align))) {
-            qf->frame->height = FFALIGN(frame->height, q->height_align);
-            qf->frame->width  = FFALIGN(frame->width, q->width_align);
+            int tmp_w, tmp_h;
+            qf->frame->height = tmp_h = FFALIGN(frame->height, q->height_align);
+            qf->frame->width  = tmp_w = FFALIGN(frame->width, q->width_align);
 
             qf->frame->format = frame->format;
 
@@ -1536,6 +1795,12 @@ static int submit_frame(QSVEncContext *q, const AVFrame *frame,
             qf->frame->width  = frame->width;
 
             ret = av_frame_copy(qf->frame, frame);
+            if (ret < 0) {
+                av_frame_unref(qf->frame);
+                return ret;
+            }
+
+            ret = qsvenc_fill_padding_area(qf->frame, tmp_w, tmp_h);
             if (ret < 0) {
                 av_frame_unref(qf->frame);
                 return ret;
@@ -1675,15 +1940,247 @@ static int update_qp(AVCodecContext *avctx, QSVEncContext *q)
     return updated;
 }
 
+static int update_max_frame_size(AVCodecContext *avctx, QSVEncContext *q)
+{
+    int updated = 0;
+
+    if (avctx->codec_id != AV_CODEC_ID_H264 && avctx->codec_id != AV_CODEC_ID_HEVC)
+        return 0;
+
+    UPDATE_PARAM(q->old_max_frame_size, q->max_frame_size);
+    if (!updated)
+        return 0;
+
+    q->extco2.MaxFrameSize  = FFMAX(0, q->max_frame_size);
+    av_log(avctx, AV_LOG_DEBUG,
+           "Reset MaxFrameSize: %d;\n", q->extco2.MaxFrameSize);
+
+    return updated;
+}
+
+static int update_gop_size(AVCodecContext *avctx, QSVEncContext *q)
+{
+    int updated = 0;
+    UPDATE_PARAM(q->old_gop_size, avctx->gop_size);
+    if (!updated)
+        return 0;
+
+    q->param.mfx.GopPicSize = FFMAX(0, avctx->gop_size);
+    av_log(avctx, AV_LOG_DEBUG, "reset GopPicSize to %d\n",
+           q->param.mfx.GopPicSize);
+
+    return updated;
+}
+
+static int update_rir(AVCodecContext *avctx, QSVEncContext *q)
+{
+    int updated = 0;
+
+    if (avctx->codec_id != AV_CODEC_ID_H264 && avctx->codec_id != AV_CODEC_ID_HEVC)
+        return 0;
+
+    UPDATE_PARAM(q->old_int_ref_type, q->int_ref_type);
+    UPDATE_PARAM(q->old_int_ref_cycle_size, q->int_ref_cycle_size);
+    UPDATE_PARAM(q->old_int_ref_qp_delta, q->int_ref_qp_delta);
+    UPDATE_PARAM(q->old_int_ref_cycle_dist, q->int_ref_cycle_dist);
+    if (!updated)
+        return 0;
+
+    q->extco2.IntRefType      = FFMAX(0, q->int_ref_type);
+    q->extco2.IntRefCycleSize = FFMAX(0, q->int_ref_cycle_size);
+    q->extco2.IntRefQPDelta   =
+        q->int_ref_qp_delta != INT16_MIN ? q->int_ref_qp_delta : 0;
+    q->extco3.IntRefCycleDist = FFMAX(0, q->int_ref_cycle_dist);
+    av_log(avctx, AV_LOG_DEBUG,
+           "Reset IntRefType: %d; IntRefCycleSize: %d; "
+           "IntRefQPDelta: %d; IntRefCycleDist: %d\n",
+           q->extco2.IntRefType, q->extco2.IntRefCycleSize,
+           q->extco2.IntRefQPDelta, q->extco3.IntRefCycleDist);
+
+    return updated;
+}
+
+static int update_min_max_qp(AVCodecContext *avctx, QSVEncContext *q)
+{
+    int updated = 0;
+
+    if (avctx->codec_id != AV_CODEC_ID_H264)
+        return 0;
+
+    UPDATE_PARAM(q->old_qmin, avctx->qmin);
+    UPDATE_PARAM(q->old_qmax, avctx->qmax);
+    UPDATE_PARAM(q->old_min_qp_i, q->min_qp_i);
+    UPDATE_PARAM(q->old_max_qp_i, q->max_qp_i);
+    UPDATE_PARAM(q->old_min_qp_p, q->min_qp_p);
+    UPDATE_PARAM(q->old_max_qp_p, q->max_qp_p);
+    UPDATE_PARAM(q->old_min_qp_b, q->min_qp_b);
+    UPDATE_PARAM(q->old_max_qp_b, q->max_qp_b);
+    if (!updated)
+        return 0;
+
+    if ((avctx->qmin >= 0 && avctx->qmax >= 0 && avctx->qmin > avctx->qmax) ||
+        (q->max_qp_i >= 0 && q->min_qp_i >= 0 && q->min_qp_i > q->max_qp_i) ||
+        (q->max_qp_p >= 0 && q->min_qp_p >= 0 && q->min_qp_p > q->max_qp_p) ||
+        (q->max_qp_b >= 0 && q->min_qp_b >= 0 && q->min_qp_b > q->max_qp_b)) {
+        av_log(avctx, AV_LOG_ERROR,
+                "qmin and or qmax are set but invalid,"
+                " please make sure min <= max\n");
+        return AVERROR(EINVAL);
+    }
+
+    q->extco2.MinQPI = 0;
+    q->extco2.MaxQPI = 0;
+    q->extco2.MinQPP = 0;
+    q->extco2.MaxQPP = 0;
+    q->extco2.MinQPB = 0;
+    q->extco2.MaxQPB = 0;
+    if (avctx->qmin >= 0) {
+        q->extco2.MinQPI = avctx->qmin > 51 ? 51 : avctx->qmin;
+        q->extco2.MinQPB = q->extco2.MinQPP = q->extco2.MinQPI;
+    }
+    if (avctx->qmax >= 0) {
+        q->extco2.MaxQPI = avctx->qmax > 51 ? 51 : avctx->qmax;
+        q->extco2.MaxQPB = q->extco2.MaxQPP = q->extco2.MaxQPI;
+    }
+    if (q->min_qp_i >= 0)
+        q->extco2.MinQPI = q->min_qp_i > 51 ? 51 : q->min_qp_i;
+    if (q->max_qp_i >= 0)
+        q->extco2.MaxQPI = q->max_qp_i > 51 ? 51 : q->max_qp_i;
+    if (q->min_qp_p >= 0)
+        q->extco2.MinQPP = q->min_qp_p > 51 ? 51 : q->min_qp_p;
+    if (q->max_qp_p >= 0)
+        q->extco2.MaxQPP = q->max_qp_p > 51 ? 51 : q->max_qp_p;
+    if (q->min_qp_b >= 0)
+        q->extco2.MinQPB = q->min_qp_b > 51 ? 51 : q->min_qp_b;
+    if (q->max_qp_b >= 0)
+        q->extco2.MaxQPB = q->max_qp_b > 51 ? 51 : q->max_qp_b;
+
+    av_log(avctx, AV_LOG_VERBOSE, "Reset MinQPI: %d; MaxQPI: %d; "
+        "MinQPP: %d; MaxQPP: %d; "
+        "MinQPB: %d; MaxQPB: %d\n",
+        q->extco2.MinQPI, q->extco2.MaxQPI,
+        q->extco2.MinQPP, q->extco2.MaxQPP,
+        q->extco2.MinQPB, q->extco2.MaxQPB);
+
+    return updated;
+}
+
+static int update_low_delay_brc(AVCodecContext *avctx, QSVEncContext *q)
+{
+    int updated = 0;
+
+    if (avctx->codec_id != AV_CODEC_ID_H264 && avctx->codec_id != AV_CODEC_ID_HEVC)
+        return 0;
+
+    UPDATE_PARAM(q->old_low_delay_brc, q->low_delay_brc);
+    if (!updated)
+        return 0;
+
+    q->extco3.LowDelayBRC = MFX_CODINGOPTION_UNKNOWN;
+    if (q->low_delay_brc >= 0)
+        q->extco3.LowDelayBRC = q->low_delay_brc ? MFX_CODINGOPTION_ON : MFX_CODINGOPTION_OFF;
+    av_log(avctx, AV_LOG_DEBUG, "Reset LowDelayBRC: %s\n",
+           print_threestate(q->extco3.LowDelayBRC));
+
+    return updated;
+}
+
+static int update_frame_rate(AVCodecContext *avctx, QSVEncContext *q)
+{
+    int updated = 0;
+
+    UPDATE_PARAM(q->old_framerate.num, avctx->framerate.num);
+    UPDATE_PARAM(q->old_framerate.den, avctx->framerate.den);
+    if (!updated)
+        return 0;
+
+    if (avctx->framerate.den > 0 && avctx->framerate.num > 0) {
+        q->param.mfx.FrameInfo.FrameRateExtN = avctx->framerate.num;
+        q->param.mfx.FrameInfo.FrameRateExtD = avctx->framerate.den;
+    } else {
+        q->param.mfx.FrameInfo.FrameRateExtN = avctx->time_base.den;
+        q->param.mfx.FrameInfo.FrameRateExtD = avctx->time_base.num;
+    }
+    av_log(avctx, AV_LOG_DEBUG, "Reset framerate: %d/%d (%.2f fps).\n",
+           q->param.mfx.FrameInfo.FrameRateExtN,
+           q->param.mfx.FrameInfo.FrameRateExtD,
+           (double)q->param.mfx.FrameInfo.FrameRateExtN / q->param.mfx.FrameInfo.FrameRateExtD);
+
+    return updated;
+}
+
+static int update_bitrate(AVCodecContext *avctx, QSVEncContext *q)
+{
+    int updated = 0;
+    int target_bitrate_kbps, max_bitrate_kbps, brc_param_multiplier;
+    int buffer_size_in_kilobytes, initial_delay_in_kilobytes;
+
+    UPDATE_PARAM(q->old_rc_buffer_size, avctx->rc_buffer_size);
+    UPDATE_PARAM(q->old_rc_initial_buffer_occupancy, avctx->rc_initial_buffer_occupancy);
+    UPDATE_PARAM(q->old_bit_rate, avctx->bit_rate);
+    UPDATE_PARAM(q->old_rc_max_rate, avctx->rc_max_rate);
+    if (!updated)
+        return 0;
+
+    buffer_size_in_kilobytes   = avctx->rc_buffer_size / 8000;
+    initial_delay_in_kilobytes = avctx->rc_initial_buffer_occupancy / 8000;
+    target_bitrate_kbps        = avctx->bit_rate / 1000;
+    max_bitrate_kbps           = avctx->rc_max_rate / 1000;
+    brc_param_multiplier       = (FFMAX(FFMAX3(target_bitrate_kbps, max_bitrate_kbps, buffer_size_in_kilobytes),
+                                    initial_delay_in_kilobytes) + 0x10000) / 0x10000;
+
+    q->param.mfx.BufferSizeInKB = buffer_size_in_kilobytes / brc_param_multiplier;
+    q->param.mfx.InitialDelayInKB = initial_delay_in_kilobytes / brc_param_multiplier;
+    q->param.mfx.TargetKbps = target_bitrate_kbps / brc_param_multiplier;
+    q->param.mfx.MaxKbps = max_bitrate_kbps / brc_param_multiplier;
+    q->param.mfx.BRCParamMultiplier = brc_param_multiplier;
+    av_log(avctx, AV_LOG_VERBOSE,
+            "Reset BufferSizeInKB: %d; InitialDelayInKB: %d; "
+            "TargetKbps: %d; MaxKbps: %d; BRCParamMultiplier: %d\n",
+            q->param.mfx.BufferSizeInKB, q->param.mfx.InitialDelayInKB,
+            q->param.mfx.TargetKbps, q->param.mfx.MaxKbps, q->param.mfx.BRCParamMultiplier);
+    return updated;
+}
+
+static int update_pic_timing_sei(AVCodecContext *avctx, QSVEncContext *q)
+{
+    int updated = 0;
+
+    if (avctx->codec_id != AV_CODEC_ID_H264 && avctx->codec_id != AV_CODEC_ID_HEVC)
+        return 0;
+
+    UPDATE_PARAM(q->old_pic_timing_sei, q->pic_timing_sei);
+    if (!updated)
+        return 0;
+
+    q->extco.PicTimingSEI = q->pic_timing_sei ?
+                            MFX_CODINGOPTION_ON : MFX_CODINGOPTION_UNKNOWN;
+    av_log(avctx, AV_LOG_DEBUG, "Reset PicTimingSEI: %s\n",
+           print_threestate(q->extco.PicTimingSEI));
+
+    return updated;
+}
+
 static int update_parameters(AVCodecContext *avctx, QSVEncContext *q,
                              const AVFrame *frame)
 {
     int needReset = 0, ret = 0;
 
-    if (!frame)
+    if (!frame || avctx->codec_id == AV_CODEC_ID_MJPEG)
         return 0;
 
     needReset = update_qp(avctx, q);
+    needReset |= update_max_frame_size(avctx, q);
+    needReset |= update_gop_size(avctx, q);
+    needReset |= update_rir(avctx, q);
+    needReset |= update_low_delay_brc(avctx, q);
+    needReset |= update_frame_rate(avctx, q);
+    needReset |= update_bitrate(avctx, q);
+    needReset |= update_pic_timing_sei(avctx, q);
+    ret = update_min_max_qp(avctx, q);
+    if (ret < 0)
+        return ret;
+    needReset |= ret;
     if (!needReset)
         return 0;
 
@@ -1774,8 +2271,8 @@ static int encode_frame(AVCodecContext *avctx, QSVEncContext *q,
         pkt.bs->ExtParam = enc_buf;
     }
 
-    if (q->set_encode_ctrl_cb) {
-        q->set_encode_ctrl_cb(avctx, frame, &qsv_frame->enc_ctrl);
+    if (q->set_encode_ctrl_cb && enc_ctrl) {
+        q->set_encode_ctrl_cb(avctx, frame, enc_ctrl);
     }
 
     if ((avctx->codec_id == AV_CODEC_ID_H264 ||
@@ -1912,8 +2409,7 @@ int ff_qsv_enc_close(AVCodecContext *avctx, QSVEncContext *q)
     while (cur) {
         q->work_frames = cur->next;
         av_frame_free(&cur->frame);
-        free_encoder_ctrl_extparam(&cur->enc_ctrl);
-        free_encoder_ctrl_payloads(&cur->enc_ctrl);
+        free_encoder_ctrl(&cur->enc_ctrl);
         av_freep(&cur);
         cur = q->work_frames;
     }

@@ -1384,7 +1384,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
     avctx->pix_fmt = c->has_alpha ? AV_PIX_FMT_YUVA420P : AV_PIX_FMT_YUV420P;
     avctx->color_range = c->version == 'k' ? AVCOL_RANGE_JPEG : AVCOL_RANGE_MPEG;
 
-    ff_blockdsp_init(&c->bdsp, avctx);
+    ff_blockdsp_init(&c->bdsp);
     ff_hpeldsp_init(&hdsp, avctx->flags);
     c->put_pixels_tab = hdsp.put_pixels_tab[1][0];
     ff_binkdsp_init(&c->binkdsp);
@@ -1420,7 +1420,7 @@ static void flush(AVCodecContext *avctx)
 
 const FFCodec ff_bink_decoder = {
     .p.name         = "binkvideo",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("Bink video"),
+    CODEC_LONG_NAME("Bink video"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_BINKVIDEO,
     .priv_data_size = sizeof(BinkContext),

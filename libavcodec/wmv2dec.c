@@ -52,7 +52,6 @@ typedef struct WMV2DecContext {
     int per_mb_rl_bit;
     int skip_type;
 
-    ScanTable abt_scantable[2];
     DECLARE_ALIGNED(32, int16_t, abt_block2)[6][64];
 } WMV2DecContext;
 
@@ -425,9 +424,7 @@ static inline int wmv2_decode_inter_block(WMV2DecContext *w, int16_t *block,
     w->abt_type_table[n] = w->abt_type;
 
     if (w->abt_type) {
-//        const uint8_t *scantable = w->abt_scantable[w->abt_type - 1].permutated;
-        const uint8_t *scantable = w->abt_scantable[w->abt_type - 1].scantable;
-//        const uint8_t *scantable = w->abt_type - 1 ? w->abt_scantable[1].permutated : w->abt_scantable[0].scantable;
+        const uint8_t *scantable = w->abt_type == 1 ? ff_wmv2_scantableA : ff_wmv2_scantableB;
 
         sub_cbp = sub_cbp_table[decode012(&s->gb)];
 
@@ -448,7 +445,7 @@ static inline int wmv2_decode_inter_block(WMV2DecContext *w, int16_t *block,
     }
 }
 
-int ff_wmv2_decode_mb(MpegEncContext *s, int16_t block[6][64])
+static int wmv2_decode_mb(MpegEncContext *s, int16_t block[6][64])
 {
     /* The following is only allowed because this encoder
      * does not use slice threading. */
@@ -576,11 +573,9 @@ static av_cold int wmv2_decode_init(AVCodecContext *avctx)
     if ((ret = ff_msmpeg4_decode_init(avctx)) < 0)
         return ret;
 
+    s->decode_mb = wmv2_decode_mb;
+
     ff_wmv2_common_init(s);
-    ff_init_scantable(s->idsp.idct_permutation, &w->abt_scantable[0],
-                      ff_wmv2_scantableA);
-    ff_init_scantable(s->idsp.idct_permutation, &w->abt_scantable[1],
-                      ff_wmv2_scantableB);
 
     return ff_intrax8_common_init(avctx, &w->x8,
                                   w->s.block, w->s.block_last_index,
@@ -597,7 +592,7 @@ static av_cold int wmv2_decode_end(AVCodecContext *avctx)
 
 const FFCodec ff_wmv2_decoder = {
     .p.name         = "wmv2",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("Windows Media Video 8"),
+    CODEC_LONG_NAME("Windows Media Video 8"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_WMV2,
     .priv_data_size = sizeof(WMV2DecContext),

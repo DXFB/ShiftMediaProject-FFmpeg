@@ -47,6 +47,7 @@
     <ClCompile Include="..\fftools\ffmpeg_filter.c" />
     <ClCompile Include="..\fftools\ffmpeg_hw.c" />
     <ClCompile Include="..\fftools\ffmpeg_mux.c" />
+    <ClCompile Include="..\fftools\ffmpeg_mux_init.c" />
     <ClCompile Include="..\fftools\ffmpeg_opt.c" />
     <ClCompile Include="..\fftools\objpool.c" />
     <ClCompile Include="..\fftools\sync_queue.c" />

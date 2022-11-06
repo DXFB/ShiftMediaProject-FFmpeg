@@ -43,6 +43,7 @@ static const AVCodecParser *parser_list[] = {
     &ff_dvdsub_parser,
     &ff_dvd_nav_parser,
     &ff_flac_parser,
+    &ff_ftr_parser,
     &ff_g723_1_parser,
     &ff_g729_parser,
     &ff_gif_parser,
@@ -54,6 +55,7 @@ static const AVCodecParser *parser_list[] = {
     &ff_hdr_parser,
     &ff_ipu_parser,
     &ff_jpeg2000_parser,
+    &ff_misc4_parser,
     &ff_mjpeg_parser,
     &ff_mlp_parser,
     &ff_mpeg4video_parser,
@@ -76,4 +78,5 @@ static const AVCodecParser *parser_list[] = {
     &ff_webp_parser,
     &ff_xbm_parser,
     &ff_xma_parser,
+    &ff_xwd_parser,
     NULL };

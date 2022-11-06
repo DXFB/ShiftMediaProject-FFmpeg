@@ -19,6 +19,7 @@
     <ClCompile Include="..\libavformat\demux.c" />
     <ClCompile Include="..\libavformat\demux_utils.c" />
     <ClCompile Include="..\libavformat\dump.c" />
+    <ClCompile Include="..\libavformat\dv.c" />
     <ClCompile Include="..\libavformat\format.c" />
     <ClCompile Include="..\libavformat\id3v1.c" />
     <ClCompile Include="..\libavformat\id3v2.c" />
@@ -103,6 +104,7 @@
     <ClCompile Include="..\libavformat\amr.c" />
     <ClCompile Include="..\libavformat\amvenc.c" />
     <ClCompile Include="..\libavformat\anm.c" />
+    <ClCompile Include="..\libavformat\apac.c" />
     <ClCompile Include="..\libavformat\apc.c" />
     <ClCompile Include="..\libavformat\ape.c" />
     <ClCompile Include="..\libavformat\apm.c" />
@@ -147,6 +149,7 @@
     <ClCompile Include="..\libavformat\rawvideodec.c" />
     <ClCompile Include="..\libavformat\bmv.c" />
     <ClCompile Include="..\libavformat\boadec.c" />
+    <ClCompile Include="..\libavformat\bonk.c" />
     <ClCompile Include="..\libavformat\brstm.c" />
     <ClCompile Include="..\libavformat\c93.c" />
     <ClCompile Include="..\libavformat\cafdec.c" />
@@ -178,7 +181,6 @@
     <ClCompile Include="..\libavformat\dss.c" />
     <ClCompile Include="..\libavformat\dtshddec.c" />
     <ClCompile Include="..\libavformat\dtsdec.c" />
-    <ClCompile Include="..\libavformat\dv.c" />
     <ClCompile Include="..\libavformat\dvenc.c" />
     <ClCompile Include="..\libavformat\dvbsub.c" />
     <ClCompile Include="..\libavformat\dvbtxt.c" />
@@ -263,6 +265,7 @@
     <ClCompile Include="..\libavformat\jacosubenc.c" />
     <ClCompile Include="..\libavformat\jvdec.c" />
     <ClCompile Include="..\libavformat\kvag.c" />
+    <ClCompile Include="..\libavformat\lafdec.c" />
     <ClCompile Include="..\libavformat\latmenc.c" />
     <ClCompile Include="..\libavformat\lmlm4.c" />
     <ClCompile Include="..\libavformat\loasdec.c" />

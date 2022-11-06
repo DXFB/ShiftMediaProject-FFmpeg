@@ -28,6 +28,7 @@ static const FFBitStreamFilter *bitstream_filters[] = {
     &ff_chomp_bsf,
     &ff_dump_extradata_bsf,
     &ff_dca_core_bsf,
+    &ff_dts2pts_bsf,
     &ff_dv_error_marker_bsf,
     &ff_eac3_core_bsf,
     &ff_extract_extradata_bsf,

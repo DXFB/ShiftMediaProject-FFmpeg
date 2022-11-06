@@ -570,6 +570,9 @@
     <ClCompile Include="..\libavfilter\vf_avgblur.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_backgroundkey.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\bbox.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -1186,6 +1189,9 @@
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vsink_nullsink.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\avf_a3dscope.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\avf_abitscope.c">

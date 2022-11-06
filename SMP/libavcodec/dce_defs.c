@@ -43,13 +43,13 @@ void ff_fdct_sse2(int16_t *block) {return;}
 void ff_flac_decorrelate_indep8_16_avx(uint8_t **out, int32_t **in, int channels, int len, int shift) {return;}
 #endif
 #if !(ARCH_X86_64)
-void ff_flac_decorrelate_indep8_16_sse2(uint8_t **out, int32_t **in, int channels, int len, int shift) {return;}
+void ff_flac_decorrelate_indep8_16_ssse3(uint8_t **out, int32_t **in, int channels, int len, int shift) {return;}
 #endif
 #if !(ARCH_X86_64)
 void ff_flac_decorrelate_indep8_32_avx(uint8_t **out, int32_t **in, int channels, int len, int shift) {return;}
 #endif
 #if !(ARCH_X86_64)
-void ff_flac_decorrelate_indep8_32_sse2(uint8_t **out, int32_t **in, int channels, int len, int shift) {return;}
+void ff_flac_decorrelate_indep8_32_ssse3(uint8_t **out, int32_t **in, int channels, int len, int shift) {return;}
 #endif
 #if !(ARCH_X86_64)
 void ff_hevc_h_loop_filter_luma_10_avx(uint8_t *pix, ptrdiff_t stride, int beta, const int *tc, const uint8_t *no_p, const uint8_t *no_q) {return;}

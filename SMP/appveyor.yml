@@ -16,12 +16,12 @@ environment:
   GITHUBTOKEN:
     secure: c9Sads7Y16h7FP+LrR3IjVygYAgh8GByE8TtazxDg7jpPVxc+XDV81z7MoUc2Ada
   matrix:
-  - MSVC_VER: 14
-    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
   - MSVC_VER: 15
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
   - MSVC_VER: 16
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+  - MSVC_VER: 17
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
 
 install:
 # Install GitLink
@@ -160,6 +160,7 @@ after_build:
 # Copy binary files to separate artifact folder
 - cmd: mkdir %APPVEYOR_BUILD_FOLDER%\build_bin\%PLATFORM% >NUL 2>&1
 - cmd: move /y %APPVEYOR_BUILD_FOLDER%\build_out\bin\%PLATFORM%\*.exe %APPVEYOR_BUILD_FOLDER%\build_bin\%PLATFORM%
+- cmd: del %APPVEYOR_BUILD_FOLDER%\build_out\bin\%PLATFORM%\*.pdb
 - cmd: mkdir %APPVEYOR_BUILD_FOLDER%\build_bin\licenses >NUL 2>&1
 - cmd: copy /y %APPVEYOR_BUILD_FOLDER%\build_out\licenses\ %APPVEYOR_BUILD_FOLDER%\build_bin\licenses\
 

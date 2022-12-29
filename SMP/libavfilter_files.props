@@ -84,6 +84,7 @@
     <ClCompile Include="..\libavfilter\af_adelay.c" />
     <ClCompile Include="..\libavfilter\af_adenorm.c" />
     <ClCompile Include="..\libavfilter\af_aderivative.c" />
+    <ClCompile Include="..\libavfilter\af_adrc.c" />
     <ClCompile Include="..\libavfilter\af_adynamicequalizer.c" />
     <ClCompile Include="..\libavfilter\af_adynamicsmooth.c" />
     <ClCompile Include="..\libavfilter\af_aecho.c" />
@@ -225,6 +226,7 @@
     <ClCompile Include="..\libavfilter\vf_colortemperature.c" />
     <ClCompile Include="..\libavfilter\vf_convolve.c" />
     <ClCompile Include="..\libavfilter\vf_copy.c" />
+    <ClCompile Include="..\libavfilter\vf_corr.c" />
     <ClCompile Include="..\libavfilter\vf_cover_rect.c" />
     <ClCompile Include="..\libavfilter\lavfutils.c" />
     <ClCompile Include="..\libavfilter\vf_crop.c" />
@@ -404,6 +406,7 @@
     <ClCompile Include="..\libavfilter\avf_aphasemeter.c" />
     <ClCompile Include="..\libavfilter\avf_avectorscope.c" />
     <ClCompile Include="..\libavfilter\avf_concat.c" />
+    <ClCompile Include="..\libavfilter\avf_showcwt.c" />
     <ClCompile Include="..\libavfilter\avf_showfreqs.c" />
     <ClCompile Include="..\libavfilter\avf_showspatial.c" />
     <ClCompile Include="..\libavfilter\avf_showspectrum.c" />

@@ -1,7 +1,4 @@
 /*
- * H.263 parser
- * Copyright (c) 2002-2004 Michael Niedermayer <michaelni@gmx.at>
- *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or
@@ -19,11 +16,5 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVCODEC_H263_PARSER_H
-#define AVCODEC_H263_PARSER_H
-
-#include "parser.h"
-
-int ff_h263_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size);
-
-#endif /* AVCODEC_H263_PARSER_H */
+#define BITSTREAM_LE
+#include "bitstream_template.c"

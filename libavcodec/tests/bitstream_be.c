@@ -1,8 +1,4 @@
 /*
- * MPEG-4 video parser prototypes
- * Copyright (c) 2003 Fabrice Bellard
- * Copyright (c) 2003 Michael Niedermayer
- *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or
@@ -20,15 +16,4 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVCODEC_MPEG4VIDEO_PARSER_H
-#define AVCODEC_MPEG4VIDEO_PARSER_H
-
-#include "parser.h"
-
-/**
- * Find the end of the current frame in the bitstream.
- * @return the position of the first byte of the next frame, or -1
- */
-int ff_mpeg4_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size);
-
-#endif /* AVCODEC_MPEG4VIDEO_PARSER_H */
+#include "bitstream_template.c"

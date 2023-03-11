@@ -1,18 +1,52 @@
-Never assume the API of libav* to be stable unless at least 1 month has passed
-since the last major version increase or the API was added.
-
-The last version increases were:
-libavcodec:    2021-04-27
-libavdevice:   2021-04-27
-libavfilter:   2021-04-27
-libavformat:   2021-04-27
-libpostproc:   2021-04-27
-libswresample: 2021-04-27
-libswscale:    2021-04-27
-libavutil:     2021-04-27
-
+The last version increases of all libraries were on 2023-02-09
 
 API changes, most recent first:
+
+2023-02-16 - xxxxxxxxxx - lavf 60.2.100 - avformat.h
+  Deprecate AVFormatContext io_close callback.
+  The superior io_close2 callback should be used instead.
+
+2023-02-13 - xxxxxxxxxx - lavu 58.1.100 - frame.h
+  Deprecate AVFrame.coded_picture_number and display_picture_number.
+  Their usefulness is questionable and very few decoders set them.
+
+2023-02-13 - xxxxxxxxxx - lavc 60.2.100 - avcodec.h
+  Add AVCodecContext.frame_num as a 64bit version of frame_number.
+  Deprecate AVCodecContext.frame_number.
+
+2023-02-12 - xxxxxxxxxx - lavfi 9.1.100 - avfilter.h
+  Add filtergraph segment parsing API.
+  New structs:
+    - AVFilterGraphSegment
+    - AVFilterChain
+    - AVFilterParams
+    - AVFilterPadParams
+  New functions:
+    - avfilter_graph_segment_parse()
+    - avfilter_graph_segment_create_filters()
+    - avfilter_graph_segment_apply_opts()
+    - avfilter_graph_segment_init()
+    - avfilter_graph_segment_link()
+    - avfilter_graph_segment_apply()
+
+2023-02-xx - xxxxxxxxxx - lavu 58.0.100 - csp.h
+  Add av_csp_approximate_trc_gamma() and av_csp_trc_func_from_id().
+  Add av_csp_trc_function.
+
+2023-02-xx - xxxxxxxxxx - lavc 60.0.100 - avcodec.h
+  avcodec_decode_subtitle2() now accepts const AVPacket*.
+
+2023-0x-xx - xxxxxxxxxx - lavc 59.63.100
+  Allow AV_CODEC_FLAG_COPY_OPAQUE to be used with decoders.
+
+2023-01-29 - xxxxxxxxxx - lavc 59.59.100 - avcodec.h
+  Add AV_CODEC_FLAG_COPY_OPAQUE and AV_CODEC_FLAG_FRAME_DURATION.
+
+2023-01-13 - xxxxxxxxxx - lavu 57.44.100 - ambient_viewing_environment.h frame.h
+  Adds a new structure for holding H.274 Ambient Viewing Environment metadata,
+  AVAmbientViewingEnvironment.
+  Adds a new AVFrameSideDataType entry AV_FRAME_DATA_AMBIENT_VIEWING_ENVIRONMENT
+  for it.
 
 2022-12-xx - xxxxxxxxxx - lavc 59.55.100 - avcodec.h
   Add AV_HWACCEL_FLAG_UNSAFE_OUTPUT.

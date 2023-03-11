@@ -4063,10 +4063,15 @@ static void mov_build_index(MOVContext *mov, AVStream *st)
             }
         }
 
-        if (multiple_edits && !mov->advanced_editlist)
-            av_log(mov->fc, AV_LOG_WARNING, "multiple edit list entries, "
-                   "Use -advanced_editlist to correctly decode otherwise "
-                   "a/v desync might occur\n");
+        if (multiple_edits && !mov->advanced_editlist) {
+            if (mov->advanced_editlist_autodisabled)
+                av_log(mov->fc, AV_LOG_WARNING, "multiple edit list entries, "
+                       "not supported in fragmented MP4 files\n");
+            else
+                av_log(mov->fc, AV_LOG_WARNING, "multiple edit list entries, "
+                       "Use -advanced_editlist to correctly decode otherwise "
+                       "a/v desync might occur\n");
+        }
 
         /* adjust first dts according to edit list */
         if ((empty_duration || start_time) && mov->time_scale > 0) {
@@ -4498,6 +4503,23 @@ static int mov_read_trak(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     fix_timescale(c, sc);
 
     avpriv_set_pts_info(st, 64, 1, sc->time_scale);
+
+    /*
+     * Advanced edit list support does not work with fragemented MP4s, which
+     * have stsc, stsz, stco, and stts with zero entries in the moov atom.
+     * In these files, trun atoms may be streamed in.
+     *
+     * It cannot be used with use_mfra_for = {pts,dts} either, as the index
+     * is not complete, but filled in as more trun atoms are read, as well.
+     */
+    if (!sc->stts_count || c->use_mfra_for != FF_MOV_FLAG_MFRA_AUTO &&
+        c->advanced_editlist) {
+
+        av_log(c->fc, AV_LOG_VERBOSE, "advanced_editlist does not work with fragmented "
+                                      "MP4. disabling.\n");
+        c->advanced_editlist = 0;
+        c->advanced_editlist_autodisabled = 1;
+    }
 
     mov_build_index(c, st);
 

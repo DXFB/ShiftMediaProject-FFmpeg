@@ -1218,7 +1218,6 @@ static int mf_init(AVCodecContext *avctx)
                 return 0;
         }
     }
-    mf_close(avctx);
     return ret;
 }
 

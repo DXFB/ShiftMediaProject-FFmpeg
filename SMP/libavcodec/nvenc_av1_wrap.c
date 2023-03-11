@@ -1,4 +1,4 @@
-/** vf_scale_qsv.c file wrapper for libavfilter
+/** nvenc_av1.c file wrapper for libavcodec
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,6 @@
 
 #include "config.h"
 #include "config_components.h"
-#if CONFIG_SCALE_QSV_FILTER
-#   include "../../libavfilter/vf_scale_qsv.c"
+#if CONFIG_AV1_NVENC_ENCODER
+#   include "../../libavcodec/nvenc_av1.c"
 #endif

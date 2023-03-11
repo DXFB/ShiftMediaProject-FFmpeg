@@ -28,12 +28,19 @@
     <ClCompile Include="..\libswresample\x86\audio_convert_init.c" />
     <ClCompile Include="..\libswresample\x86\rematrix_init.c" />
     <ClCompile Include="..\libswresample\x86\resample_init.c" />
-    <ClCompile Include="libswresample\log2_tab_wrap.c" />
     <ClCompile Include="..\libswresample\rematrix.c">
       <ObjectFileName>$(IntDir)\libswresample_rematrix.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\libswresample\resample.c">
       <ObjectFileName>$(IntDir)\libswresample_resample.obj</ObjectFileName>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libswresample\log2_tab.c">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Debug'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ReleaseWinRT'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='DebugWinRT'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

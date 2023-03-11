@@ -1081,6 +1081,9 @@
     <ClCompile Include="..\libavformat\redspark.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\rka.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\rl2.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
@@ -1199,6 +1202,9 @@
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\scd.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\sdns.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\sdr2.c">
@@ -1393,6 +1399,12 @@
     <ClCompile Include="..\libavformat\wavenc.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\wady.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\wavarc.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\wc3movie.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
@@ -1442,6 +1454,9 @@
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\xa.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\xmd.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\xmv.c">
@@ -1570,28 +1585,44 @@
     <ClCompile Include="..\libavformat\libssh.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
-    <ClCompile Include="libavformat\ac3_channel_layout_tab_wrap.c">
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavformat\ac3_channel_layout_tab.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
-    <ClCompile Include="libavformat\dca_sample_rate_tab_wrap.c">
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavformat\dca_sample_rate_tab.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
-    <ClCompile Include="libavformat\golomb_tab_wrap.c">
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavformat\golomb_tab.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
-    <ClCompile Include="libavformat\jpegtables_wrap.c">
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavformat\jpegtables.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
-    <ClCompile Include="libavformat\log2_tab_wrap.c">
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavformat\log2_tab.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
-    <ClCompile Include="libavformat\mpeg4audio_sample_rates_wrap.c">
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavformat\mpeg4audio_sample_rates.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
-    <ClCompile Include="libavformat\mpegaudiotabs_wrap.c">
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavformat\mpegaudiotabs.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
-    <ClCompile Include="libavformat\to_upper4_wrap.c">
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavformat\to_upper4.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
   </ItemGroup>

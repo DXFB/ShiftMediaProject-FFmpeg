@@ -28,7 +28,7 @@
 #endif
 #define FFMPEG_CONFIGURATION "--enable-gpl --enable-version3 --enable-bzlib --enable-iconv --enable-lzma --enable-sdl2 --enable-zlib --enable-libmp3lame --enable-libvorbis --enable-libspeex --enable-libopus --enable-libilbc --enable-libtheora --enable-libx264 --enable-libx265 --enable-libxvid --enable-libvpx --enable-libgme --enable-libmodplug --enable-libsoxr --enable-libfreetype --enable-fontconfig --enable-libfribidi --enable-libass --enable-libxml2 --enable-gnutls --disable-schannel --enable-gcrypt --enable-libssh --enable-libcdio --enable-libbluray --enable-opengl --enable-libmfx --enable-ffnvcodec --enable-cuda --enable-amf"
 #define FFMPEG_LICENSE "GPL version 3 or later"
-#define CONFIG_THIS_YEAR 2022
+#define CONFIG_THIS_YEAR 2023
 #define FFMPEG_DATADIR "."
 #define AVCONV_DATADIR "."
 #if defined(__INTEL_COMPILER)
@@ -545,27 +545,27 @@
 #define CONFIG_MANPAGES 0
 #define CONFIG_PODPAGES 0
 #define CONFIG_TXTPAGES 0
+#define CONFIG_AVIO_HTTP_SERVE_FILES_EXAMPLE 0
 #define CONFIG_AVIO_LIST_DIR_EXAMPLE 0
-#define CONFIG_AVIO_READING_EXAMPLE 0
+#define CONFIG_AVIO_READ_CALLBACK_EXAMPLE 0
 #define CONFIG_DECODE_AUDIO_EXAMPLE 0
+#define CONFIG_DECODE_FILTER_AUDIO_EXAMPLE 0
+#define CONFIG_DECODE_FILTER_VIDEO_EXAMPLE 0
 #define CONFIG_DECODE_VIDEO_EXAMPLE 0
-#define CONFIG_DEMUXING_DECODING_EXAMPLE 0
+#define CONFIG_DEMUX_DECODE_EXAMPLE 0
 #define CONFIG_ENCODE_AUDIO_EXAMPLE 0
 #define CONFIG_ENCODE_VIDEO_EXAMPLE 0
 #define CONFIG_EXTRACT_MVS_EXAMPLE 0
 #define CONFIG_FILTER_AUDIO_EXAMPLE 0
-#define CONFIG_FILTERING_AUDIO_EXAMPLE 0
-#define CONFIG_FILTERING_VIDEO_EXAMPLE 0
-#define CONFIG_HTTP_MULTICLIENT_EXAMPLE 0
 #define CONFIG_HW_DECODE_EXAMPLE 0
-#define CONFIG_METADATA_EXAMPLE 0
-#define CONFIG_MUXING_EXAMPLE 0
-#define CONFIG_QSVDEC_EXAMPLE 0
-#define CONFIG_REMUXING_EXAMPLE 0
-#define CONFIG_RESAMPLING_AUDIO_EXAMPLE 0
-#define CONFIG_SCALING_VIDEO_EXAMPLE 0
+#define CONFIG_MUX_EXAMPLE 0
+#define CONFIG_QSV_DECODE_EXAMPLE 0
+#define CONFIG_REMUX_EXAMPLE 0
+#define CONFIG_RESAMPLE_AUDIO_EXAMPLE 0
+#define CONFIG_SCALE_VIDEO_EXAMPLE 0
+#define CONFIG_SHOW_METADATA_EXAMPLE 0
 #define CONFIG_TRANSCODE_AAC_EXAMPLE 0
-#define CONFIG_TRANSCODING_EXAMPLE 0
+#define CONFIG_TRANSCODE_EXAMPLE 0
 #define CONFIG_VAAPI_ENCODE_EXAMPLE 0
 #define CONFIG_VAAPI_TRANSCODE_EXAMPLE 0
 #define CONFIG_QSV_TRANSCODE_EXAMPLE 0

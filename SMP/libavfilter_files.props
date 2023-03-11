@@ -179,6 +179,7 @@
     <ClCompile Include="..\libavfilter\af_vibrato.c" />
     <ClCompile Include="..\libavfilter\af_virtualbass.c" />
     <ClCompile Include="..\libavfilter\af_volumedetect.c" />
+    <ClCompile Include="..\libavfilter\asrc_afdelaysrc.c" />
     <ClCompile Include="..\libavfilter\asrc_afirsrc.c" />
     <ClCompile Include="..\libavfilter\asrc_anoisesrc.c" />
     <ClCompile Include="..\libavfilter\asrc_anullsrc.c" />
@@ -327,6 +328,7 @@
     <ClCompile Include="..\libavfilter\vf_owdenoise.c" />
     <ClCompile Include="..\libavfilter\vf_pad.c" />
     <ClCompile Include="..\libavfilter\vf_palettegen.c" />
+    <ClCompile Include="..\libavfilter\palette.c" />
     <ClCompile Include="..\libavfilter\vf_paletteuse.c" />
     <ClCompile Include="..\libavfilter\vf_perspective.c" />
     <ClCompile Include="..\libavfilter\vf_phase.c" />
@@ -366,6 +368,7 @@
     <ClCompile Include="..\libavfilter\vf_siti.c" />
     <ClCompile Include="..\libavfilter\vf_spp.c" />
     <ClCompile Include="..\libavfilter\vf_sr.c" />
+    <ClCompile Include="..\libavfilter\vf_ssim360.c" />
     <ClCompile Include="..\libavfilter\vf_super2xsai.c" />
     <ClCompile Include="..\libavfilter\vf_swaprect.c" />
     <ClCompile Include="..\libavfilter\vf_swapuv.c" />
@@ -466,12 +469,10 @@
     <ClCompile Include="..\libavfilter\x86\vf_v360_init.c" />
     <ClCompile Include="..\libavfilter\x86\vf_w3fdif_init.c" />
     <ClCompile Include="..\libavfilter\x86\vf_yadif_init.c" />
-    <ClCompile Include="libavfilter\log2_tab_wrap.c" />
     <ClCompile Include="libavfilter\qsvvpp_wrap.c" />
-    <ClCompile Include="libavfilter\vf_deinterlace_qsv_wrap.c" />
     <ClCompile Include="libavfilter\vf_hwupload_cuda_wrap.c" />
     <ClCompile Include="libavfilter\vf_overlay_qsv_wrap.c" />
-    <ClCompile Include="libavfilter\vf_scale_qsv_wrap.c" />
+    <ClCompile Include="libavfilter\vf_stack_qsv_wrap.c" />
     <ClCompile Include="libavfilter\vf_vpp_qsv_wrap.c" />
     <ClCompile Include="libavfilter\vsrc_ddagrab_wrap.c" />
     <ClCompile Include="libavfilter\dce_defs.c" />
@@ -585,6 +586,14 @@
     </ClCompile>
     <ClCompile Include="..\libavfilter\x86\vf_spp.c">
       <ObjectFileName>$(IntDir)\libavfilter_x86_vf_spp.obj</ObjectFileName>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavfilter\log2_tab.c">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Debug'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ReleaseWinRT'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='DebugWinRT'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

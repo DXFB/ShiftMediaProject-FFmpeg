@@ -21,6 +21,6 @@
 
 #include "config.h"
 #include "config_components.h"
-#if CONFIG_VPP_QSV_FILTER
+#if CONFIG_DEINTERLACE_QSV_FILTER || CONFIG_SCALE_QSV_FILTER || CONFIG_VPP_QSV_FILTER
 #   include "../../libavfilter/vf_vpp_qsv.c"
 #endif

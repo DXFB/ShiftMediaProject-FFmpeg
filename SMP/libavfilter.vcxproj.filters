@@ -534,6 +534,9 @@
     <ClCompile Include="..\libavfilter\af_volumedetect.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\asrc_afdelaysrc.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\asrc_afirsrc.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -978,6 +981,9 @@
     <ClCompile Include="..\libavfilter\vf_palettegen.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\palette.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_paletteuse.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -1093,6 +1099,9 @@
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vf_sr.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_ssim360.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vf_super2xsai.c">
@@ -1395,13 +1404,7 @@
     <ClCompile Include="..\libavfilter\x86\vf_yadif_init.c">
       <Filter>Source Files\libavfilter\x86</Filter>
     </ClCompile>
-    <ClCompile Include="libavfilter\log2_tab_wrap.c">
-      <Filter>Source Files\libavfilter</Filter>
-    </ClCompile>
     <ClCompile Include="libavfilter\qsvvpp_wrap.c">
-      <Filter>Source Files\libavfilter</Filter>
-    </ClCompile>
-    <ClCompile Include="libavfilter\vf_deinterlace_qsv_wrap.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="libavfilter\vf_hwupload_cuda_wrap.c">
@@ -1410,7 +1413,7 @@
     <ClCompile Include="libavfilter\vf_overlay_qsv_wrap.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
-    <ClCompile Include="libavfilter\vf_scale_qsv_wrap.c">
+    <ClCompile Include="libavfilter\vf_stack_qsv_wrap.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="libavfilter\vf_vpp_qsv_wrap.c">
@@ -1532,6 +1535,11 @@
     </ClCompile>
     <ClCompile Include="..\libavfilter\x86\vf_spp.c">
       <Filter>Source Files\libavfilter\x86</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavfilter\log2_tab.c">
+      <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

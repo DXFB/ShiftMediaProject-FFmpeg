@@ -40,6 +40,7 @@ static const FFBitStreamFilter *bitstream_filters[] = {
     &ff_hevc_metadata_bsf,
     &ff_hevc_mp4toannexb_bsf,
     &ff_imx_dump_header_bsf,
+    &ff_media100_to_mjpegb_bsf,
     &ff_mjpeg2jpeg_bsf,
     &ff_mjpega_dump_header_bsf,
     &ff_mp3_header_decompress_bsf,

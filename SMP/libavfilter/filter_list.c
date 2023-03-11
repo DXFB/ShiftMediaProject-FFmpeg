@@ -151,6 +151,7 @@ static const AVFilter *filter_list[] = {
     &ff_af_volume,
     &ff_af_volumedetect,
     &ff_asrc_aevalsrc,
+    &ff_asrc_afdelaysrc,
     &ff_asrc_afirsrc,
     &ff_asrc_anoisesrc,
     &ff_asrc_anullsrc,
@@ -407,6 +408,7 @@ static const AVFilter *filter_list[] = {
     &ff_vf_spp,
     &ff_vf_sr,
     &ff_vf_ssim,
+    &ff_vf_ssim360,
     &ff_vf_stereo3d,
     &ff_vf_streamselect,
     &ff_vf_subtitles,
@@ -456,6 +458,15 @@ static const AVFilter *filter_list[] = {
     &ff_vf_yadif,
     &ff_vf_yaepblur,
     &ff_vf_zoompan,
+#if CONFIG_HSTACK_QSV_FILTER
+    &ff_vf_hstack_qsv,
+#endif
+#if CONFIG_VSTACK_QSV_FILTER
+    &ff_vf_vstack_qsv,
+#endif
+#if CONFIG_XSTACK_QSV_FILTER
+    &ff_vf_xstack_qsv,
+#endif
     &ff_vsrc_allrgb,
     &ff_vsrc_allyuv,
     &ff_vsrc_cellauto,

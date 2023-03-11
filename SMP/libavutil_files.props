@@ -25,6 +25,7 @@
     <ClCompile Include="..\libavutil\adler32.c" />
     <ClCompile Include="..\libavutil\aes.c" />
     <ClCompile Include="..\libavutil\aes_ctr.c" />
+    <ClCompile Include="..\libavutil\ambient_viewing_environment.c" />
     <ClCompile Include="..\libavutil\audio_fifo.c" />
     <ClCompile Include="..\libavutil\avstring.c" />
     <ClCompile Include="..\libavutil\avsscanf.c" />
@@ -35,7 +36,6 @@
     <ClCompile Include="..\libavutil\cast5.c" />
     <ClCompile Include="..\libavutil\camellia.c" />
     <ClCompile Include="..\libavutil\channel_layout.c" />
-    <ClCompile Include="..\libavutil\color_utils.c" />
     <ClCompile Include="..\libavutil\cpu.c" />
     <ClCompile Include="..\libavutil\crc.c" />
     <ClCompile Include="..\libavutil\csp.c" />
@@ -138,6 +138,7 @@
     <ClInclude Include="..\libavutil\adler32.h" />
     <ClInclude Include="..\libavutil\aes.h" />
     <ClInclude Include="..\libavutil\aes_ctr.h" />
+    <ClInclude Include="..\libavutil\ambient_viewing_environment.h" />
     <ClInclude Include="..\libavutil\attributes.h" />
     <ClInclude Include="..\libavutil\audio_fifo.h" />
     <ClInclude Include="..\libavutil\avassert.h" />

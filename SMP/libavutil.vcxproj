@@ -29,6 +29,7 @@ mkdir "$(OutDir)"\include\libavutil
 copy ..\libavutil\adler32.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes_ctr.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\ambient_viewing_environment.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\attributes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\audio_fifo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\avassert.h "$(OutDir)"\include\libavutil
@@ -173,6 +174,7 @@ mkdir "$(OutDir)"\include\libavutil
 copy ..\libavutil\adler32.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes_ctr.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\ambient_viewing_environment.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\attributes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\audio_fifo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\avassert.h "$(OutDir)"\include\libavutil
@@ -318,6 +320,7 @@ mkdir "$(OutDir)"\include\libavutil
 copy ..\libavutil\adler32.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes_ctr.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\ambient_viewing_environment.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\attributes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\audio_fifo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\avassert.h "$(OutDir)"\include\libavutil
@@ -463,6 +466,7 @@ mkdir "$(OutDir)"\include\libavutil
 copy ..\libavutil\adler32.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes_ctr.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\ambient_viewing_environment.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\attributes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\audio_fifo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\avassert.h "$(OutDir)"\include\libavutil
@@ -607,6 +611,7 @@ mkdir "$(OutDir)"\include\libavutil
 copy ..\libavutil\adler32.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes_ctr.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\ambient_viewing_environment.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\attributes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\audio_fifo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\avassert.h "$(OutDir)"\include\libavutil
@@ -751,6 +756,7 @@ mkdir "$(OutDir)"\include\libavutil
 copy ..\libavutil\adler32.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes_ctr.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\ambient_viewing_environment.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\attributes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\audio_fifo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\avassert.h "$(OutDir)"\include\libavutil
@@ -896,6 +902,7 @@ mkdir "$(OutDir)"\include\libavutil
 copy ..\libavutil\adler32.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes_ctr.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\ambient_viewing_environment.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\attributes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\audio_fifo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\avassert.h "$(OutDir)"\include\libavutil
@@ -1041,6 +1048,7 @@ mkdir "$(OutDir)"\include\libavutil
 copy ..\libavutil\adler32.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes_ctr.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\ambient_viewing_environment.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\attributes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\audio_fifo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\avassert.h "$(OutDir)"\include\libavutil
@@ -1186,6 +1194,7 @@ mkdir "$(OutDir)"\include\libavutil
 copy ..\libavutil\adler32.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes_ctr.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\ambient_viewing_environment.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\attributes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\audio_fifo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\avassert.h "$(OutDir)"\include\libavutil
@@ -1331,6 +1340,7 @@ mkdir "$(OutDir)"\include\libavutil
 copy ..\libavutil\adler32.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\aes_ctr.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\ambient_viewing_environment.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\attributes.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\audio_fifo.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\avassert.h "$(OutDir)"\include\libavutil

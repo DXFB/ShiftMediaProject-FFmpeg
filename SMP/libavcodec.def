@@ -120,7 +120,6 @@ EXPORTS
     avcodec_flush_buffers
     avcodec_free_context
     avcodec_get_class
-    avcodec_get_frame_class
     avcodec_get_hw_config
     avcodec_get_hw_frames_parameters
     avcodec_get_name

@@ -157,12 +157,6 @@
     <NASM Include="..\libavcodec\x86\vc1dsp_mc.asm">
       <Filter>Source Files\libavcodec\x86</Filter>
     </NASM>
-    <NASM Include="..\libavcodec\x86\simple_idct10.asm">
-      <Filter>Source Files\libavcodec\x86</Filter>
-    </NASM>
-    <NASM Include="..\libavcodec\x86\simple_idct.asm">
-      <Filter>Source Files\libavcodec\x86</Filter>
-    </NASM>
     <NASM Include="..\libavcodec\x86\videodsp.asm">
       <Filter>Source Files\libavcodec\x86</Filter>
     </NASM>
@@ -314,6 +308,16 @@
       <Filter>Source Files\libavcodec\x86</Filter>
     </NASM>
     <NASM Include="..\libavcodec\x86\vp9mc_16bpp.asm">
+      <Filter>Source Files\libavcodec\x86</Filter>
+    </NASM>
+  </ItemGroup>
+  <ItemGroup>
+    <NASM Include="..\libavcodec\x86\simple_idct.asm">
+      <Filter>Source Files\libavcodec\x86</Filter>
+    </NASM>
+  </ItemGroup>
+  <ItemGroup>
+    <NASM Include="..\libavcodec\x86\simple_idct10.asm">
       <Filter>Source Files\libavcodec\x86</Filter>
     </NASM>
   </ItemGroup>
@@ -907,6 +911,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\anm.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\null.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\ansi.c">
@@ -1698,7 +1705,7 @@
     <ClCompile Include="..\libavcodec\mdec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
-    <ClCompile Include="..\libavcodec\media100.c">
+    <ClCompile Include="..\libavcodec\mjpegbdec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\metasound.c">
@@ -1720,9 +1727,6 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\mjpegenc_huffman.c">
-      <Filter>Source Files\libavcodec</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavcodec\mjpegbdec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\mlpdec.c">
@@ -2017,6 +2021,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\realtextdec.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\rka.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\rl2.c">
@@ -2404,6 +2411,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\vqcdec.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\wavarc.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\wavpack.c">
@@ -2877,6 +2887,9 @@
     <ClCompile Include="..\libavcodec\imx_dump_header_bsf.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\media100_to_mjpegb_bsf.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\mjpeg2jpeg_bsf.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -3177,6 +3190,9 @@
     <ClCompile Include="libavcodec\amfenc_wrap.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="libavcodec\amfenc_av1_wrap.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="libavcodec\amfenc_h264_wrap.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -3208,9 +3224,6 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="libavcodec\hevc_ps_enc_wrap.c">
-      <Filter>Source Files\libavcodec</Filter>
-    </ClCompile>
-    <ClCompile Include="libavcodec\log2_tab_wrap.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="libavcodec\nvdec_wrap.c">
@@ -3246,6 +3259,9 @@
     <ClCompile Include="libavcodec\nvenc_wrap.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="libavcodec\nvenc_av1_wrap.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="libavcodec\nvenc_h264_wrap.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -3274,9 +3290,6 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="libavcodec\qsvenc_vp9_wrap.c">
-      <Filter>Source Files\libavcodec</Filter>
-    </ClCompile>
-    <ClCompile Include="libavcodec\reverse_wrap.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="libavcodec\dce_defs.c">
@@ -3446,6 +3459,16 @@
     </ClCompile>
     <ClCompile Include="..\libavcodec\x86\mpeg4videodsp.c">
       <Filter>Source Files\libavcodec\x86</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavcodec\log2_tab.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavcodec\reverse.c">
+      <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

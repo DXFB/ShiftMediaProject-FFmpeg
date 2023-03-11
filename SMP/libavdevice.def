@@ -5,8 +5,6 @@ EXPORTS
     av_output_audio_device_next
     av_output_video_device_next
     avdevice_app_to_dev_control_message
-    avdevice_capabilities_create
-    avdevice_capabilities_free
     avdevice_configuration
     avdevice_dev_to_app_control_message
     avdevice_free_list_devices
@@ -16,5 +14,4 @@ EXPORTS
     avdevice_list_output_sinks
     avdevice_register_all
     avdevice_version
-    av_device_capabilities DATA
     av_device_ffversion DATA

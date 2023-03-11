@@ -210,6 +210,12 @@ static const FFCodec *codec_list[] = {
     &ff_libxvid_encoder,
     &ff_aac_mf_encoder,
     &ff_ac3_mf_encoder,
+#if CONFIG_AV1_NVENC_ENCODER
+    &ff_av1_nvenc_encoder,
+#endif
+#if CONFIG_AV1_AMF_ENCODER
+    &ff_av1_amf_encoder,
+#endif
 #if CONFIG_H264_AMF_ENCODER
     &ff_h264_amf_encoder,
 #endif
@@ -240,6 +246,8 @@ static const FFCodec *codec_list[] = {
 #if CONFIG_VP9_QSV_ENCODER
     &ff_vp9_qsv_encoder,
 #endif
+    &ff_vnull_encoder,
+    &ff_anull_encoder,
     &ff_aasc_decoder,
     &ff_aic_decoder,
     &ff_alias_pix_decoder,
@@ -419,6 +427,7 @@ static const FFCodec *codec_list[] = {
     &ff_r210_decoder,
     &ff_rasc_decoder,
     &ff_rawvideo_decoder,
+    &ff_rka_decoder,
     &ff_rl2_decoder,
     &ff_roq_decoder,
     &ff_rpza_decoder,
@@ -607,6 +616,7 @@ static const FFCodec *codec_list[] = {
     &ff_twinvq_decoder,
     &ff_vmdaudio_decoder,
     &ff_vorbis_decoder,
+    &ff_wavarc_decoder,
     &ff_wavpack_decoder,
     &ff_wmalossless_decoder,
     &ff_wmapro_decoder,
@@ -651,6 +661,7 @@ static const FFCodec *codec_list[] = {
     &ff_pcm_u32be_decoder,
     &ff_pcm_u32le_decoder,
     &ff_pcm_vidc_decoder,
+    &ff_cbd2_dpcm_decoder,
     &ff_derf_dpcm_decoder,
     &ff_gremlin_dpcm_decoder,
     &ff_interplay_dpcm_decoder,
@@ -658,6 +669,7 @@ static const FFCodec *codec_list[] = {
     &ff_sdx2_dpcm_decoder,
     &ff_sol_dpcm_decoder,
     &ff_xan_dpcm_decoder,
+    &ff_wady_dpcm_decoder,
     &ff_adpcm_4xm_decoder,
     &ff_adpcm_adx_decoder,
     &ff_adpcm_afc_decoder,
@@ -707,6 +719,7 @@ static const FFCodec *codec_list[] = {
     &ff_adpcm_thp_le_decoder,
     &ff_adpcm_vima_decoder,
     &ff_adpcm_xa_decoder,
+    &ff_adpcm_xmd_decoder,
     &ff_adpcm_yamaha_decoder,
     &ff_adpcm_zork_decoder,
     &ff_ssa_decoder,
@@ -783,4 +796,6 @@ static const FFCodec *codec_list[] = {
 #if CONFIG_VP9_QSV_DECODER
     &ff_vp9_qsv_decoder,
 #endif
+    &ff_vnull_decoder,
+    &ff_anull_decoder,
     NULL };

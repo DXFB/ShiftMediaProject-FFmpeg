@@ -1,4 +1,4 @@
-/** mpeg4audio_sample_rates.c file wrapper for libavformat
+/** amfenc_av1.c file wrapper for libavcodec
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,6 @@
 
 #include "config.h"
 #include "config_components.h"
-#if CONFIG_SHARED
-#   include "../../libavformat/mpeg4audio_sample_rates.c"
+#if CONFIG_AV1_AMF_ENCODER
+#   include "../../libavcodec/amfenc_av1.c"
 #endif

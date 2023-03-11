@@ -15,6 +15,8 @@ EXPORTS
     av_aes_ctr_set_iv
     av_aes_ctr_set_random_iv
     av_aes_init
+    av_ambient_viewing_environment_alloc
+    av_ambient_viewing_environment_create_side_data
     av_append_path_component
     av_asprintf
     av_assert0_fpu
@@ -117,11 +119,12 @@ EXPORTS
     av_crc
     av_crc_get_table
     av_crc_init
+    av_csp_approximate_trc_gamma
     av_csp_luma_coeffs_from_avcsp
     av_csp_primaries_desc_from_id
     av_csp_primaries_id_from_desc
+    av_csp_trc_func_from_id
     av_d2q
-    av_d2str
     av_default_get_category
     av_default_item_name
     av_des_alloc
@@ -244,7 +247,6 @@ EXPORTS
     av_get_channel_layout_nb_channels
     av_get_channel_layout_string
     av_get_channel_name
-    av_get_colorspace_name
     av_get_cpu_flags
     av_get_default_channel_layout
     av_get_extended_channel_layout
@@ -342,7 +344,6 @@ EXPORTS
     av_malloc
     av_malloc_array
     av_mallocz
-    av_mallocz_array
     av_mastering_display_metadata_alloc
     av_mastering_display_metadata_create_side_data
     av_match_list
@@ -553,8 +554,6 @@ EXPORTS
     avpriv_dict_set_timestamp
     avpriv_emms_asm
     avpriv_float_dsp_alloc
-    avpriv_get_gamma_from_trc
-    avpriv_get_trc_function_from_trc
     avpriv_init_lls
     avpriv_report_missing_feature
     avpriv_request_sample

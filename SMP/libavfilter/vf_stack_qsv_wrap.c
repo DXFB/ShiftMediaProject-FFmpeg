@@ -1,4 +1,4 @@
-/** reverse.c file wrapper for libavcodec
+/** vf_stack_qsv.c file wrapper for libavfilter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,6 @@
 
 #include "config.h"
 #include "config_components.h"
-#if CONFIG_SHARED
-#   include "../../libavcodec/reverse.c"
+#if CONFIG_HSTACK_QSV_FILTER || CONFIG_VSTACK_QSV_FILTER || CONFIG_XSTACK_QSV_FILTER
+#   include "../../libavfilter/vf_stack_qsv.c"
 #endif

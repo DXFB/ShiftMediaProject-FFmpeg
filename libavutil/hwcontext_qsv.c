@@ -115,11 +115,12 @@ static const struct {
     { AV_PIX_FMT_BGRA, MFX_FOURCC_RGB4, 0 },
     { AV_PIX_FMT_P010, MFX_FOURCC_P010, 1 },
     { AV_PIX_FMT_PAL8, MFX_FOURCC_P8,   0 },
-#if CONFIG_VAAPI
     { AV_PIX_FMT_YUYV422,
                        MFX_FOURCC_YUY2, 0 },
+#if CONFIG_VAAPI
     { AV_PIX_FMT_UYVY422,
                        MFX_FOURCC_UYVY, 0 },
+#endif
     { AV_PIX_FMT_Y210,
                        MFX_FOURCC_Y210, 1 },
     // VUYX is used for VAAPI child device,
@@ -143,7 +144,6 @@ static const struct {
     // the SDK only delares support for Y416
     { AV_PIX_FMT_XV36,
                        MFX_FOURCC_Y416, 1 },
-#endif
 #endif
 };
 
@@ -1526,7 +1526,6 @@ static int map_frame_to_surface(const AVFrame *frame, mfxFrameSurface1 *surface)
         surface->Data.R = frame->data[0] + 2;
         surface->Data.A = frame->data[0] + 3;
         break;
-#if CONFIG_VAAPI
     case AV_PIX_FMT_YUYV422:
         surface->Data.Y = frame->data[0];
         surface->Data.U = frame->data[0] + 1;
@@ -1558,6 +1557,7 @@ static int map_frame_to_surface(const AVFrame *frame, mfxFrameSurface1 *surface)
         // use the value from the frame.
         surface->Data.A = frame->data[0] + 6;
         break;
+#if CONFIG_VAAPI
     case AV_PIX_FMT_UYVY422:
         surface->Data.Y = frame->data[0] + 1;
         surface->Data.U = frame->data[0];
@@ -2126,8 +2126,6 @@ static int qsv_device_create(AVHWDeviceContext *ctx, const char *device,
                    "\"%s\".\n", e->value);
             return AVERROR(EINVAL);
         }
-    } else if (CONFIG_VAAPI) {
-        child_device_type = AV_HWDEVICE_TYPE_VAAPI;
 #if QSV_ONEVPL
     } else if (CONFIG_D3D11VA) {  // Use D3D11 by default if d3d11va is enabled
         av_log(ctx, AV_LOG_VERBOSE,
@@ -2147,10 +2145,22 @@ static int qsv_device_create(AVHWDeviceContext *ctx, const char *device,
     } else if (CONFIG_D3D11VA) {
         child_device_type = AV_HWDEVICE_TYPE_D3D11VA;
 #endif
+    } else if (CONFIG_VAAPI) {
+        child_device_type = AV_HWDEVICE_TYPE_VAAPI;
     } else {
         av_log(ctx, AV_LOG_ERROR, "No supported child device type is enabled\n");
         return AVERROR(ENOSYS);
     }
+
+#if CONFIG_VAAPI && defined(_WIN32)
+    /* AV_HWDEVICE_TYPE_VAAPI on Windows/Libva-win32 not supported */
+    /* Reject user specified child_device_type or CONFIG_VAAPI on Windows */
+    if (child_device_type == AV_HWDEVICE_TYPE_VAAPI) {
+        av_log(ctx, AV_LOG_ERROR, "VAAPI child device type not supported for oneVPL on Windows"
+                "\"%s\".\n", e->value);
+        return AVERROR(EINVAL);
+    }
+#endif
 
     child_device_opts = NULL;
     switch (child_device_type) {

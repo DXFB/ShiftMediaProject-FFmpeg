@@ -599,7 +599,10 @@ static int cuvid_output_frame(AVCodecContext *avctx, AVFrame *frame)
             goto error;
         }
 
-        frame->key_frame = ctx->key_frame[parsed_frame.dispinfo.picture_index];
+        if (ctx->key_frame[parsed_frame.dispinfo.picture_index])
+            frame->flags |= AV_FRAME_FLAG_KEY;
+        else
+            frame->flags &= ~AV_FRAME_FLAG_KEY;
         ctx->key_frame[parsed_frame.dispinfo.picture_index] = 0;
 
         frame->width = avctx->width;
@@ -623,14 +626,19 @@ static int cuvid_output_frame(AVCodecContext *avctx, AVFrame *frame)
         /* CUVIDs opaque reordering breaks the internal pkt logic.
          * So set pkt_pts and clear all the other pkt_ fields.
          */
-        frame->pkt_pos = -1;
         frame->duration = 0;
+#if FF_API_FRAME_PKT
+FF_DISABLE_DEPRECATION_WARNINGS
+        frame->pkt_pos = -1;
         frame->pkt_size = -1;
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
 
-        frame->interlaced_frame = !parsed_frame.is_deinterlacing && !parsed_frame.dispinfo.progressive_frame;
+        if (!parsed_frame.is_deinterlacing && !parsed_frame.dispinfo.progressive_frame)
+            frame->flags |= AV_FRAME_FLAG_INTERLACED;
 
-        if (frame->interlaced_frame)
-            frame->top_field_first = parsed_frame.dispinfo.top_field_first;
+        if ((frame->flags & AV_FRAME_FLAG_INTERLACED) && parsed_frame.dispinfo.top_field_first)
+            frame->flags |= AV_FRAME_FLAG_TOP_FIELD_FIRST;
     } else if (ctx->decoder_flushing) {
         ret = AVERROR_EOF;
     } else {

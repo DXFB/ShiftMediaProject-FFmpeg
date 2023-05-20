@@ -218,6 +218,7 @@ External library support:
   --enable-lcms2           enable ICC profile support via LittleCMS 2 [no]
   --enable-libaom          enable AV1 video encoding/decoding via libaom [no]
   --enable-libaribb24      enable ARIB text and caption decoding via libaribb24 [no]
+  --enable-libaribcaption  enable ARIB text and caption decoding via libaribcaption [no]
   --enable-libass          enable libass subtitles rendering,
                            needed for subtitles and ass filter [no]
   --enable-libbluray       enable BluRay reading using libbluray [no]
@@ -412,7 +413,7 @@ Toolchain options:
   --build-suffix=SUFFIX    library name suffix []
   --enable-pic             build position-independent code
   --enable-thumb           compile for Thumb instruction set
-  --enable-lto             use link-time optimization
+  --enable-lto[=arg]       use link-time optimization
   --env="ENV=override"     override the environment variables
 
 Advanced options (experts only):
@@ -1805,6 +1806,7 @@ EXTERNAL_LIBRARY_LIST="
     ladspa
     lcms2
     libaom
+    libaribcaption
     libass
     libbluray
     libbs2b
@@ -2314,6 +2316,7 @@ SYSTEM_LIBRARIES="
     bcrypt
     vaapi_drm
     vaapi_x11
+    vaapi_win32
     vdpau_x11
 "
 
@@ -2524,7 +2527,6 @@ CMDLINE_SELECT="
     debug
     extra_warnings
     logging
-    lto
     optimizations
     rpath
     stripping
@@ -2774,7 +2776,7 @@ asv1_encoder_select="aandcttables bswapdsp fdctdsp pixblockdsp"
 asv2_decoder_select="blockdsp bswapdsp idctdsp"
 asv2_encoder_select="aandcttables bswapdsp fdctdsp pixblockdsp"
 atrac1_decoder_select="sinewin"
-av1_decoder_select="av1_frame_split_bsf cbs_av1"
+av1_decoder_select="av1_frame_split_bsf cbs_av1 atsc_a53"
 bink_decoder_select="blockdsp hpeldsp"
 binkaudio_dct_decoder_select="wma_freqs"
 binkaudio_rdft_decoder_select="wma_freqs"
@@ -2898,6 +2900,7 @@ notchlc_decoder_select="lzf"
 nuv_decoder_select="idctdsp"
 opus_decoder_deps="swresample"
 opus_encoder_select="audio_frame_queue"
+pdv_decoder_deps="zlib"
 png_decoder_select="inflate_wrapper"
 png_encoder_select="deflate_wrapper llvidencdsp"
 prores_decoder_select="blockdsp idctdsp"
@@ -2998,6 +3001,7 @@ cuvid_deps="ffnvcodec"
 d3d11va_deps="dxva_h ID3D11VideoDecoder ID3D11VideoContext"
 dxva2_deps="dxva2api_h DXVA2_ConfigPictureDecode ole32 user32"
 ffnvcodec_deps_any="libdl LoadLibrary"
+mediacodec_deps="android"
 nvdec_deps="ffnvcodec"
 vaapi_x11_deps="xlib_x11"
 videotoolbox_hwaccel_deps="videotoolbox pthreads"
@@ -3158,7 +3162,7 @@ aac_mf_encoder_deps="mediafoundation"
 ac3_mf_encoder_deps="mediafoundation"
 av1_cuvid_decoder_deps="cuvid CUVIDAV1PICPARAMS"
 av1_mediacodec_decoder_deps="mediacodec"
-av1_mediacodec_decoder_extralibs="-landroid"
+av1_mediacodec_encoder_deps="mediacodec"
 av1_nvenc_encoder_deps="nvenc NV_ENC_PIC_PARAMS_AV1"
 av1_nvenc_encoder_select="atsc_a53"
 h263_v4l2m2m_decoder_deps="v4l2_m2m h263_v4l2_m2m"
@@ -3168,10 +3172,8 @@ h264_crystalhd_decoder_select="crystalhd h264_mp4toannexb_bsf h264_parser"
 h264_cuvid_decoder_deps="cuvid"
 h264_cuvid_decoder_select="h264_mp4toannexb_bsf"
 h264_mediacodec_decoder_deps="mediacodec"
-h264_mediacodec_decoder_extralibs="-landroid"
 h264_mediacodec_decoder_select="h264_mp4toannexb_bsf h264_parser"
 h264_mediacodec_encoder_deps="mediacodec"
-h264_mediacodec_encoder_extralibs="-landroid"
 h264_mediacodec_encoder_select="h264_metadata"
 h264_mf_encoder_deps="mediafoundation"
 h264_mmal_decoder_deps="mmal"
@@ -3190,10 +3192,8 @@ hevc_amf_encoder_deps="amf"
 hevc_cuvid_decoder_deps="cuvid"
 hevc_cuvid_decoder_select="hevc_mp4toannexb_bsf"
 hevc_mediacodec_decoder_deps="mediacodec"
-hevc_mediacodec_decoder_extralibs="-landroid"
 hevc_mediacodec_decoder_select="hevc_mp4toannexb_bsf hevc_parser"
 hevc_mediacodec_encoder_deps="mediacodec"
-hevc_mediacodec_encoder_extralibs="-landroid"
 hevc_mediacodec_encoder_select="hevc_metadata"
 hevc_mf_encoder_deps="mediafoundation"
 hevc_nvenc_encoder_deps="nvenc"
@@ -3227,6 +3227,7 @@ mpeg2_v4l2m2m_decoder_deps="v4l2_m2m mpeg2_v4l2_m2m"
 mpeg4_crystalhd_decoder_select="crystalhd"
 mpeg4_cuvid_decoder_deps="cuvid"
 mpeg4_mediacodec_decoder_deps="mediacodec"
+mpeg4_mediacodec_encoder_deps="mediacodec"
 mpeg4_mmal_decoder_deps="mmal"
 mpeg4_omx_encoder_deps="omx"
 mpeg4_v4l2m2m_decoder_deps="v4l2_m2m mpeg4_v4l2_m2m"
@@ -3239,6 +3240,7 @@ vc1_qsv_decoder_select="qsvdec"
 vc1_v4l2m2m_decoder_deps="v4l2_m2m vc1_v4l2_m2m"
 vp8_cuvid_decoder_deps="cuvid"
 vp8_mediacodec_decoder_deps="mediacodec"
+vp8_mediacodec_encoder_deps="mediacodec"
 vp8_qsv_decoder_select="qsvdec"
 vp8_rkmpp_decoder_deps="rkmpp"
 vp8_vaapi_encoder_deps="VAEncPictureParameterBufferVP8"
@@ -3247,6 +3249,7 @@ vp8_v4l2m2m_decoder_deps="v4l2_m2m vp8_v4l2_m2m"
 vp8_v4l2m2m_encoder_deps="v4l2_m2m vp8_v4l2_m2m"
 vp9_cuvid_decoder_deps="cuvid"
 vp9_mediacodec_decoder_deps="mediacodec"
+vp9_mediacodec_encoder_deps="mediacodec"
 vp9_qsv_decoder_select="qsvdec"
 vp9_rkmpp_decoder_deps="rkmpp"
 vp9_vaapi_encoder_deps="VAEncPictureParameterBufferVP9"
@@ -3332,6 +3335,7 @@ libaom_av1_decoder_deps="libaom"
 libaom_av1_encoder_deps="libaom"
 libaom_av1_encoder_select="extract_extradata_bsf"
 libaribb24_decoder_deps="libaribb24"
+libaribcaption_decoder_deps="libaribcaption"
 libcelt_decoder_deps="libcelt"
 libcodec2_decoder_deps="libcodec2"
 libcodec2_encoder_deps="libcodec2"
@@ -3362,7 +3366,6 @@ libopencore_amrwb_decoder_deps="libopencore_amrwb"
 libopenh264_decoder_deps="libopenh264"
 libopenh264_decoder_select="h264_mp4toannexb_bsf"
 libopenh264_encoder_deps="libopenh264"
-libopenjpeg_decoder_deps="libopenjpeg"
 libopenjpeg_encoder_deps="libopenjpeg"
 libopenmpt_demuxer_deps="libopenmpt"
 libopus_decoder_deps="libopus"
@@ -3505,7 +3508,6 @@ xwma_demuxer_select="riffdec"
 
 # indevs / outdevs
 android_camera_indev_deps="android camera2ndk mediandk pthreads"
-android_camera_indev_extralibs="-landroid -lcamera2ndk -lmediandk"
 alsa_indev_deps="alsa"
 alsa_outdev_deps="alsa"
 avfoundation_indev_deps="avfoundation corevideo coremedia pthreads"
@@ -3828,7 +3830,7 @@ swscale_suggest="libm stdatomic"
 
 avcodec_extralibs="pthreads_extralibs iconv_extralibs dxva2_extralibs lcms2_extralibs"
 avfilter_extralibs="pthreads_extralibs"
-avutil_extralibs="d3d11va_extralibs nanosleep_extralibs pthreads_extralibs vaapi_drm_extralibs vaapi_x11_extralibs vdpau_x11_extralibs"
+avutil_extralibs="d3d11va_extralibs mediacodec_extralibs nanosleep_extralibs pthreads_extralibs vaapi_drm_extralibs vaapi_x11_extralibs vaapi_win32_extralibs vdpau_x11_extralibs"
 
 # programs
 ffmpeg_deps="avcodec avfilter avformat threads"
@@ -3836,7 +3838,7 @@ ffmpeg_select="aformat_filter anull_filter atrim_filter format_filter
                hflip_filter null_filter
                transpose_filter trim_filter vflip_filter"
 ffmpeg_suggest="ole32 psapi shell32"
-ffplay_deps="avcodec avformat swscale swresample sdl2"
+ffplay_deps="avcodec avformat avfilter swscale swresample sdl2"
 ffplay_select="rdft crop_filter transpose_filter hflip_filter vflip_filter rotate_filter"
 ffplay_suggest="shell32"
 ffprobe_deps="avcodec avformat"
@@ -4169,6 +4171,9 @@ for opt do
         ;;
         --enable-sdl)
             enable sdl2
+        ;;
+        --enable-lto*)
+            lto=-f${opt#--enable-}
         ;;
         --enable-*=*|--disable-*=*)
             eval $(echo "${opt%%=*}" | sed 's/--/action=/;s/-/ thing=/')
@@ -4639,7 +4644,7 @@ icl_flags(){
             # on Windows, does enable remarks so disable them here.
             -Wall)                echo $flag -Qdiag-disable:remark ;;
             -std=c99)             echo -Qstd=c99 ;;
-            -flto)                echo -ipo ;;
+            -flto*)               echo -ipo ;;
         esac
     done
 }
@@ -4647,7 +4652,7 @@ icl_flags(){
 icc_flags(){
     for flag; do
         case $flag in
-            -flto)                echo -ipo ;;
+            -flto*)               echo -ipo ;;
             *)                    echo $flag ;;
         esac
     done
@@ -6567,6 +6572,7 @@ enabled libaom            && require_pkg_config libaom "aom >= 1.0.0" aom/aom_co
 enabled libaribb24        && { check_pkg_config libaribb24 "aribb24 > 1.0.3" "aribb24/aribb24.h" arib_instance_new ||
                                { enabled gpl && require_pkg_config libaribb24 aribb24 "aribb24/aribb24.h" arib_instance_new; } ||
                                die "ERROR: libaribb24 requires version higher than 1.0.3 or --enable-gpl."; }
+enabled libaribcaption    && require_pkg_config libaribcaption "libaribcaption >= 0.1.0" "aribcaption/aribcaption.h" aribcc_context_alloc
 enabled lv2               && require_pkg_config lv2 lilv-0 "lilv/lilv.h" lilv_world_new
 enabled libiec61883       && require libiec61883 libiec61883/iec61883.h iec61883_cmp_connect -lraw1394 -lavc1394 -lrom1394 -liec61883
 enabled libass            && require_pkg_config libass "libass >= 0.11.0" ass/ass.h ass_library_init
@@ -6945,6 +6951,21 @@ test_cpp <<EOF && enable uwp && d3d11va_extralibs="-ldxgi -ld3d11"
 #endif
 EOF
 
+# vaapi_win32 requires linking directly to dxgi if not building for
+# the desktop api partition
+test_cpp <<EOF && enable uwp && vaapi_win32_extralibs="-ldxgi"
+#ifdef WINAPI_FAMILY
+#include <winapifamily.h>
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+#error desktop, not uwp
+#else
+// WINAPI_FAMILY_APP, WINAPI_FAMILY_PHONE_APP => UWP
+#endif
+#else
+#error no family set
+#endif
+EOF
+
 # mediafoundation requires linking directly to mfplat if building for uwp target
 enabled uwp && mediafoundation_extralibs="-lmfplat -lmfuuid -lole32 -lstrmiids" || mediafoundation_extralibs="-lmfuuid -lole32 -lstrmiids"
 
@@ -6955,7 +6976,14 @@ enabled vaapi &&
     check_pkg_config vaapi "libva >= 0.35.0" "va/va.h" vaInitialize
 
 if enabled vaapi; then
-    check_pkg_config vaapi_drm "libva-drm" "va/va_drm.h" vaGetDisplayDRM
+    case $target_os in
+        mingw32*|mingw64*|win32|win64)
+            check_pkg_config vaapi_win32 "libva-win32" "va/va_win32.h" vaGetDisplayWin32
+            ;;
+        *)
+            check_pkg_config vaapi_drm "libva-drm" "va/va_drm.h" vaGetDisplayDRM
+            ;;
+    esac
 
     if enabled xlib_x11; then
         check_pkg_config vaapi_x11 "libva-x11" "va/va_x11.h" vaGetDisplay
@@ -7182,17 +7210,17 @@ fi
 
 check_optflags(){
     check_cflags "$@"
-    enabled lto && check_ldflags "$@"
+    [ -n "$lto" ] && check_ldflags "$@"
 }
 
 check_optflags $optflags
 check_optflags -fno-math-errno
 check_optflags -fno-signed-zeros
 
-if enabled lto; then
+if [ -n "$lto" ]; then
     test "$cc_type" != "$ld_type" && die "LTO requires same compiler and linker"
-    check_cflags  -flto
-    check_ldflags -flto $cpuflags
+    check_cflags  $lto
+    check_ldflags $lto $cpuflags
     disable inline_asm_direct_symbol_refs
 fi
 
@@ -7223,7 +7251,7 @@ if enabled icc; then
     # icc 11.0 and 11.1 work with ebp_available, but don't pass the test
     enable ebp_available
     # The test above does not test linking
-    enabled lto && disable symver_asm_label
+    [ -n "$lto" ] && disable symver_asm_label
     if enabled x86_32; then
         icc_version=$($cc -dumpversion)
         test ${icc_version%%.*} -ge 11 &&
@@ -7354,12 +7382,6 @@ case $ld_type in
 esac
 
 enable frame_thread_encoder
-
-# these filters depend on removed avcodec APIs
-# they are kept disabled for now, but will be removed if
-# nobody updates and re-enables them
-disable mcdeint_filter
-disable uspp_filter
 
 enabled asm || { arch=c; disable $ARCH_LIST $ARCH_EXT_LIST; }
 

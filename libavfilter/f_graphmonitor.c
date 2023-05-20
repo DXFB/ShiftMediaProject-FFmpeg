@@ -62,54 +62,65 @@ typedef struct GraphMonitorContext {
 } GraphMonitorContext;
 
 enum {
-    MODE_QUEUE = 1 << 0,
-    MODE_FCIN  = 1 << 1,
-    MODE_FCOUT = 1 << 2,
-    MODE_PTS   = 1 << 3,
-    MODE_TIME  = 1 << 4,
-    MODE_TB    = 1 << 5,
-    MODE_FMT   = 1 << 6,
-    MODE_SIZE  = 1 << 7,
-    MODE_RATE  = 1 << 8,
-    MODE_EOF   = 1 << 9,
-    MODE_SCIN  = 1 << 10,
-    MODE_SCOUT = 1 << 11,
-    MODE_PTS_DELTA = 1 << 12,
-    MODE_TIME_DELTA = 1 << 13,
-    MODE_FC_DELTA = 1 << 14,
-    MODE_SC_DELTA = 1 << 15,
+    MODE_FULL = 0,
+    MODE_COMPACT = 1,
+    MODE_NOZERO = 2,
+    MODE_NOEOF = 4,
+    MODE_MAX = 7
+};
+
+enum {
+    FLAG_QUEUE = 1 << 0,
+    FLAG_FCIN  = 1 << 1,
+    FLAG_FCOUT = 1 << 2,
+    FLAG_PTS   = 1 << 3,
+    FLAG_TIME  = 1 << 4,
+    FLAG_TB    = 1 << 5,
+    FLAG_FMT   = 1 << 6,
+    FLAG_SIZE  = 1 << 7,
+    FLAG_RATE  = 1 << 8,
+    FLAG_EOF   = 1 << 9,
+    FLAG_SCIN  = 1 << 10,
+    FLAG_SCOUT = 1 << 11,
+    FLAG_PTS_DELTA = 1 << 12,
+    FLAG_TIME_DELTA = 1 << 13,
+    FLAG_FC_DELTA = 1 << 14,
+    FLAG_SC_DELTA = 1 << 15,
 };
 
 #define OFFSET(x) offsetof(GraphMonitorContext, x)
 #define VF AV_OPT_FLAG_VIDEO_PARAM|AV_OPT_FLAG_FILTERING_PARAM
+#define VFR AV_OPT_FLAG_VIDEO_PARAM|AV_OPT_FLAG_FILTERING_PARAM|AV_OPT_FLAG_RUNTIME_PARAM
 
 static const AVOption graphmonitor_options[] = {
     { "size", "set monitor size", OFFSET(w), AV_OPT_TYPE_IMAGE_SIZE, {.str="hd720"}, 0, 0, VF },
     { "s",    "set monitor size", OFFSET(w), AV_OPT_TYPE_IMAGE_SIZE, {.str="hd720"}, 0, 0, VF },
     { "opacity", "set video opacity", OFFSET(opacity), AV_OPT_TYPE_FLOAT, {.dbl=.9}, 0, 1, VF },
     { "o",       "set video opacity", OFFSET(opacity), AV_OPT_TYPE_FLOAT, {.dbl=.9}, 0, 1, VF },
-    { "mode", "set mode", OFFSET(mode), AV_OPT_TYPE_INT, {.i64=0}, 0, 1, VF, "mode" },
-    { "m",    "set mode", OFFSET(mode), AV_OPT_TYPE_INT, {.i64=0}, 0, 1, VF, "mode" },
-        { "full",     NULL, 0, AV_OPT_TYPE_CONST, {.i64=0},   0, 0, VF, "mode" },
-        { "compact",  NULL, 0, AV_OPT_TYPE_CONST, {.i64=1},   0, 0, VF, "mode" },
-    { "flags", "set flags", OFFSET(flags), AV_OPT_TYPE_FLAGS, {.i64=MODE_QUEUE}, 0, INT_MAX, VF, "flags" },
-    { "f",     "set flags", OFFSET(flags), AV_OPT_TYPE_FLAGS, {.i64=MODE_QUEUE}, 0, INT_MAX, VF, "flags" },
-        { "queue",            NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_QUEUE},   0, 0, VF, "flags" },
-        { "frame_count_in",   NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_FCOUT},   0, 0, VF, "flags" },
-        { "frame_count_out",  NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_FCIN},    0, 0, VF, "flags" },
-        { "frame_count_delta",NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_FC_DELTA},0, 0, VF, "flags" },
-        { "pts",              NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_PTS},     0, 0, VF, "flags" },
-        { "pts_delta",        NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_PTS_DELTA},0,0, VF, "flags" },
-        { "time",             NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_TIME},    0, 0, VF, "flags" },
-        { "time_delta",       NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_TIME_DELTA},0,0,VF, "flags" },
-        { "timebase",         NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_TB},      0, 0, VF, "flags" },
-        { "format",           NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_FMT},     0, 0, VF, "flags" },
-        { "size",             NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_SIZE},    0, 0, VF, "flags" },
-        { "rate",             NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_RATE},    0, 0, VF, "flags" },
-        { "eof",              NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_EOF},     0, 0, VF, "flags" },
-        { "sample_count_in",  NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_SCOUT},   0, 0, VF, "flags" },
-        { "sample_count_out", NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_SCIN},    0, 0, VF, "flags" },
-        { "sample_count_delta",NULL,0, AV_OPT_TYPE_CONST, {.i64=MODE_SC_DELTA},0, 0, VF, "flags" },
+    { "mode", "set mode", OFFSET(mode), AV_OPT_TYPE_FLAGS, {.i64=0}, 0, MODE_MAX, VFR, "mode" },
+    { "m",    "set mode", OFFSET(mode), AV_OPT_TYPE_FLAGS, {.i64=0}, 0, MODE_MAX, VFR, "mode" },
+        { "full",    NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_FULL},   0, 0, VFR, "mode" },
+        { "compact", NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_COMPACT},0, 0, VFR, "mode" },
+        { "nozero",  NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_NOZERO}, 0, 0, VFR, "mode" },
+        { "noeof",   NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_NOEOF},  0, 0, VFR, "mode" },
+    { "flags", "set flags", OFFSET(flags), AV_OPT_TYPE_FLAGS, {.i64=FLAG_QUEUE}, 0, INT_MAX, VFR, "flags" },
+    { "f",     "set flags", OFFSET(flags), AV_OPT_TYPE_FLAGS, {.i64=FLAG_QUEUE}, 0, INT_MAX, VFR, "flags" },
+        { "queue",            NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_QUEUE},   0, 0, VFR, "flags" },
+        { "frame_count_in",   NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_FCOUT},   0, 0, VFR, "flags" },
+        { "frame_count_out",  NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_FCIN},    0, 0, VFR, "flags" },
+        { "frame_count_delta",NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_FC_DELTA},0, 0, VFR, "flags" },
+        { "pts",              NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_PTS},     0, 0, VFR, "flags" },
+        { "pts_delta",        NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_PTS_DELTA},0,0, VFR, "flags" },
+        { "time",             NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_TIME},    0, 0, VFR, "flags" },
+        { "time_delta",       NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_TIME_DELTA},0,0,VFR, "flags" },
+        { "timebase",         NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_TB},      0, 0, VFR, "flags" },
+        { "format",           NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_FMT},     0, 0, VFR, "flags" },
+        { "size",             NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_SIZE},    0, 0, VFR, "flags" },
+        { "rate",             NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_RATE},    0, 0, VFR, "flags" },
+        { "eof",              NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_EOF},     0, 0, VFR, "flags" },
+        { "sample_count_in",  NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_SCOUT},   0, 0, VFR, "flags" },
+        { "sample_count_out", NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_SCIN},    0, 0, VFR, "flags" },
+        { "sample_count_delta",NULL,0, AV_OPT_TYPE_CONST, {.i64=FLAG_SC_DELTA},0, 0, VFR, "flags" },
     { "rate", "set video rate", OFFSET(frame_rate), AV_OPT_TYPE_VIDEO_RATE, {.str = "25"}, 0, INT_MAX, VF },
     { "r",    "set video rate", OFFSET(frame_rate), AV_OPT_TYPE_VIDEO_RATE, {.str = "25"}, 0, INT_MAX, VF },
     { NULL }
@@ -182,6 +193,25 @@ static void drawtext(AVFrame *pic, int x, int y, const char *txt, uint8_t *color
     }
 }
 
+static int filter_have_eof(AVFilterContext *filter)
+{
+    for (int j = 0; j < filter->nb_inputs; j++) {
+        AVFilterLink *l = filter->inputs[j];
+
+        if (!ff_outlink_get_status(l))
+            return 0;
+    }
+
+    for (int j = 0; j < filter->nb_outputs; j++) {
+        AVFilterLink *l = filter->outputs[j];
+
+        if (!ff_outlink_get_status(l))
+            return 0;
+    }
+
+    return 1;
+}
+
 static int filter_have_queued(AVFilterContext *filter)
 {
     for (int j = 0; j < filter->nb_inputs; j++) {
@@ -213,7 +243,7 @@ static int draw_items(AVFilterContext *ctx, AVFrame *out,
     int64_t current_pts_us = l->current_pts_us;
     char buffer[1024] = { 0 };
 
-    if (s->flags & MODE_FMT) {
+    if (s->flags & FLAG_FMT) {
         if (l->type == AVMEDIA_TYPE_VIDEO) {
             snprintf(buffer, sizeof(buffer)-1, " | format: %s",
                      av_get_pix_fmt_name(l->format));
@@ -224,7 +254,7 @@ static int draw_items(AVFilterContext *ctx, AVFrame *out,
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_SIZE) {
+    if (s->flags & FLAG_SIZE) {
         if (l->type == AVMEDIA_TYPE_VIDEO) {
             snprintf(buffer, sizeof(buffer)-1, " | size: %dx%d", l->w, l->h);
         } else if (l->type == AVMEDIA_TYPE_AUDIO) {
@@ -233,7 +263,7 @@ static int draw_items(AVFilterContext *ctx, AVFrame *out,
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_RATE) {
+    if (s->flags & FLAG_RATE) {
         if (l->type == AVMEDIA_TYPE_VIDEO) {
             snprintf(buffer, sizeof(buffer)-1, " | fps: %d/%d", l->frame_rate.num, l->frame_rate.den);
         } else if (l->type == AVMEDIA_TYPE_AUDIO) {
@@ -242,12 +272,12 @@ static int draw_items(AVFilterContext *ctx, AVFrame *out,
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_TB) {
+    if (s->flags & FLAG_TB) {
         snprintf(buffer, sizeof(buffer)-1, " | tb: %d/%d", l->time_base.num, l->time_base.den);
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_QUEUE) {
+    if ((s->flags & FLAG_QUEUE) && (!(s->mode & MODE_NOZERO) || frames)) {
         snprintf(buffer, sizeof(buffer)-1, " | queue: ");
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
@@ -255,57 +285,57 @@ static int draw_items(AVFilterContext *ctx, AVFrame *out,
         drawtext(out, xpos, ypos, buffer, frames > 0 ? frames >= 10 ? frames >= 50 ? s->red : s->yellow : s->green : s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_FCIN) {
+    if ((s->flags & FLAG_FCIN) && (!(s->mode & MODE_NOZERO) || l->frame_count_in)) {
         snprintf(buffer, sizeof(buffer)-1, " | in: %"PRId64, l->frame_count_in);
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_FCOUT) {
+    if ((s->flags & FLAG_FCOUT) && (!(s->mode & MODE_NOZERO) || l->frame_count_out)) {
         snprintf(buffer, sizeof(buffer)-1, " | out: %"PRId64, l->frame_count_out);
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_FC_DELTA) {
+    if ((s->flags & FLAG_FC_DELTA) && (!(s->mode & MODE_NOZERO) || (l->frame_count_in - l->frame_count_out))) {
         snprintf(buffer, sizeof(buffer)-1, " | delta: %"PRId64, l->frame_count_in - l->frame_count_out);
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_SCIN) {
+    if ((s->flags & FLAG_SCIN) && (!(s->mode & MODE_NOZERO) || l->sample_count_in)) {
         snprintf(buffer, sizeof(buffer)-1, " | sin: %"PRId64, l->sample_count_in);
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_SCOUT) {
+    if ((s->flags & FLAG_SCOUT) && (!(s->mode & MODE_NOZERO) || l->sample_count_out)) {
         snprintf(buffer, sizeof(buffer)-1, " | sout: %"PRId64, l->sample_count_out);
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_SC_DELTA) {
+    if ((s->flags & FLAG_SC_DELTA) && (!(s->mode & MODE_NOZERO) || (l->sample_count_in - l->sample_count_out))) {
         snprintf(buffer, sizeof(buffer)-1, " | sdelta: %"PRId64, l->sample_count_in - l->sample_count_out);
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_PTS) {
+    if ((s->flags & FLAG_PTS) && (!(s->mode & MODE_NOZERO) || current_pts_us)) {
         snprintf(buffer, sizeof(buffer)-1, " | pts: %s", av_ts2str(current_pts_us));
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_PTS_DELTA) {
+    if ((s->flags & FLAG_PTS_DELTA) && (!(s->mode & MODE_NOZERO) || (current_pts_us - previous_pts_us))) {
         snprintf(buffer, sizeof(buffer)-1, " | pts_delta: %s", av_ts2str(current_pts_us - previous_pts_us));
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_TIME) {
+    if ((s->flags & FLAG_TIME) && (!(s->mode & MODE_NOZERO) || current_pts_us)) {
         snprintf(buffer, sizeof(buffer)-1, " | time: %s", av_ts2timestr(current_pts_us, &AV_TIME_BASE_Q));
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_TIME_DELTA) {
+    if ((s->flags & FLAG_TIME_DELTA) && (!(s->mode & MODE_NOZERO) || (current_pts_us - previous_pts_us))) {
         snprintf(buffer, sizeof(buffer)-1, " | time_delta: %s", av_ts2timestr(current_pts_us - previous_pts_us, &AV_TIME_BASE_Q));
         drawtext(out, xpos, ypos, buffer, s->white);
         xpos += strlen(buffer) * 8;
     }
-    if (s->flags & MODE_EOF && ff_outlink_get_status(l)) {
+    if (s->flags & FLAG_EOF && ff_outlink_get_status(l)) {
         snprintf(buffer, sizeof(buffer)-1, " | eof");
         drawtext(out, xpos, ypos, buffer, s->blue);
         xpos += strlen(buffer) * 8;
@@ -344,7 +374,10 @@ static int create_frame(AVFilterContext *ctx, int64_t pts)
         AVFilterContext *filter = ctx->graph->filters[i];
         char buffer[1024] = { 0 };
 
-        if (s->mode && !filter_have_queued(filter))
+        if ((s->mode & MODE_COMPACT) && !filter_have_queued(filter))
+            continue;
+
+        if ((s->mode & MODE_NOEOF) && filter_have_eof(filter))
             continue;
 
         xpos = 0;
@@ -356,7 +389,10 @@ static int create_frame(AVFilterContext *ctx, int64_t pts)
             AVFilterLink *l = filter->inputs[j];
             size_t frames = ff_inlink_queued_frames(l);
 
-            if (s->mode && !frames)
+            if ((s->mode & MODE_COMPACT) && !frames)
+                continue;
+
+            if ((s->mode & MODE_NOEOF) && ff_outlink_get_status(l))
                 continue;
 
             xpos = 10;
@@ -376,7 +412,10 @@ static int create_frame(AVFilterContext *ctx, int64_t pts)
             AVFilterLink *l = filter->outputs[j];
             size_t frames = ff_inlink_queued_frames(l);
 
-            if (s->mode && !frames)
+            if ((s->mode & MODE_COMPACT) && !frames)
+                continue;
+
+            if ((s->mode & MODE_NOEOF) && ff_outlink_get_status(l))
                 continue;
 
             xpos = 10;
@@ -394,6 +433,7 @@ static int create_frame(AVFilterContext *ctx, int64_t pts)
     }
 
     out->pts = pts;
+    out->duration = 1;
     s->pts = pts + 1;
     return ff_filter_frame(outlink, out);
 error:
@@ -498,6 +538,7 @@ const AVFilter ff_vf_graphmonitor = {
     FILTER_INPUTS(graphmonitor_inputs),
     FILTER_OUTPUTS(graphmonitor_outputs),
     FILTER_QUERY_FUNC(query_formats),
+    .process_command = ff_filter_process_command,
 };
 
 #endif // CONFIG_GRAPHMONITOR_FILTER
@@ -530,5 +571,6 @@ const AVFilter ff_avf_agraphmonitor = {
     FILTER_INPUTS(agraphmonitor_inputs),
     FILTER_OUTPUTS(agraphmonitor_outputs),
     FILTER_QUERY_FUNC(query_formats),
+    .process_command = ff_filter_process_command,
 };
 #endif // CONFIG_AGRAPHMONITOR_FILTER

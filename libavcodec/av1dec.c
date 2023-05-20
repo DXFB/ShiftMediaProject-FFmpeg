@@ -20,11 +20,15 @@
 
 #include "config_components.h"
 
+#include "libavutil/hdr_dynamic_metadata.h"
 #include "libavutil/film_grain_params.h"
+#include "libavutil/mastering_display_metadata.h"
 #include "libavutil/pixdesc.h"
 #include "libavutil/opt.h"
 #include "avcodec.h"
+#include "av1_parse.h"
 #include "av1dec.h"
+#include "atsc_a53.h"
 #include "bytestream.h"
 #include "codec_internal.h"
 #include "decode.h"
@@ -645,6 +649,7 @@ fail:
 static av_cold int av1_decode_free(AVCodecContext *avctx)
 {
     AV1DecContext *s = avctx->priv_data;
+    AV1RawMetadataITUTT35 itut_t35;
 
     for (int i = 0; i < FF_ARRAY_ELEMS(s->ref); i++) {
         av1_frame_unref(avctx, &s->ref[i]);
@@ -655,7 +660,13 @@ static av_cold int av1_decode_free(AVCodecContext *avctx)
 
     av_buffer_unref(&s->seq_ref);
     av_buffer_unref(&s->header_ref);
+    av_buffer_unref(&s->cll_ref);
+    av_buffer_unref(&s->mdcv_ref);
     av_freep(&s->tile_group_info);
+
+    while (s->itut_t35_fifo && av_fifo_read(s->itut_t35_fifo, &itut_t35, 1) >= 0)
+        av_buffer_unref(&itut_t35.payload_ref);
+    av_fifo_freep2(&s->itut_t35_fifo);
 
     ff_cbs_fragment_free(&s->current_obu);
     ff_cbs_close(&s->cbc);
@@ -699,15 +710,10 @@ static int set_context_with_sequence(AVCodecContext *avctx,
     }
     avctx->sample_aspect_ratio = (AVRational) { 1, 1 };
 
-    if (seq->timing_info.num_units_in_display_tick &&
-        seq->timing_info.time_scale) {
-        av_reduce(&avctx->framerate.den, &avctx->framerate.num,
-                  seq->timing_info.num_units_in_display_tick,
-                  seq->timing_info.time_scale,
-                  INT_MAX);
-        if (seq->timing_info.equal_picture_interval)
-            avctx->ticks_per_frame = seq->timing_info.num_ticks_per_picture_minus_1 + 1;
-    }
+    if (seq->timing_info_present_flag)
+        avctx->framerate = ff_av1_framerate(1LL + seq->timing_info.num_ticks_per_picture_minus_1,
+                                            seq->timing_info.num_units_in_display_tick,
+                                            seq->timing_info.time_scale);
 
     return 0;
 }
@@ -742,6 +748,16 @@ static int update_context_with_frame_header(AVCodecContext *avctx,
     return 0;
 }
 
+static const CodedBitstreamUnitType decompose_unit_types[] = {
+    AV1_OBU_FRAME,
+    AV1_OBU_FRAME_HEADER,
+    AV1_OBU_METADATA,
+    AV1_OBU_REDUNDANT_FRAME_HEADER,
+    AV1_OBU_SEQUENCE_HEADER,
+    AV1_OBU_TEMPORAL_DELIMITER,
+    AV1_OBU_TILE_GROUP,
+};
+
 static av_cold int av1_decode_init(AVCodecContext *avctx)
 {
     AV1DecContext *s = avctx->priv_data;
@@ -770,6 +786,14 @@ static av_cold int av1_decode_init(AVCodecContext *avctx)
     ret = ff_cbs_init(&s->cbc, AV_CODEC_ID_AV1, avctx);
     if (ret < 0)
         return ret;
+
+    s->cbc->decompose_unit_types    = decompose_unit_types;
+    s->cbc->nb_decompose_unit_types = FF_ARRAY_ELEMS(decompose_unit_types);
+
+    s->itut_t35_fifo = av_fifo_alloc2(1, sizeof(AV1RawMetadataITUTT35),
+                                      AV_FIFO_FLAG_AUTO_GROW);
+    if (!s->itut_t35_fifo)
+        return AVERROR(ENOMEM);
 
     av_opt_set_int(s->cbc->priv_data, "operating_point", s->operating_point, 0);
 
@@ -818,7 +842,10 @@ static int av1_frame_alloc(AVCodecContext *avctx, AV1Frame *f)
         goto fail;
 
     frame = f->f;
-    frame->key_frame = header->frame_type == AV1_FRAME_KEY;
+    if (header->frame_type == AV1_FRAME_KEY)
+        frame->flags |= AV_FRAME_FLAG_KEY;
+    else
+        frame->flags &= ~AV_FRAME_FLAG_KEY;
 
     switch (header->frame_type) {
     case AV1_FRAME_KEY:
@@ -849,6 +876,108 @@ static int av1_frame_alloc(AVCodecContext *avctx, AV1Frame *f)
 
 fail:
     av1_frame_unref(avctx, f);
+    return ret;
+}
+
+static int export_itut_t35(AVCodecContext *avctx, AVFrame *frame,
+                           const AV1RawMetadataITUTT35 *itut_t35)
+{
+    GetByteContext gb;
+    int ret, provider_code;
+
+    bytestream2_init(&gb, itut_t35->payload, itut_t35->payload_size);
+
+    provider_code = bytestream2_get_be16(&gb);
+    switch (provider_code) {
+    case 0x31: { // atsc_provider_code
+        uint32_t user_identifier = bytestream2_get_be32(&gb);
+        switch (user_identifier) {
+        case MKBETAG('G', 'A', '9', '4'): { // closed captions
+            AVBufferRef *buf = NULL;
+
+            ret = ff_parse_a53_cc(&buf, gb.buffer, bytestream2_get_bytes_left(&gb));
+            if (ret < 0)
+                return ret;
+            if (!ret)
+                break;
+
+            if (!av_frame_new_side_data_from_buf(frame, AV_FRAME_DATA_A53_CC, buf))
+                av_buffer_unref(&buf);
+
+            avctx->properties |= FF_CODEC_PROPERTY_CLOSED_CAPTIONS;
+            break;
+        }
+        default: // ignore unsupported identifiers
+            break;
+        }
+        break;
+    }
+    case 0x3C: { // smpte_provider_code
+        AVDynamicHDRPlus *hdrplus;
+        int provider_oriented_code = bytestream2_get_be16(&gb);
+        int application_identifier = bytestream2_get_byte(&gb);
+
+        if (itut_t35->itu_t_t35_country_code != 0xB5 ||
+            provider_oriented_code != 1 || application_identifier != 4)
+            break;
+
+        hdrplus = av_dynamic_hdr_plus_create_side_data(frame);
+        if (!hdrplus)
+            return AVERROR(ENOMEM);
+
+        ret = av_dynamic_hdr_plus_from_t35(hdrplus, gb.buffer,
+                                           bytestream2_get_bytes_left(&gb));
+        if (ret < 0)
+            return ret;
+        break;
+    }
+    default: // ignore unsupported provider codes
+        break;
+    }
+
+    return 0;
+}
+
+static int export_metadata(AVCodecContext *avctx, AVFrame *frame)
+{
+    AV1DecContext *s = avctx->priv_data;
+    AV1RawMetadataITUTT35 itut_t35;
+    int ret = 0;
+
+    if (s->mdcv) {
+        AVMasteringDisplayMetadata *mastering = av_mastering_display_metadata_create_side_data(frame);
+        if (!mastering)
+            return AVERROR(ENOMEM);
+
+        for (int i = 0; i < 3; i++) {
+            mastering->display_primaries[i][0] = av_make_q(s->mdcv->primary_chromaticity_x[i], 1 << 16);
+            mastering->display_primaries[i][1] = av_make_q(s->mdcv->primary_chromaticity_y[i], 1 << 16);
+        }
+        mastering->white_point[0] = av_make_q(s->mdcv->white_point_chromaticity_x, 1 << 16);
+        mastering->white_point[1] = av_make_q(s->mdcv->white_point_chromaticity_y, 1 << 16);
+
+        mastering->max_luminance = av_make_q(s->mdcv->luminance_max, 1 << 8);
+        mastering->min_luminance = av_make_q(s->mdcv->luminance_min, 1 << 14);
+
+        mastering->has_primaries = 1;
+        mastering->has_luminance = 1;
+    }
+
+    if (s->cll) {
+        AVContentLightMetadata *light = av_content_light_metadata_create_side_data(frame);
+        if (!light)
+            return AVERROR(ENOMEM);
+
+        light->MaxCLL = s->cll->max_cll;
+        light->MaxFALL = s->cll->max_fall;
+    }
+
+    while (av_fifo_read(s->itut_t35_fifo, &itut_t35, 1) >= 0) {
+        if (ret >= 0)
+            ret = export_itut_t35(avctx, frame, &itut_t35);
+        av_buffer_unref(&itut_t35.payload_ref);
+    }
+
     return ret;
 }
 
@@ -928,6 +1057,12 @@ static int set_output_frame(AVCodecContext *avctx, AVFrame *frame,
     if (ret < 0)
         return ret;
 
+    ret = export_metadata(avctx, frame);
+    if (ret < 0) {
+        av_frame_unref(frame);
+        return ret;
+    }
+
     if (avctx->export_side_data & AV_CODEC_EXPORT_DATA_FILM_GRAIN) {
         ret = export_film_grain(avctx, frame);
         if (ret < 0) {
@@ -938,7 +1073,11 @@ static int set_output_frame(AVCodecContext *avctx, AVFrame *frame,
 
     frame->pts = pkt->pts;
     frame->pkt_dts = pkt->dts;
+#if FF_API_FRAME_PKT
+FF_DISABLE_DEPRECATION_WARNINGS
     frame->pkt_size = pkt->size;
+FF_ENABLE_DEPRECATION_WARNINGS
+#endif
 
     *got_frame = 1;
 
@@ -1173,7 +1312,47 @@ static int av1_decode_frame(AVCodecContext *avctx, AVFrame *frame,
         case AV1_OBU_TILE_LIST:
         case AV1_OBU_TEMPORAL_DELIMITER:
         case AV1_OBU_PADDING:
+            break;
         case AV1_OBU_METADATA:
+            switch (obu->obu.metadata.metadata_type) {
+            case AV1_METADATA_TYPE_HDR_CLL:
+                av_buffer_unref(&s->cll_ref);
+                s->cll_ref = av_buffer_ref(unit->content_ref);
+                if (!s->cll_ref) {
+                    s->cll = NULL;
+                    ret = AVERROR(ENOMEM);
+                    goto end;
+                }
+                s->cll = &obu->obu.metadata.metadata.hdr_cll;
+                break;
+            case AV1_METADATA_TYPE_HDR_MDCV:
+                av_buffer_unref(&s->mdcv_ref);
+                s->mdcv_ref = av_buffer_ref(unit->content_ref);
+                if (!s->mdcv_ref) {
+                    s->mdcv = NULL;
+                    ret = AVERROR(ENOMEM);
+                    goto end;
+                }
+                s->mdcv = &obu->obu.metadata.metadata.hdr_mdcv;
+                break;
+            case AV1_METADATA_TYPE_ITUT_T35: {
+                AV1RawMetadataITUTT35 itut_t35;
+                memcpy(&itut_t35, &obu->obu.metadata.metadata.itut_t35, sizeof(itut_t35));
+                itut_t35.payload_ref = av_buffer_ref(obu->obu.metadata.metadata.itut_t35.payload_ref);
+                if (!itut_t35.payload_ref) {
+                    ret = AVERROR(ENOMEM);
+                    goto end;
+                }
+                ret = av_fifo_write(s->itut_t35_fifo, &itut_t35, 1);
+                if (ret < 0) {
+                    av_buffer_unref(&itut_t35.payload_ref);
+                    goto end;
+                }
+                break;
+            }
+            default:
+                break;
+            }
             break;
         default:
             av_log(avctx, AV_LOG_DEBUG,
@@ -1218,6 +1397,7 @@ end:
 static void av1_decode_flush(AVCodecContext *avctx)
 {
     AV1DecContext *s = avctx->priv_data;
+    AV1RawMetadataITUTT35 itut_t35;
 
     for (int i = 0; i < FF_ARRAY_ELEMS(s->ref); i++)
         av1_frame_unref(avctx, &s->ref[i]);
@@ -1226,6 +1406,10 @@ static void av1_decode_flush(AVCodecContext *avctx)
     s->operating_point_idc = 0;
     s->raw_frame_header = NULL;
     s->raw_seq = NULL;
+    s->cll = NULL;
+    s->mdcv = NULL;
+    while (av_fifo_read(s->itut_t35_fifo, &itut_t35, 1) >= 0)
+        av_buffer_unref(&itut_t35.payload_ref);
 
     ff_cbs_flush(s->cbc);
 }

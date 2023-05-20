@@ -1118,11 +1118,16 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
                 q->extco3.MaxFrameSizeI = q->max_frame_size_i;
             if (q->max_frame_size_p >= 0)
                 q->extco3.MaxFrameSizeP = q->max_frame_size_p;
+            if (sw_format == AV_PIX_FMT_BGRA &&
+                (q->profile == MFX_PROFILE_HEVC_REXT ||
+                q->profile == MFX_PROFILE_UNKNOWN))
+                q->extco3.TargetChromaFormatPlus1 = MFX_CHROMAFORMAT_YUV444 + 1;
 
             q->extco3.ScenarioInfo = q->scenario;
         } else if (avctx->codec_id == AV_CODEC_ID_AV1) {
             if (q->low_delay_brc >= 0)
                 q->extco3.LowDelayBRC = q->low_delay_brc ? MFX_CODINGOPTION_ON : MFX_CODINGOPTION_OFF;
+            q->old_low_delay_brc = q->low_delay_brc;
         }
 
         if (avctx->codec_id == AV_CODEC_ID_HEVC) {
@@ -1942,8 +1947,8 @@ static int submit_frame(QSVEncContext *q, const AVFrame *frame,
         qf->surface.Info = q->param.mfx.FrameInfo;
 
         qf->surface.Info.PicStruct =
-            !frame->interlaced_frame ? MFX_PICSTRUCT_PROGRESSIVE :
-            frame->top_field_first   ? MFX_PICSTRUCT_FIELD_TFF :
+            !(frame->flags & AV_FRAME_FLAG_INTERLACED) ? MFX_PICSTRUCT_PROGRESSIVE :
+            (frame->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST) ? MFX_PICSTRUCT_FIELD_TFF :
                                        MFX_PICSTRUCT_FIELD_BFF;
         if (frame->repeat_pict == 1)
             qf->surface.Info.PicStruct |= MFX_PICSTRUCT_FIELD_REPEATED;
@@ -2209,7 +2214,9 @@ static int update_low_delay_brc(AVCodecContext *avctx, QSVEncContext *q)
 {
     int updated = 0;
 
-    if (avctx->codec_id != AV_CODEC_ID_H264 && avctx->codec_id != AV_CODEC_ID_HEVC)
+    if (avctx->codec_id != AV_CODEC_ID_H264 &&
+        avctx->codec_id != AV_CODEC_ID_HEVC &&
+        avctx->codec_id != AV_CODEC_ID_AV1)
         return 0;
 
     UPDATE_PARAM(q->old_low_delay_brc, q->low_delay_brc);
@@ -2395,7 +2402,7 @@ static int encode_frame(AVCodecContext *avctx, QSVEncContext *q,
         goto free;
     }
 
-    if (ret == MFX_WRN_INCOMPATIBLE_VIDEO_PARAM && frame && frame->interlaced_frame)
+    if (ret == MFX_WRN_INCOMPATIBLE_VIDEO_PARAM && frame && (frame->flags & AV_FRAME_FLAG_INTERLACED))
         print_interlace_msg(avctx, q);
 
     ret = 0;

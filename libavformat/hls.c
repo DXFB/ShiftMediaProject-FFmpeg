@@ -2532,8 +2532,24 @@ static int hls_probe(const AVProbeData *p)
 
     if (strstr(p->buf, "#EXT-X-STREAM-INF:")     ||
         strstr(p->buf, "#EXT-X-TARGETDURATION:") ||
-        strstr(p->buf, "#EXT-X-MEDIA-SEQUENCE:"))
+        strstr(p->buf, "#EXT-X-MEDIA-SEQUENCE:")) {
+
+        int mime_ok = p->mime_type && !(
+            av_strcasecmp(p->mime_type, "application/vnd.apple.mpegurl") &&
+            av_strcasecmp(p->mime_type, "audio/mpegurl") &&
+            av_strcasecmp(p->mime_type, "audio/x-mpegurl") &&
+            av_strcasecmp(p->mime_type, "application/x-mpegurl")
+            );
+
+        if (!av_match_ext    (p->filename, "m3u8,hls,m3u") &&
+             ff_match_url_ext(p->filename, "m3u8,hls,m3u") <= 0 &&
+            !mime_ok) {
+            av_log(NULL, AV_LOG_ERROR, "Not detecting m3u8/hls with non standard extension\n");
+            return 0;
+        }
+
         return AVPROBE_SCORE_MAX;
+    }
     return 0;
 }
 

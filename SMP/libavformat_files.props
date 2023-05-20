@@ -353,6 +353,7 @@
     <ClCompile Include="..\libavformat\paf.c" />
     <ClCompile Include="..\libavformat\pcmdec.c" />
     <ClCompile Include="..\libavformat\pcmenc.c" />
+    <ClCompile Include="..\libavformat\pdvdec.c" />
     <ClCompile Include="..\libavformat\pjsdec.c" />
     <ClCompile Include="..\libavformat\pmpdec.c" />
     <ClCompile Include="..\libavformat\pp_bnk.c" />
@@ -581,6 +582,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libavformat\mpegaudiotabs.c">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Debug'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ReleaseWinRT'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='DebugWinRT'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavformat\rangecoder_dec.c">
       <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)'=='Debug'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)'=='ReleaseWinRT'">true</ExcludedFromBuild>

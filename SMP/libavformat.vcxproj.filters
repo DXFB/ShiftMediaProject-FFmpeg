@@ -1054,6 +1054,9 @@
     <ClCompile Include="..\libavformat\pcmenc.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\pdvdec.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\pjsdec.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
@@ -1618,6 +1621,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libavformat\mpegaudiotabs.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavformat\rangecoder_dec.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
   </ItemGroup>

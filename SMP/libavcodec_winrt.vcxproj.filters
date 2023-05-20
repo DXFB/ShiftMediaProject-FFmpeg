@@ -571,9 +571,6 @@
     <ClCompile Include="..\libavcodec\hevc_sei.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
-    <ClCompile Include="..\libavcodec\dynamic_hdr10_plus.c">
-      <Filter>Source Files\libavcodec</Filter>
-    </ClCompile>
     <ClCompile Include="..\libavcodec\dynamic_hdr_vivid.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -1657,6 +1654,9 @@
     <ClCompile Include="..\libavcodec\mqcdec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\jpeg2000htdec.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\jpeglsdec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -1928,6 +1928,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\pcxenc.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\pdvdec.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\pgssubdec.c">
@@ -2377,6 +2380,9 @@
     <ClCompile Include="..\libavcodec\vp8.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavcodec\vp8data.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavcodec\vp9.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -2635,9 +2641,6 @@
     <ClCompile Include="..\libavcodec\libvpxenc.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
-    <ClCompile Include="..\libavcodec\libvpx.c">
-      <Filter>Source Files\libavcodec</Filter>
-    </ClCompile>
     <ClCompile Include="..\libavcodec\libx264.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
@@ -2663,6 +2666,9 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\av1_parser.c">
+      <Filter>Source Files\libavcodec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavcodec\av1_parse.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\avs2.c">
@@ -2852,9 +2858,6 @@
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\extract_extradata_bsf.c">
-      <Filter>Source Files\libavcodec</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavcodec\av1_parse.c">
       <Filter>Source Files\libavcodec</Filter>
     </ClCompile>
     <ClCompile Include="..\libavcodec\filter_units_bsf.c">

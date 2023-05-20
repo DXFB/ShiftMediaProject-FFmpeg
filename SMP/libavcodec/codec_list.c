@@ -405,6 +405,7 @@ static const FFCodec *codec_list[] = {
     &ff_pam_decoder,
     &ff_pbm_decoder,
     &ff_pcx_decoder,
+    &ff_pdv_decoder,
     &ff_pfm_decoder,
     &ff_pgm_decoder,
     &ff_pgmyuv_decoder,

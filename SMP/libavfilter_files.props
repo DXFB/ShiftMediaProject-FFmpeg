@@ -59,6 +59,7 @@
     <ClCompile Include="..\libavfilter\buffersink.c" />
     <ClCompile Include="..\libavfilter\buffersrc.c" />
     <ClCompile Include="..\libavfilter\colorspace.c" />
+    <ClCompile Include="..\libavfilter\ccfifo.c" />
     <ClCompile Include="..\libavfilter\drawutils.c" />
     <ClCompile Include="..\libavfilter\fifo.c" />
     <ClCompile Include="..\libavfilter\formats.c" />
@@ -119,6 +120,7 @@
     <ClCompile Include="..\libavfilter\f_realtime.c" />
     <ClCompile Include="..\libavfilter\af_aresample.c" />
     <ClCompile Include="..\libavfilter\f_reverse.c" />
+    <ClCompile Include="..\libavfilter\af_arls.c" />
     <ClCompile Include="..\libavfilter\af_arnndn.c" />
     <ClCompile Include="..\libavfilter\af_asdr.c" />
     <ClCompile Include="..\libavfilter\f_segment.c" />
@@ -208,6 +210,7 @@
     <ClCompile Include="..\libavfilter\boxblur.c" />
     <ClCompile Include="..\libavfilter\yadif_common.c" />
     <ClCompile Include="..\libavfilter\vf_cas.c" />
+    <ClCompile Include="..\libavfilter\vf_ccrepack.c" />
     <ClCompile Include="..\libavfilter\vf_chromakey.c" />
     <ClCompile Include="..\libavfilter\vf_chromanr.c" />
     <ClCompile Include="..\libavfilter\vf_chromashift.c" />
@@ -309,6 +312,7 @@
     <ClCompile Include="..\libavfilter\vf_maskedminmax.c" />
     <ClCompile Include="..\libavfilter\vf_maskedthreshold.c" />
     <ClCompile Include="..\libavfilter\vf_maskfun.c" />
+    <ClCompile Include="..\libavfilter\vf_mcdeint.c" />
     <ClCompile Include="..\libavfilter\vf_median.c" />
     <ClCompile Include="..\libavfilter\vf_mergeplanes.c" />
     <ClCompile Include="..\libavfilter\vf_mestimate.c" />
@@ -381,6 +385,7 @@
     <ClCompile Include="..\libavfilter\vf_tpad.c" />
     <ClCompile Include="..\libavfilter\vf_unsharp.c" />
     <ClCompile Include="..\libavfilter\vf_untile.c" />
+    <ClCompile Include="..\libavfilter\vf_uspp.c" />
     <ClCompile Include="..\libavfilter\vf_vaguedenoiser.c" />
     <ClCompile Include="..\libavfilter\vf_varblur.c" />
     <ClCompile Include="..\libavfilter\vf_vectorscope.c" />
@@ -423,16 +428,6 @@
     <ClCompile Include="..\libavfilter\dnn\queue.c" />
     <ClCompile Include="..\libavfilter\dnn\safe_queue.c" />
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_common.c" />
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native.c" />
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layers.c" />
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_avgpool.c" />
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_dense.c" />
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_pad.c" />
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_conv2d.c" />
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_depth2space.c" />
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_maximum.c" />
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_mathbinary.c" />
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_mathunary.c" />
     <ClCompile Include="..\libavfilter\x86\scene_sad_init.c" />
     <ClCompile Include="..\libavfilter\x86\af_afir_init.c" />
     <ClCompile Include="..\libavfilter\x86\af_anlmdn_init.c" />

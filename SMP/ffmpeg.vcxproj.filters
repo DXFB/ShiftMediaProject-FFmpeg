@@ -26,7 +26,13 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\fftools\ffmpeg_dec.c">
+      <Filter>Source Files\fftools</Filter>
+    </ClCompile>
     <ClCompile Include="..\fftools\ffmpeg_demux.c">
+      <Filter>Source Files\fftools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fftools\ffmpeg_enc.c">
       <Filter>Source Files\fftools</Filter>
     </ClCompile>
     <ClCompile Include="..\fftools\ffmpeg_filter.c">

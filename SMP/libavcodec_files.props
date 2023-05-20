@@ -199,7 +199,6 @@
     <ClCompile Include="..\libavcodec\hevc_ps.c" />
     <ClCompile Include="..\libavcodec\hevc_data.c" />
     <ClCompile Include="..\libavcodec\hevc_sei.c" />
-    <ClCompile Include="..\libavcodec\dynamic_hdr10_plus.c" />
     <ClCompile Include="..\libavcodec\dynamic_hdr_vivid.c" />
     <ClCompile Include="..\libavcodec\huffman.c" />
     <ClCompile Include="..\libavcodec\jrevdct.c" />
@@ -561,6 +560,7 @@
     <ClCompile Include="..\libavcodec\jpeg2000dwt.c" />
     <ClCompile Include="..\libavcodec\jpeg2000dec.c" />
     <ClCompile Include="..\libavcodec\mqcdec.c" />
+    <ClCompile Include="..\libavcodec\jpeg2000htdec.c" />
     <ClCompile Include="..\libavcodec\jpeglsdec.c" />
     <ClCompile Include="..\libavcodec\jpegls.c" />
     <ClCompile Include="..\libavcodec\jpeglsenc.c" />
@@ -652,6 +652,7 @@
     <ClCompile Include="..\libavcodec\pnmenc.c" />
     <ClCompile Include="..\libavcodec\pcx.c" />
     <ClCompile Include="..\libavcodec\pcxenc.c" />
+    <ClCompile Include="..\libavcodec\pdvdec.c" />
     <ClCompile Include="..\libavcodec\pgssubdec.c" />
     <ClCompile Include="..\libavcodec\pgxdec.c" />
     <ClCompile Include="..\libavcodec\photocd.c" />
@@ -801,6 +802,7 @@
     <ClCompile Include="..\libavcodec\vpx_rac.c" />
     <ClCompile Include="..\libavcodec\vp6.c" />
     <ClCompile Include="..\libavcodec\vp8.c" />
+    <ClCompile Include="..\libavcodec\vp8data.c" />
     <ClCompile Include="..\libavcodec\vp9.c" />
     <ClCompile Include="..\libavcodec\vp9data.c" />
     <ClCompile Include="..\libavcodec\vp9dsp.c" />
@@ -887,7 +889,6 @@
     <ClCompile Include="..\libavcodec\libvorbisenc.c" />
     <ClCompile Include="..\libavcodec\libvpxdec.c" />
     <ClCompile Include="..\libavcodec\libvpxenc.c" />
-    <ClCompile Include="..\libavcodec\libvpx.c" />
     <ClCompile Include="..\libavcodec\libx264.c" />
     <ClCompile Include="..\libavcodec\libx265.c" />
     <ClCompile Include="..\libavcodec\libxvid.c" />
@@ -897,6 +898,7 @@
     <ClCompile Include="..\libavcodec\adx_parser.c" />
     <ClCompile Include="..\libavcodec\amr_parser.c" />
     <ClCompile Include="..\libavcodec\av1_parser.c" />
+    <ClCompile Include="..\libavcodec\av1_parse.c" />
     <ClCompile Include="..\libavcodec\avs2.c" />
     <ClCompile Include="..\libavcodec\avs2_parser.c" />
     <ClCompile Include="..\libavcodec\avs3_parser.c" />
@@ -960,7 +962,6 @@
     <ClCompile Include="..\libavcodec\dv_error_marker_bsf.c" />
     <ClCompile Include="..\libavcodec\eac3_core_bsf.c" />
     <ClCompile Include="..\libavcodec\extract_extradata_bsf.c" />
-    <ClCompile Include="..\libavcodec\av1_parse.c" />
     <ClCompile Include="..\libavcodec\filter_units_bsf.c" />
     <ClCompile Include="..\libavcodec\h264_metadata_bsf.c" />
     <ClCompile Include="..\libavcodec\h264_levels.c" />

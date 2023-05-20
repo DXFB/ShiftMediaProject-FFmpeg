@@ -153,6 +153,8 @@ EXPORTS
     av_downmix_info_update_side_data
     av_dynamic_hdr_plus_alloc
     av_dynamic_hdr_plus_create_side_data
+    av_dynamic_hdr_plus_from_t35
+    av_dynamic_hdr_plus_to_t35
     av_dynamic_hdr_vivid_alloc
     av_dynamic_hdr_vivid_create_side_data
     av_dynarray2_add
@@ -232,6 +234,7 @@ EXPORTS
     av_frame_new_side_data_from_buf
     av_frame_ref
     av_frame_remove_side_data
+    av_frame_replace
     av_frame_side_data_name
     av_frame_unref
     av_free

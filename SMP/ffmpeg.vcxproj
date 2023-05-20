@@ -43,7 +43,9 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\fftools\ffmpeg_dec.c" />
     <ClCompile Include="..\fftools\ffmpeg_demux.c" />
+    <ClCompile Include="..\fftools\ffmpeg_enc.c" />
     <ClCompile Include="..\fftools\ffmpeg_filter.c" />
     <ClCompile Include="..\fftools\ffmpeg_hw.c" />
     <ClCompile Include="..\fftools\ffmpeg_mux.c" />

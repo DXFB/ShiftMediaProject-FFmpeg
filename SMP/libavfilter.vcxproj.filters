@@ -174,6 +174,9 @@
     <ClCompile Include="..\libavfilter\colorspace.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\ccfifo.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\drawutils.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -352,6 +355,9 @@
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\f_reverse.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\af_arls.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\af_arnndn.c">
@@ -619,6 +625,9 @@
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vf_cas.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_ccrepack.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\vf_chromakey.c">
@@ -924,6 +933,9 @@
     <ClCompile Include="..\libavfilter\vf_maskfun.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_mcdeint.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_median.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -1140,6 +1152,9 @@
     <ClCompile Include="..\libavfilter\vf_untile.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavfilter\vf_uspp.c">
+      <Filter>Source Files\libavfilter</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavfilter\vf_vaguedenoiser.c">
       <Filter>Source Files\libavfilter</Filter>
     </ClCompile>
@@ -1264,36 +1279,6 @@
       <Filter>Source Files\libavfilter\dnn</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\dnn\dnn_backend_common.c">
-      <Filter>Source Files\libavfilter\dnn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native.c">
-      <Filter>Source Files\libavfilter\dnn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layers.c">
-      <Filter>Source Files\libavfilter\dnn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_avgpool.c">
-      <Filter>Source Files\libavfilter\dnn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_dense.c">
-      <Filter>Source Files\libavfilter\dnn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_pad.c">
-      <Filter>Source Files\libavfilter\dnn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_conv2d.c">
-      <Filter>Source Files\libavfilter\dnn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_depth2space.c">
-      <Filter>Source Files\libavfilter\dnn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_maximum.c">
-      <Filter>Source Files\libavfilter\dnn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_mathbinary.c">
-      <Filter>Source Files\libavfilter\dnn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavfilter\dnn\dnn_backend_native_layer_mathunary.c">
       <Filter>Source Files\libavfilter\dnn</Filter>
     </ClCompile>
     <ClCompile Include="..\libavfilter\x86\scene_sad_init.c">

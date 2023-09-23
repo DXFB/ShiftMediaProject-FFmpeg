@@ -48,17 +48,16 @@
 #include <float.h>
 #include <libavutil/lfg.h>
 #include "libavutil/opt.h"
-#include "libavutil/imgutils.h"
 #include "libavutil/mem.h"
 #include "libavutil/fifo.h"
 #include "libavutil/common.h"
 #include "libavutil/avassert.h"
+#include "libavutil/pixdesc.h"
 #include "libavutil/pixfmt.h"
 #include "avfilter.h"
 #include "framequeue.h"
 #include "filters.h"
 #include "transform.h"
-#include "formats.h"
 #include "internal.h"
 #include "opencl.h"
 #include "opencl_source.h"
@@ -1251,7 +1250,7 @@ static int deshake_opencl_init(AVFilterContext *avctx)
     }
     ctx->sw_format = hw_frames_ctx->sw_format;
 
-    err = ff_opencl_filter_load_program(avctx, &ff_opencl_source_deshake, 1);
+    err = ff_opencl_filter_load_program(avctx, &ff_source_deshake_cl, 1);
     if (err < 0)
         goto fail;
 

@@ -44,6 +44,9 @@ typedef struct MuxStream {
     AVFifo *muxing_queue;
 
     AVBSFContext *bsf_ctx;
+    AVPacket     *bsf_pkt;
+
+    AVPacket     *pkt;
 
     EncStats stats;
 
@@ -69,7 +72,10 @@ typedef struct MuxStream {
      * used for making up missing dts values */
     int64_t last_mux_dts;
 
-    // audio streamcopy - state for av_rescale_delta()
+    int64_t    stream_duration;
+    AVRational stream_duration_tb;
+
+    // state for av_rescale_delta() call for audio in write_packet()
     int64_t ts_rescale_delta_last;
 
     // combined size of all the packets sent to the muxer

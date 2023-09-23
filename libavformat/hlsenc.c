@@ -23,14 +23,9 @@
 #include "config.h"
 #include "config_components.h"
 #include <stdint.h>
+#include <time.h>
 #if HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-
-#if CONFIG_GCRYPT
-#include <gcrypt.h>
-#elif CONFIG_OPENSSL
-#include <openssl/rand.h>
 #endif
 
 #include "libavutil/avassert.h"
@@ -40,10 +35,11 @@
 #include "libavutil/intreadwrite.h"
 #include "libavutil/opt.h"
 #include "libavutil/log.h"
+#include "libavutil/random_seed.h"
 #include "libavutil/time.h"
 #include "libavutil/time_internal.h"
 
-#include "libavcodec/avcodec.h"
+#include "libavcodec/defs.h"
 
 #include "avformat.h"
 #include "avio_internal.h"
@@ -55,6 +51,7 @@
 #include "internal.h"
 #include "mux.h"
 #include "os_support.h"
+#include "url.h"
 
 typedef enum {
     HLS_START_SEQUENCE_AS_START_NUMBER = 0,
@@ -355,20 +352,30 @@ static void write_codec_attr(AVStream *st, VariantStream *vs)
 
     if (st->codecpar->codec_id == AV_CODEC_ID_H264) {
         uint8_t *data = st->codecpar->extradata;
-        if (data && (data[0] | data[1] | data[2]) == 0 && data[3] == 1 && (data[4] & 0x1F) == 7) {
+        if (data) {
+            const uint8_t *p;
+
+            if (AV_RB32(data) == 0x01 && (data[4] & 0x1F) == 7)
+                p = &data[5];
+            else if (AV_RB24(data) == 0x01 && (data[3] & 0x1F) == 7)
+                p = &data[4];
+            else if (data[0] == 0x01)  /* avcC */
+                p = &data[1];
+            else
+                goto fail;
             snprintf(attr, sizeof(attr),
-                     "avc1.%02x%02x%02x", data[5], data[6], data[7]);
+                     "avc1.%02x%02x%02x", p[0], p[1], p[2]);
         } else {
             goto fail;
         }
     } else if (st->codecpar->codec_id == AV_CODEC_ID_HEVC) {
         uint8_t *data = st->codecpar->extradata;
-        int profile = FF_PROFILE_UNKNOWN;
-        int level = FF_LEVEL_UNKNOWN;
+        int profile = AV_PROFILE_UNKNOWN;
+        int level = AV_LEVEL_UNKNOWN;
 
-        if (st->codecpar->profile != FF_PROFILE_UNKNOWN)
+        if (st->codecpar->profile != AV_PROFILE_UNKNOWN)
             profile = st->codecpar->profile;
-        if (st->codecpar->level != FF_LEVEL_UNKNOWN)
+        if (st->codecpar->level != AV_LEVEL_UNKNOWN)
             level = st->codecpar->level;
 
         /* check the boundary of data which from current position is small than extradata_size */
@@ -401,8 +408,8 @@ static void write_codec_attr(AVStream *st, VariantStream *vs)
             data++;
         }
         if (st->codecpar->codec_tag == MKTAG('h','v','c','1') &&
-            profile != FF_PROFILE_UNKNOWN &&
-            level != FF_LEVEL_UNKNOWN) {
+            profile != AV_PROFILE_UNKNOWN &&
+            level != AV_LEVEL_UNKNOWN) {
             snprintf(attr, sizeof(attr), "%s.%d.4.L%d.B01", av_fourcc2str(st->codecpar->codec_tag), profile, level);
         } else
             goto fail;
@@ -700,20 +707,6 @@ fail:
     return ret;
 }
 
-static int randomize(uint8_t *buf, int len)
-{
-#if CONFIG_GCRYPT
-    gcry_randomize(buf, len, GCRY_VERY_STRONG_RANDOM);
-    return 0;
-#elif CONFIG_OPENSSL
-    if (RAND_bytes(buf, len))
-        return 0;
-#else
-    return AVERROR(ENOSYS);
-#endif
-    return AVERROR(EINVAL);
-}
-
 static int do_encrypt(AVFormatContext *s, VariantStream *vs)
 {
     HLSContext *hls = s->priv_data;
@@ -765,7 +758,7 @@ static int do_encrypt(AVFormatContext *s, VariantStream *vs)
     if (!*hls->key_string) {
         AVDictionary *options = NULL;
         if (!hls->key) {
-            if ((ret = randomize(key, sizeof(key))) < 0) {
+            if ((ret = av_random_bytes(key, sizeof(key))) < 0) {
                 av_log(s, AV_LOG_ERROR, "Cannot generate a strong random key\n");
                 return ret;
             }

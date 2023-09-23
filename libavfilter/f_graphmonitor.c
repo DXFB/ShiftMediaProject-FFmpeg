@@ -28,6 +28,7 @@
 #include "libavutil/opt.h"
 #include "libavutil/timestamp.h"
 #include "libavutil/xga_font_data.h"
+#include "audio.h"
 #include "avfilter.h"
 #include "filters.h"
 #include "formats.h"
@@ -47,6 +48,8 @@ typedef struct GraphMonitorContext {
     int flags;
     AVRational frame_rate;
 
+    int eof;
+    int eof_frames;
     int64_t pts;
     int64_t next_pts;
     uint8_t white[4];
@@ -54,6 +57,7 @@ typedef struct GraphMonitorContext {
     uint8_t red[4];
     uint8_t green[4];
     uint8_t blue[4];
+    uint8_t gray[4];
     uint8_t bg[4];
 
     CacheItem *cache;
@@ -66,10 +70,12 @@ enum {
     MODE_COMPACT = 1,
     MODE_NOZERO = 2,
     MODE_NOEOF = 4,
-    MODE_MAX = 7
+    MODE_NODISABLED = 8,
+    MODE_MAX = 15
 };
 
 enum {
+    FLAG_NONE  = 0 << 0,
     FLAG_QUEUE = 1 << 0,
     FLAG_FCIN  = 1 << 1,
     FLAG_FCOUT = 1 << 2,
@@ -86,6 +92,7 @@ enum {
     FLAG_TIME_DELTA = 1 << 13,
     FLAG_FC_DELTA = 1 << 14,
     FLAG_SC_DELTA = 1 << 15,
+    FLAG_DISABLED = 1 << 16,
 };
 
 #define OFFSET(x) offsetof(GraphMonitorContext, x)
@@ -95,16 +102,19 @@ enum {
 static const AVOption graphmonitor_options[] = {
     { "size", "set monitor size", OFFSET(w), AV_OPT_TYPE_IMAGE_SIZE, {.str="hd720"}, 0, 0, VF },
     { "s",    "set monitor size", OFFSET(w), AV_OPT_TYPE_IMAGE_SIZE, {.str="hd720"}, 0, 0, VF },
-    { "opacity", "set video opacity", OFFSET(opacity), AV_OPT_TYPE_FLOAT, {.dbl=.9}, 0, 1, VF },
-    { "o",       "set video opacity", OFFSET(opacity), AV_OPT_TYPE_FLOAT, {.dbl=.9}, 0, 1, VF },
+    { "opacity", "set video opacity", OFFSET(opacity), AV_OPT_TYPE_FLOAT, {.dbl=.9}, 0, 1, VFR },
+    { "o",       "set video opacity", OFFSET(opacity), AV_OPT_TYPE_FLOAT, {.dbl=.9}, 0, 1, VFR },
     { "mode", "set mode", OFFSET(mode), AV_OPT_TYPE_FLAGS, {.i64=0}, 0, MODE_MAX, VFR, "mode" },
     { "m",    "set mode", OFFSET(mode), AV_OPT_TYPE_FLAGS, {.i64=0}, 0, MODE_MAX, VFR, "mode" },
         { "full",    NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_FULL},   0, 0, VFR, "mode" },
         { "compact", NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_COMPACT},0, 0, VFR, "mode" },
         { "nozero",  NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_NOZERO}, 0, 0, VFR, "mode" },
         { "noeof",   NULL, 0, AV_OPT_TYPE_CONST, {.i64=MODE_NOEOF},  0, 0, VFR, "mode" },
+        { "nodisabled",NULL,0,AV_OPT_TYPE_CONST, {.i64=MODE_NODISABLED},0,0,VFR,"mode" },
     { "flags", "set flags", OFFSET(flags), AV_OPT_TYPE_FLAGS, {.i64=FLAG_QUEUE}, 0, INT_MAX, VFR, "flags" },
     { "f",     "set flags", OFFSET(flags), AV_OPT_TYPE_FLAGS, {.i64=FLAG_QUEUE}, 0, INT_MAX, VFR, "flags" },
+        { "none",             NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_NONE},    0, 0, VFR, "flags" },
+        { "all",              NULL, 0, AV_OPT_TYPE_CONST, {.i64=INT_MAX},      0, 0, VFR, "flags" },
         { "queue",            NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_QUEUE},   0, 0, VFR, "flags" },
         { "frame_count_in",   NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_FCOUT},   0, 0, VFR, "flags" },
         { "frame_count_out",  NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_FCIN},    0, 0, VFR, "flags" },
@@ -121,6 +131,7 @@ static const AVOption graphmonitor_options[] = {
         { "sample_count_in",  NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_SCOUT},   0, 0, VFR, "flags" },
         { "sample_count_out", NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_SCIN},    0, 0, VFR, "flags" },
         { "sample_count_delta",NULL,0, AV_OPT_TYPE_CONST, {.i64=FLAG_SC_DELTA},0, 0, VFR, "flags" },
+        { "disabled",         NULL, 0, AV_OPT_TYPE_CONST, {.i64=FLAG_DISABLED},0, 0, VFR, "flags" },
     { "rate", "set video rate", OFFSET(frame_rate), AV_OPT_TYPE_VIDEO_RATE, {.str = "25"}, 0, INT_MAX, VF },
     { "r",    "set video rate", OFFSET(frame_rate), AV_OPT_TYPE_VIDEO_RATE, {.str = "25"}, 0, INT_MAX, VF },
     { NULL }
@@ -156,14 +167,22 @@ static int query_formats(AVFilterContext *ctx)
 
 static void clear_image(GraphMonitorContext *s, AVFrame *out, AVFilterLink *outlink)
 {
+    const int h = out->height;
+    const int w = out->width;
+    uint8_t *dst = out->data[0];
     int bg = AV_RN32(s->bg);
 
-    for (int i = 0; i < out->height; i++)
-        for (int j = 0; j < out->width; j++)
-            AV_WN32(out->data[0] + i * out->linesize[0] + j * 4, bg);
+    for (int j = 0; j < w; j++)
+        AV_WN32(dst + j * 4, bg);
+    dst += out->linesize[0];
+    for (int i = 1; i < h; i++) {
+        memcpy(dst, out->data[0], w * 4);
+        dst += out->linesize[0];
+    }
 }
 
-static void drawtext(AVFrame *pic, int x, int y, const char *txt, uint8_t *color)
+static void drawtext(AVFrame *pic, int x, int y, const char *txt,
+                     const int len, uint8_t *color)
 {
     const uint8_t *font;
     int font_height;
@@ -172,7 +191,7 @@ static void drawtext(AVFrame *pic, int x, int y, const char *txt, uint8_t *color
     font = avpriv_cga_font,   font_height =  8;
 
     if (y + 8 >= pic->height ||
-        x + strlen(txt) * 8 >= pic->width)
+        x + len * 8 >= pic->width)
         return;
 
     for (i = 0; txt[i]; i++) {
@@ -233,7 +252,9 @@ static int filter_have_queued(AVFilterContext *filter)
     return 0;
 }
 
-static int draw_items(AVFilterContext *ctx, AVFrame *out,
+static int draw_items(AVFilterContext *ctx,
+                      AVFilterContext *filter,
+                      AVFrame *out,
                       int xpos, int ypos,
                       AVFilterLink *l,
                       size_t frames)
@@ -241,104 +262,112 @@ static int draw_items(AVFilterContext *ctx, AVFrame *out,
     GraphMonitorContext *s = ctx->priv;
     int64_t previous_pts_us = s->cache[s->cache_index].previous_pts_us;
     int64_t current_pts_us = l->current_pts_us;
+    const int flags = s->flags;
+    const int mode = s->mode;
     char buffer[1024] = { 0 };
+    int len = 0;
 
-    if (s->flags & FLAG_FMT) {
+    if (flags & FLAG_FMT) {
         if (l->type == AVMEDIA_TYPE_VIDEO) {
-            snprintf(buffer, sizeof(buffer)-1, " | format: %s",
+            len = snprintf(buffer, sizeof(buffer)-1, " | format: %s",
                      av_get_pix_fmt_name(l->format));
         } else if (l->type == AVMEDIA_TYPE_AUDIO) {
-            snprintf(buffer, sizeof(buffer)-1, " | format: %s",
+            len = snprintf(buffer, sizeof(buffer)-1, " | format: %s",
                      av_get_sample_fmt_name(l->format));
         }
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
     }
-    if (s->flags & FLAG_SIZE) {
+    if (flags & FLAG_SIZE) {
         if (l->type == AVMEDIA_TYPE_VIDEO) {
-            snprintf(buffer, sizeof(buffer)-1, " | size: %dx%d", l->w, l->h);
+            len = snprintf(buffer, sizeof(buffer)-1, " | size: %dx%d", l->w, l->h);
         } else if (l->type == AVMEDIA_TYPE_AUDIO) {
-            snprintf(buffer, sizeof(buffer)-1, " | channels: %d", l->ch_layout.nb_channels);
+            len = snprintf(buffer, sizeof(buffer)-1, " | channels: %d", l->ch_layout.nb_channels);
         }
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
     }
-    if (s->flags & FLAG_RATE) {
+    if (flags & FLAG_RATE) {
         if (l->type == AVMEDIA_TYPE_VIDEO) {
-            snprintf(buffer, sizeof(buffer)-1, " | fps: %d/%d", l->frame_rate.num, l->frame_rate.den);
+            len = snprintf(buffer, sizeof(buffer)-1, " | fps: %d/%d", l->frame_rate.num, l->frame_rate.den);
         } else if (l->type == AVMEDIA_TYPE_AUDIO) {
-            snprintf(buffer, sizeof(buffer)-1, " | samplerate: %d", l->sample_rate);
+            len = snprintf(buffer, sizeof(buffer)-1, " | samplerate: %d", l->sample_rate);
         }
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
     }
-    if (s->flags & FLAG_TB) {
-        snprintf(buffer, sizeof(buffer)-1, " | tb: %d/%d", l->time_base.num, l->time_base.den);
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
+    if (flags & FLAG_TB) {
+        len = snprintf(buffer, sizeof(buffer)-1, " | tb: %d/%d", l->time_base.num, l->time_base.den);
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
     }
-    if ((s->flags & FLAG_QUEUE) && (!(s->mode & MODE_NOZERO) || frames)) {
-        snprintf(buffer, sizeof(buffer)-1, " | queue: ");
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
-        snprintf(buffer, sizeof(buffer)-1, "%"SIZE_SPECIFIER, frames);
-        drawtext(out, xpos, ypos, buffer, frames > 0 ? frames >= 10 ? frames >= 50 ? s->red : s->yellow : s->green : s->white);
-        xpos += strlen(buffer) * 8;
+    if ((flags & FLAG_QUEUE) && (!(mode & MODE_NOZERO) || frames)) {
+        len = snprintf(buffer, sizeof(buffer)-1, " | queue: ");
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
+        len = snprintf(buffer, sizeof(buffer)-1, "%"SIZE_SPECIFIER, frames);
+        drawtext(out, xpos, ypos, buffer, len, frames > 0 ? frames >= 10 ? frames >= 50 ? s->red : s->yellow : s->green : s->white);
+        xpos += len * 8;
     }
-    if ((s->flags & FLAG_FCIN) && (!(s->mode & MODE_NOZERO) || l->frame_count_in)) {
-        snprintf(buffer, sizeof(buffer)-1, " | in: %"PRId64, l->frame_count_in);
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
+    if ((flags & FLAG_FCIN) && (!(mode & MODE_NOZERO) || l->frame_count_in)) {
+        len = snprintf(buffer, sizeof(buffer)-1, " | in: %"PRId64, l->frame_count_in);
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
     }
-    if ((s->flags & FLAG_FCOUT) && (!(s->mode & MODE_NOZERO) || l->frame_count_out)) {
-        snprintf(buffer, sizeof(buffer)-1, " | out: %"PRId64, l->frame_count_out);
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
+    if ((flags & FLAG_FCOUT) && (!(mode & MODE_NOZERO) || l->frame_count_out)) {
+        len = snprintf(buffer, sizeof(buffer)-1, " | out: %"PRId64, l->frame_count_out);
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
     }
-    if ((s->flags & FLAG_FC_DELTA) && (!(s->mode & MODE_NOZERO) || (l->frame_count_in - l->frame_count_out))) {
-        snprintf(buffer, sizeof(buffer)-1, " | delta: %"PRId64, l->frame_count_in - l->frame_count_out);
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
+    if ((flags & FLAG_FC_DELTA) && (!(mode & MODE_NOZERO) || (l->frame_count_in - l->frame_count_out))) {
+        len = snprintf(buffer, sizeof(buffer)-1, " | delta: %"PRId64, l->frame_count_in - l->frame_count_out);
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
     }
-    if ((s->flags & FLAG_SCIN) && (!(s->mode & MODE_NOZERO) || l->sample_count_in)) {
-        snprintf(buffer, sizeof(buffer)-1, " | sin: %"PRId64, l->sample_count_in);
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
+    if ((flags & FLAG_SCIN) && (!(mode & MODE_NOZERO) || l->sample_count_in)) {
+        len = snprintf(buffer, sizeof(buffer)-1, " | sin: %"PRId64, l->sample_count_in);
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
     }
-    if ((s->flags & FLAG_SCOUT) && (!(s->mode & MODE_NOZERO) || l->sample_count_out)) {
-        snprintf(buffer, sizeof(buffer)-1, " | sout: %"PRId64, l->sample_count_out);
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
+    if ((flags & FLAG_SCOUT) && (!(mode & MODE_NOZERO) || l->sample_count_out)) {
+        len = snprintf(buffer, sizeof(buffer)-1, " | sout: %"PRId64, l->sample_count_out);
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
     }
-    if ((s->flags & FLAG_SC_DELTA) && (!(s->mode & MODE_NOZERO) || (l->sample_count_in - l->sample_count_out))) {
-        snprintf(buffer, sizeof(buffer)-1, " | sdelta: %"PRId64, l->sample_count_in - l->sample_count_out);
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
+    if ((flags & FLAG_SC_DELTA) && (!(mode & MODE_NOZERO) || (l->sample_count_in - l->sample_count_out))) {
+        len = snprintf(buffer, sizeof(buffer)-1, " | sdelta: %"PRId64, l->sample_count_in - l->sample_count_out);
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
     }
-    if ((s->flags & FLAG_PTS) && (!(s->mode & MODE_NOZERO) || current_pts_us)) {
-        snprintf(buffer, sizeof(buffer)-1, " | pts: %s", av_ts2str(current_pts_us));
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
+    if ((flags & FLAG_PTS) && (!(mode & MODE_NOZERO) || current_pts_us)) {
+        len = snprintf(buffer, sizeof(buffer)-1, " | pts: %s", av_ts2str(current_pts_us));
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
     }
-    if ((s->flags & FLAG_PTS_DELTA) && (!(s->mode & MODE_NOZERO) || (current_pts_us - previous_pts_us))) {
-        snprintf(buffer, sizeof(buffer)-1, " | pts_delta: %s", av_ts2str(current_pts_us - previous_pts_us));
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
+    if ((flags & FLAG_PTS_DELTA) && (!(mode & MODE_NOZERO) || (current_pts_us - previous_pts_us))) {
+        len = snprintf(buffer, sizeof(buffer)-1, " | pts_delta: %s", av_ts2str(current_pts_us - previous_pts_us));
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
     }
-    if ((s->flags & FLAG_TIME) && (!(s->mode & MODE_NOZERO) || current_pts_us)) {
-        snprintf(buffer, sizeof(buffer)-1, " | time: %s", av_ts2timestr(current_pts_us, &AV_TIME_BASE_Q));
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
+    if ((flags & FLAG_TIME) && (!(mode & MODE_NOZERO) || current_pts_us)) {
+        len = snprintf(buffer, sizeof(buffer)-1, " | time: %s", av_ts2timestr(current_pts_us, &AV_TIME_BASE_Q));
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
     }
-    if ((s->flags & FLAG_TIME_DELTA) && (!(s->mode & MODE_NOZERO) || (current_pts_us - previous_pts_us))) {
-        snprintf(buffer, sizeof(buffer)-1, " | time_delta: %s", av_ts2timestr(current_pts_us - previous_pts_us, &AV_TIME_BASE_Q));
-        drawtext(out, xpos, ypos, buffer, s->white);
-        xpos += strlen(buffer) * 8;
+    if ((flags & FLAG_TIME_DELTA) && (!(mode & MODE_NOZERO) || (current_pts_us - previous_pts_us))) {
+        len = snprintf(buffer, sizeof(buffer)-1, " | time_delta: %s", av_ts2timestr(current_pts_us - previous_pts_us, &AV_TIME_BASE_Q));
+        drawtext(out, xpos, ypos, buffer, len, s->white);
+        xpos += len * 8;
     }
-    if (s->flags & FLAG_EOF && ff_outlink_get_status(l)) {
-        snprintf(buffer, sizeof(buffer)-1, " | eof");
-        drawtext(out, xpos, ypos, buffer, s->blue);
-        xpos += strlen(buffer) * 8;
+    if ((flags & FLAG_EOF) && ff_outlink_get_status(l)) {
+        len = snprintf(buffer, sizeof(buffer)-1, " | eof");
+        drawtext(out, xpos, ypos, buffer, len, s->blue);
+        xpos += len * 8;
+    }
+    if ((flags & FLAG_DISABLED) && filter->is_disabled) {
+        len = snprintf(buffer, sizeof(buffer)-1, " | off");
+        drawtext(out, xpos, ypos, buffer, len, s->gray);
+        xpos += len * 8;
     }
 
     s->cache[s->cache_index].previous_pts_us = l->current_pts_us;
@@ -359,20 +388,21 @@ static int create_frame(AVFilterContext *ctx, int64_t pts)
 {
     GraphMonitorContext *s = ctx->priv;
     AVFilterLink *outlink = ctx->outputs[0];
+    int ret, len, xpos, ypos = 0;
+    char buffer[1024];
     AVFrame *out;
-    int ret, xpos, ypos = 0;
 
     out = ff_get_video_buffer(outlink, outlink->w, outlink->h);
     if (!out)
         return AVERROR(ENOMEM);
 
+    s->bg[3] = 255 * s->opacity;
     clear_image(s, out, outlink);
 
     s->cache_index = 0;
 
     for (int i = 0; i < ctx->graph->nb_filters; i++) {
         AVFilterContext *filter = ctx->graph->filters[i];
-        char buffer[1024] = { 0 };
 
         if ((s->mode & MODE_COMPACT) && !filter_have_queued(filter))
             continue;
@@ -380,10 +410,15 @@ static int create_frame(AVFilterContext *ctx, int64_t pts)
         if ((s->mode & MODE_NOEOF) && filter_have_eof(filter))
             continue;
 
+        if ((s->mode & MODE_NODISABLED) && filter->is_disabled)
+            continue;
+
         xpos = 0;
-        drawtext(out, xpos, ypos, filter->name, s->white);
-        xpos += strlen(filter->name) * 8 + 10;
-        drawtext(out, xpos, ypos, filter->filter->name, s->white);
+        len = strlen(filter->name);
+        drawtext(out, xpos, ypos, filter->name, len, s->white);
+        xpos += len * 8 + 10;
+        len = strlen(filter->filter->name);
+        drawtext(out, xpos, ypos, filter->filter->name, len, s->white);
         ypos += 10;
         for (int j = 0; j < filter->nb_inputs; j++) {
             AVFilterLink *l = filter->inputs[j];
@@ -396,12 +431,13 @@ static int create_frame(AVFilterContext *ctx, int64_t pts)
                 continue;
 
             xpos = 10;
-            snprintf(buffer, sizeof(buffer)-1, "in%d: ", j);
-            drawtext(out, xpos, ypos, buffer, s->white);
-            xpos += strlen(buffer) * 8;
-            drawtext(out, xpos, ypos, l->src->name, s->white);
-            xpos += strlen(l->src->name) * 8 + 10;
-            ret = draw_items(ctx, out, xpos, ypos, l, frames);
+            len = snprintf(buffer, sizeof(buffer)-1, "in%d: ", j);
+            drawtext(out, xpos, ypos, buffer, len, s->white);
+            xpos += len * 8;
+            len = strlen(l->src->name);
+            drawtext(out, xpos, ypos, l->src->name, len, s->white);
+            xpos += len * 8 + 10;
+            ret = draw_items(ctx, filter, out, xpos, ypos, l, frames);
             if (ret < 0)
                 goto error;
             ypos += 10;
@@ -419,12 +455,13 @@ static int create_frame(AVFilterContext *ctx, int64_t pts)
                 continue;
 
             xpos = 10;
-            snprintf(buffer, sizeof(buffer)-1, "out%d: ", j);
-            drawtext(out, xpos, ypos, buffer, s->white);
-            xpos += strlen(buffer) * 8;
-            drawtext(out, xpos, ypos, l->dst->name, s->white);
-            xpos += strlen(l->dst->name) * 8 + 10;
-            ret = draw_items(ctx, out, xpos, ypos, l, frames);
+            len = snprintf(buffer, sizeof(buffer)-1, "out%d: ", j);
+            drawtext(out, xpos, ypos, buffer, len, s->white);
+            xpos += len * 8;
+            len = strlen(l->dst->name);
+            drawtext(out, xpos, ypos, l->dst->name, len, s->white);
+            xpos += len * 8 + 10;
+            ret = draw_items(ctx, filter, out, xpos, ypos, l, frames);
             if (ret < 0)
                 goto error;
             ypos += 10;
@@ -435,6 +472,8 @@ static int create_frame(AVFilterContext *ctx, int64_t pts)
     out->pts = pts;
     out->duration = 1;
     s->pts = pts + 1;
+    if (s->eof_frames)
+        s->eof_frames = 0;
     return ff_filter_frame(outlink, out);
 error:
     av_frame_free(&out);
@@ -447,10 +486,11 @@ static int activate(AVFilterContext *ctx)
     AVFilterLink *inlink = ctx->inputs[0];
     AVFilterLink *outlink = ctx->outputs[0];
     int64_t pts = AV_NOPTS_VALUE;
+    int status;
 
     FF_FILTER_FORWARD_STATUS_BACK(outlink, inlink);
 
-    if (ff_inlink_queued_frames(inlink)) {
+    if (!s->eof && ff_inlink_queued_frames(inlink)) {
         AVFrame *frame = NULL;
         int ret;
 
@@ -468,13 +508,31 @@ static int activate(AVFilterContext *ctx)
         if (s->pts == AV_NOPTS_VALUE)
             s->pts = pts;
         s->next_pts = pts;
+    } else if (s->eof) {
+        s->next_pts = s->pts + 1;
     }
 
-    if (s->pts < s->next_pts && ff_outlink_frame_wanted(outlink))
+    if (s->eof && s->eof_frames == 0) {
+        ff_outlink_set_status(outlink, AVERROR_EOF, s->next_pts);
+        return 0;
+    }
+
+    if (s->eof || (s->pts < s->next_pts && ff_outlink_frame_wanted(outlink)))
         return create_frame(ctx, s->pts);
 
-    FF_FILTER_FORWARD_STATUS(inlink, outlink);
-    FF_FILTER_FORWARD_WANTED(outlink, inlink);
+    if (!s->eof && ff_inlink_acknowledge_status(inlink, &status, &pts)) {
+        s->eof = 1;
+        s->eof_frames = 1;
+        ff_filter_set_ready(ctx, 100);
+        return 0;
+    }
+
+    if (!s->eof) {
+        FF_FILTER_FORWARD_WANTED(outlink, inlink);
+    } else {
+        ff_filter_set_ready(ctx, 100);
+        return 0;
+    }
 
     return FFERROR_NOT_READY;
 }
@@ -483,12 +541,12 @@ static int config_output(AVFilterLink *outlink)
 {
     GraphMonitorContext *s = outlink->src->priv;
 
-    s->bg[3] = 255 * s->opacity;
     s->white[0] = s->white[1] = s->white[2] = 255;
     s->yellow[0] = s->yellow[1] = 255;
     s->red[0] = 255;
     s->green[1] = 255;
     s->blue[2] = 255;
+    s->gray[0] = s->gray[1] = s->gray[2] = 128;
     s->pts = AV_NOPTS_VALUE;
     s->next_pts = AV_NOPTS_VALUE;
     outlink->w = s->w;
@@ -512,13 +570,6 @@ AVFILTER_DEFINE_CLASS_EXT(graphmonitor, "(a)graphmonitor", graphmonitor_options)
 
 #if CONFIG_GRAPHMONITOR_FILTER
 
-static const AVFilterPad graphmonitor_inputs[] = {
-    {
-        .name = "default",
-        .type = AVMEDIA_TYPE_VIDEO,
-    },
-};
-
 static const AVFilterPad graphmonitor_outputs[] = {
     {
         .name         = "default",
@@ -535,7 +586,7 @@ const AVFilter ff_vf_graphmonitor = {
     .init          = init,
     .uninit        = uninit,
     .activate      = activate,
-    FILTER_INPUTS(graphmonitor_inputs),
+    FILTER_INPUTS(ff_video_default_filterpad),
     FILTER_OUTPUTS(graphmonitor_outputs),
     FILTER_QUERY_FUNC(query_formats),
     .process_command = ff_filter_process_command,
@@ -544,13 +595,6 @@ const AVFilter ff_vf_graphmonitor = {
 #endif // CONFIG_GRAPHMONITOR_FILTER
 
 #if CONFIG_AGRAPHMONITOR_FILTER
-
-static const AVFilterPad agraphmonitor_inputs[] = {
-    {
-        .name = "default",
-        .type = AVMEDIA_TYPE_AUDIO,
-    },
-};
 
 static const AVFilterPad agraphmonitor_outputs[] = {
     {
@@ -568,7 +612,7 @@ const AVFilter ff_avf_agraphmonitor = {
     .init          = init,
     .uninit        = uninit,
     .activate      = activate,
-    FILTER_INPUTS(agraphmonitor_inputs),
+    FILTER_INPUTS(ff_audio_default_filterpad),
     FILTER_OUTPUTS(agraphmonitor_outputs),
     FILTER_QUERY_FUNC(query_formats),
     .process_command = ff_filter_process_command,

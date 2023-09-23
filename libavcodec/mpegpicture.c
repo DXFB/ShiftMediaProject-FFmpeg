@@ -27,6 +27,8 @@
 
 #include "avcodec.h"
 #include "encode.h"
+#include "internal.h"
+#include "decode.h"
 #include "motion_est.h"
 #include "mpegpicture.h"
 #include "mpegutils.h"
@@ -169,17 +171,10 @@ static int alloc_frame_buffer(AVCodecContext *avctx,  Picture *pic,
         pic->f->height = avctx->height;
     }
 
-    if (avctx->hwaccel) {
-        assert(!pic->hwaccel_picture_private);
-        if (avctx->hwaccel->frame_priv_data_size) {
-            pic->hwaccel_priv_buf = av_buffer_allocz(avctx->hwaccel->frame_priv_data_size);
-            if (!pic->hwaccel_priv_buf) {
-                av_log(avctx, AV_LOG_ERROR, "alloc_frame_buffer() failed (hwaccel private data allocation)\n");
-                return -1;
-            }
-            pic->hwaccel_picture_private = pic->hwaccel_priv_buf->data;
-        }
-    }
+    ret = ff_hwaccel_frame_priv_alloc(avctx, &pic->hwaccel_picture_private,
+                                      &pic->hwaccel_priv_buf);
+    if (ret < 0)
+        return ret;
 
     if ((linesize   &&   linesize != pic->f->linesize[0]) ||
         (uvlinesize && uvlinesize != pic->f->linesize[1])) {

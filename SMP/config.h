@@ -26,7 +26,7 @@
 #   include <sdkddkver.h>
 #   include <winapifamily.h>
 #endif
-#define FFMPEG_CONFIGURATION "--enable-gpl --enable-version3 --enable-bzlib --enable-iconv --enable-lzma --enable-sdl2 --enable-zlib --enable-libmp3lame --enable-libvorbis --enable-libspeex --enable-libopus --enable-libilbc --enable-libtheora --enable-libx264 --enable-libx265 --enable-libxvid --enable-libvpx --enable-libgme --enable-libmodplug --enable-libsoxr --enable-libfreetype --enable-fontconfig --enable-libfribidi --enable-libass --enable-libxml2 --enable-gnutls --disable-schannel --enable-gcrypt --enable-libssh --enable-libcdio --enable-libbluray --enable-opengl --enable-libmfx --enable-ffnvcodec --enable-cuda --enable-amf"
+#define FFMPEG_CONFIGURATION "--enable-gpl --enable-version3 --enable-bzlib --enable-iconv --enable-lzma --enable-sdl2 --enable-zlib --enable-libmp3lame --enable-libvorbis --enable-libspeex --enable-libopus --enable-libilbc --enable-libtheora --enable-libx264 --enable-libx265 --enable-libxvid --enable-libvpx --enable-libgme --enable-libmodplug --enable-libsoxr --enable-libfreetype --enable-fontconfig --enable-libfribidi --enable-libharfbuzz --enable-libass --enable-libxml2 --enable-gnutls --disable-schannel --enable-gcrypt --enable-libssh --enable-libcdio --enable-libbluray --enable-opengl --enable-libmfx --enable-ffnvcodec --enable-cuda --enable-amf"
 #define FFMPEG_LICENSE "GPL version 3 or later"
 #define CONFIG_THIS_YEAR 2023
 #define FFMPEG_DATADIR "."
@@ -80,7 +80,6 @@
 #define ARCH_SPARC64 0
 #define ARCH_TILEGX 0
 #define ARCH_TILEPRO 0
-#define ARCH_TOMI 0
 #define ARCH_X86 1
 #if !defined(__x86_64) && !defined(_M_X64)
 #   define ARCH_X86_32 1
@@ -96,6 +95,8 @@
 #define HAVE_ARMV6 0
 #define HAVE_ARMV6T2 0
 #define HAVE_ARMV8 0
+#define HAVE_DOTPROD 0
+#define HAVE_I8MM 0
 #define HAVE_NEON 0
 #define HAVE_VFP 0
 #define HAVE_VFPV3 0
@@ -145,6 +146,8 @@
 #define HAVE_ARMV6_EXTERNAL 0
 #define HAVE_ARMV6T2_EXTERNAL 0
 #define HAVE_ARMV8_EXTERNAL 0
+#define HAVE_DOTPROD_EXTERNAL 0
+#define HAVE_I8MM_EXTERNAL 0
 #define HAVE_NEON_EXTERNAL 0
 #define HAVE_VFP_EXTERNAL 0
 #define HAVE_VFPV3_EXTERNAL 0
@@ -194,6 +197,8 @@
 #define HAVE_ARMV6_INLINE 0
 #define HAVE_ARMV6T2_INLINE 0
 #define HAVE_ARMV8_INLINE 0
+#define HAVE_DOTPROD_INLINE 0
+#define HAVE_I8MM_INLINE 0
 #define HAVE_NEON_INLINE 0
 #define HAVE_VFP_INLINE 0
 #define HAVE_VFPV3_INLINE 0
@@ -277,6 +282,7 @@
 #define HAVE_BIGENDIAN 0
 #define HAVE_FAST_UNALIGNED 1
 #define HAVE_ARPA_INET_H 0
+#define HAVE_ASM_HWCAP_H 0
 #define HAVE_ASM_TYPES_H 0
 #define HAVE_CDIO_PARANOIA_H 0
 #define HAVE_CDIO_PARANOIA_PARANOIA_H 1
@@ -362,7 +368,7 @@
 #endif
 #define HAVE_ACCESS 1
 #define HAVE_ALIGNED_MALLOC 1
-#define HAVE_ARC4RANDOM 0
+#define HAVE_ARC4RANDOM_BUF 0
 #define HAVE_CLOCK_GETTIME 0
 #define HAVE_CLOSESOCKET 1
 #define HAVE_COMMANDLINETOARGVW 1
@@ -435,6 +441,7 @@
 #define HAVE_STRERROR_R 0
 #define HAVE_SYSCONF 0
 #define HAVE_SYSCTL 0
+#define HAVE_SYSCTLBYNAME 0
 #define HAVE_USLEEP 0
 #define HAVE_UTGETOSTYPEFROMSTRING 0
 #if !HAVE_WINRT && !HAVE_UWP
@@ -452,6 +459,8 @@
 #define HAVE_OS2THREADS 0
 #define HAVE_W32THREADS 1
 #define HAVE_AS_ARCH_DIRECTIVE 0
+#define HAVE_AS_ARCHEXT_DOTPROD_DIRECTIVE 0
+#define HAVE_AS_ARCHEXT_I8MM_DIRECTIVE 0
 #define HAVE_AS_DN_DIRECTIVE 0
 #define HAVE_AS_FPU_DIRECTIVE 0
 #define HAVE_AS_FUNC 0
@@ -541,6 +550,7 @@
 #define HAVE_TEXI2HTML 0
 #define HAVE_XMLLINT 0
 #define HAVE_ZLIB_GZIP 0
+#define HAVE_OPENVINO2 0
 #define CONFIG_DOC 0
 #define CONFIG_HTMLPAGES 0
 #define CONFIG_MANPAGES 0
@@ -614,6 +624,7 @@
 #define CONFIG_LIBFONTCONFIG 1
 #define CONFIG_LIBFREETYPE 1
 #define CONFIG_LIBFRIBIDI 1
+#define CONFIG_LIBHARFBUZZ 1
 #define CONFIG_LIBGLSLANG 0
 #define CONFIG_LIBGME 1
 #define CONFIG_LIBGSM 0
@@ -832,6 +843,7 @@
 #define CONFIG_CBS_AV1 1
 #define CONFIG_CBS_H264 1
 #define CONFIG_CBS_H265 1
+#define CONFIG_CBS_H266 1
 #define CONFIG_CBS_JPEG 0
 #define CONFIG_CBS_MPEG2 1
 #define CONFIG_CBS_VP9 1
@@ -840,6 +852,7 @@
 #define CONFIG_DNN 1
 #define CONFIG_DOVI_RPU 1
 #define CONFIG_DVPROFILE 1
+#define CONFIG_EVCPARSE 1
 #define CONFIG_EXIF 1
 #define CONFIG_FAANDCT 1
 #define CONFIG_FAANIDCT 1

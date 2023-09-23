@@ -238,6 +238,12 @@
     <ClCompile Include="..\libavformat\ac3dec.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\ac4dec.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\ac4enc.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\acedec.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
@@ -613,6 +619,15 @@
     <ClCompile Include="..\libavformat\avc.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\hevc.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\av1.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\vpcc.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\4xm.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
@@ -688,6 +703,9 @@
     <ClCompile Include="..\libavformat\hevcdec.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\evcdec.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\hls.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
@@ -728,9 +746,6 @@
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\img2_brender_pix.c">
-      <Filter>Source Files\libavformat</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavformat\jpegxl_probe.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\imfdec.c">
@@ -782,6 +797,9 @@
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\jacosubenc.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\jpegxl_anim_dec.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\jvdec.c">
@@ -838,12 +856,6 @@
     <ClCompile Include="..\libavformat\matroskaenc.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
-    <ClCompile Include="..\libavformat\av1.c">
-      <Filter>Source Files\libavformat</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libavformat\hevc.c">
-      <Filter>Source Files\libavformat</Filter>
-    </ClCompile>
     <ClCompile Include="..\libavformat\wv.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
@@ -889,9 +901,6 @@
     <ClCompile Include="..\libavformat\movenc.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
-    <ClCompile Include="..\libavformat\vpcc.c">
-      <Filter>Source Files\libavformat</Filter>
-    </ClCompile>
     <ClCompile Include="..\libavformat\movenchint.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
@@ -899,6 +908,9 @@
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\movenc_ttml.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\evc.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\mp3dec.c">
@@ -1043,6 +1055,9 @@
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\omaenc.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\osq.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\paf.c">
@@ -1357,6 +1372,9 @@
     <ClCompile Include="..\libavformat\uncodedframecrcenc.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavformat\usmdec.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavformat\vag.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
@@ -1391,6 +1409,9 @@
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\vqf.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavformat\vvcdec.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
     <ClCompile Include="..\libavformat\wavdec.c">
@@ -1606,6 +1627,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libavformat\jpegtables.c">
+      <Filter>Source Files\libavformat</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavformat\jpegxl_parse.c">
       <Filter>Source Files\libavformat</Filter>
     </ClCompile>
   </ItemGroup>

@@ -144,6 +144,9 @@
     <ClCompile Include="..\libavutil\eval.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
+    <ClCompile Include="..\libavutil\executor.c">
+      <Filter>Source Files\libavutil</Filter>
+    </ClCompile>
     <ClCompile Include="..\libavutil\fifo.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
@@ -289,6 +292,9 @@
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
     <ClCompile Include="..\libavutil\video_enc_params.c">
+      <Filter>Source Files\libavutil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libavutil\video_hint.c">
       <Filter>Source Files\libavutil</Filter>
     </ClCompile>
     <ClCompile Include="..\libavutil\film_grain_params.c">
@@ -447,6 +453,9 @@
       <Filter>Header Files\libavutil</Filter>
     </ClInclude>
     <ClInclude Include="..\libavutil\eval.h">
+      <Filter>Header Files\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libavutil\executor.h">
       <Filter>Header Files\libavutil</Filter>
     </ClInclude>
     <ClInclude Include="..\libavutil\fifo.h">
@@ -627,6 +636,9 @@
       <Filter>Header Files\libavutil</Filter>
     </ClInclude>
     <ClInclude Include="..\libavutil\film_grain_params.h">
+      <Filter>Header Files\libavutil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libavutil\video_hint.h">
       <Filter>Header Files\libavutil</Filter>
     </ClInclude>
     <ClInclude Include="libavutil\avconfig.h">

@@ -9,6 +9,7 @@ freetype2, ^
 fribidi, ^
 game-music-emu, ^
 gnutls, ^
+harfbuzz, ^
 lame, ^
 libass, ^
 libbluray, ^

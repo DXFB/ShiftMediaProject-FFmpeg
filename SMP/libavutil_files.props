@@ -48,6 +48,7 @@
     <ClCompile Include="..\libavutil\encryption_info.c" />
     <ClCompile Include="..\libavutil\error.c" />
     <ClCompile Include="..\libavutil\eval.c" />
+    <ClCompile Include="..\libavutil\executor.c" />
     <ClCompile Include="..\libavutil\fifo.c" />
     <ClCompile Include="..\libavutil\file.c" />
     <ClCompile Include="..\libavutil\file_open.c" />
@@ -97,6 +98,7 @@
     <ClCompile Include="..\libavutil\uuid.c" />
     <ClCompile Include="..\libavutil\version.c" />
     <ClCompile Include="..\libavutil\video_enc_params.c" />
+    <ClCompile Include="..\libavutil\video_hint.c" />
     <ClCompile Include="..\libavutil\film_grain_params.c" />
     <ClCompile Include="..\libavutil\hwcontext_stub.c" />
     <ClCompile Include="..\compat\msvcrt\snprintf.c" />
@@ -165,6 +167,7 @@
     <ClInclude Include="..\libavutil\encryption_info.h" />
     <ClInclude Include="..\libavutil\error.h" />
     <ClInclude Include="..\libavutil\eval.h" />
+    <ClInclude Include="..\libavutil\executor.h" />
     <ClInclude Include="..\libavutil\fifo.h" />
     <ClInclude Include="..\libavutil\file.h" />
     <ClInclude Include="..\libavutil\frame.h" />
@@ -225,6 +228,7 @@
     <ClInclude Include="..\libavutil\tea.h" />
     <ClInclude Include="..\libavutil\tx.h" />
     <ClInclude Include="..\libavutil\film_grain_params.h" />
+    <ClInclude Include="..\libavutil\video_hint.h" />
     <ClInclude Include="libavutil\avconfig.h" />
     <ClInclude Include="libavutil\ffversion.h" />
   </ItemGroup>

@@ -154,6 +154,8 @@ EXPORTS
     avpriv_fits_header_parse_line
     avpriv_get_raw_pix_fmt_tags
     avpriv_h264_has_num_reorder_frames
+    avpriv_kbd_window_init
+    avpriv_kbd_window_init_fixed
     avpriv_mpeg4audio_get_config2
     avpriv_mpegaudio_decode_header
     avpriv_packet_list_free

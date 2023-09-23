@@ -81,6 +81,8 @@
     <ClCompile Include="..\libavformat\rawdec.c" />
     <ClCompile Include="..\libavformat\aaxdec.c" />
     <ClCompile Include="..\libavformat\ac3dec.c" />
+    <ClCompile Include="..\libavformat\ac4dec.c" />
+    <ClCompile Include="..\libavformat\ac4enc.c" />
     <ClCompile Include="..\libavformat\acedec.c" />
     <ClCompile Include="..\libavformat\acm.c" />
     <ClCompile Include="..\libavformat\act.c" />
@@ -206,6 +208,9 @@
     <ClCompile Include="..\libavformat\flvdec.c" />
     <ClCompile Include="..\libavformat\flvenc.c" />
     <ClCompile Include="..\libavformat\avc.c" />
+    <ClCompile Include="..\libavformat\hevc.c" />
+    <ClCompile Include="..\libavformat\av1.c" />
+    <ClCompile Include="..\libavformat\vpcc.c" />
     <ClCompile Include="..\libavformat\4xm.c" />
     <ClCompile Include="..\libavformat\framecrcenc.c" />
     <ClCompile Include="..\libavformat\framehash.c" />
@@ -231,6 +236,7 @@
     <ClCompile Include="..\libavformat\hcom.c" />
     <ClCompile Include="..\libavformat\hdsenc.c" />
     <ClCompile Include="..\libavformat\hevcdec.c" />
+    <ClCompile Include="..\libavformat\evcdec.c" />
     <ClCompile Include="..\libavformat\hls.c" />
     <ClCompile Include="..\libavformat\hls_sample_encryption.c" />
     <ClCompile Include="..\libavformat\hlsenc.c" />
@@ -245,7 +251,6 @@
     <ClCompile Include="..\libavformat\img2enc.c" />
     <ClCompile Include="..\libavformat\img2_alias_pix.c" />
     <ClCompile Include="..\libavformat\img2_brender_pix.c" />
-    <ClCompile Include="..\libavformat\jpegxl_probe.c" />
     <ClCompile Include="..\libavformat\imfdec.c" />
     <ClCompile Include="..\libavformat\imf_cpl.c" />
     <ClCompile Include="..\libavformat\ingenientdec.c" />
@@ -263,6 +268,7 @@
     <ClCompile Include="..\libavformat\rmsipr.c" />
     <ClCompile Include="..\libavformat\jacosubdec.c" />
     <ClCompile Include="..\libavformat\jacosubenc.c" />
+    <ClCompile Include="..\libavformat\jpegxl_anim_dec.c" />
     <ClCompile Include="..\libavformat\jvdec.c" />
     <ClCompile Include="..\libavformat\kvag.c" />
     <ClCompile Include="..\libavformat\lafdec.c" />
@@ -281,8 +287,6 @@
     <ClCompile Include="..\libavformat\qtpalette.c" />
     <ClCompile Include="..\libavformat\dovi_isom.c" />
     <ClCompile Include="..\libavformat\matroskaenc.c" />
-    <ClCompile Include="..\libavformat\av1.c" />
-    <ClCompile Include="..\libavformat\hevc.c" />
     <ClCompile Include="..\libavformat\wv.c" />
     <ClCompile Include="..\libavformat\mca.c" />
     <ClCompile Include="..\libavformat\mccdec.c" />
@@ -298,10 +302,10 @@
     <ClCompile Include="..\libavformat\moflex.c" />
     <ClCompile Include="..\libavformat\mov.c" />
     <ClCompile Include="..\libavformat\movenc.c" />
-    <ClCompile Include="..\libavformat\vpcc.c" />
     <ClCompile Include="..\libavformat\movenchint.c" />
     <ClCompile Include="..\libavformat\movenccenc.c" />
     <ClCompile Include="..\libavformat\movenc_ttml.c" />
+    <ClCompile Include="..\libavformat\evc.c" />
     <ClCompile Include="..\libavformat\mp3dec.c" />
     <ClCompile Include="..\libavformat\mp3enc.c" />
     <ClCompile Include="..\libavformat\mpc.c" />
@@ -350,6 +354,7 @@
     <ClCompile Include="..\libavformat\omadec.c" />
     <ClCompile Include="..\libavformat\oma.c" />
     <ClCompile Include="..\libavformat\omaenc.c" />
+    <ClCompile Include="..\libavformat\osq.c" />
     <ClCompile Include="..\libavformat\paf.c" />
     <ClCompile Include="..\libavformat\pcmdec.c" />
     <ClCompile Include="..\libavformat\pcmenc.c" />
@@ -454,6 +459,7 @@
     <ClCompile Include="..\libavformat\ty.c" />
     <ClCompile Include="..\libavformat\txd.c" />
     <ClCompile Include="..\libavformat\uncodedframecrcenc.c" />
+    <ClCompile Include="..\libavformat\usmdec.c" />
     <ClCompile Include="..\libavformat\vag.c" />
     <ClCompile Include="..\libavformat\vc1dec.c" />
     <ClCompile Include="..\libavformat\vc1test.c" />
@@ -466,6 +472,7 @@
     <ClCompile Include="..\libavformat\vpk.c" />
     <ClCompile Include="..\libavformat\vplayerdec.c" />
     <ClCompile Include="..\libavformat\vqf.c" />
+    <ClCompile Include="..\libavformat\vvcdec.c" />
     <ClCompile Include="..\libavformat\wavdec.c" />
     <ClCompile Include="..\libavformat\w64.c" />
     <ClCompile Include="..\libavformat\wavenc.c" />
@@ -558,6 +565,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libavformat\jpegtables.c">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Debug'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='ReleaseWinRT'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)'=='DebugWinRT'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libavformat\jpegxl_parse.c">
       <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)'=='Debug'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)'=='ReleaseWinRT'">true</ExcludedFromBuild>

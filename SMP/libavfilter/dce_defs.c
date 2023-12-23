@@ -37,13 +37,13 @@ void ff_atadenoise_filter_row8_sse4(const uint8_t *src, uint8_t *dst,
                                     int thra, int thrb, const float *weights) {return;}
 #endif
 #if !(ARCH_X86_64)
-void ff_bwdif_filter_line_12bit_avx2(void *dst, void *prev, void *cur, void *next,
+void ff_bwdif_filter_line_12bit_avx2(void *dst, const void *prev, const void *cur, const void *next,
                                      int w, int prefs, int mrefs, int prefs2,
                                      int mrefs2, int prefs3, int mrefs3, int prefs4,
                                      int mrefs4, int parity, int clip_max) {return;}
 #endif
 #if !(ARCH_X86_64)
-void ff_bwdif_filter_line_avx2(void *dst, void *prev, void *cur, void *next,
+void ff_bwdif_filter_line_avx2(void *dst, const void *prev, const void *cur, const void *next,
                                int w, int prefs, int mrefs, int prefs2,
                                int mrefs2, int prefs3, int mrefs3, int prefs4,
                                int mrefs4, int parity, int clip_max) {return;}

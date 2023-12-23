@@ -26,6 +26,9 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\fftools\ffplay_renderer.c">
+      <Filter>Source Files\fftools</Filter>
+    </ClCompile>
     <ClCompile Include="..\fftools\cmdutils.c">
       <Filter>Source Files\fftools</Filter>
     </ClCompile>

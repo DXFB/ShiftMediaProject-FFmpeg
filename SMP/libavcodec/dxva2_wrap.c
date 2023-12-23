@@ -21,6 +21,6 @@
 
 #include "config.h"
 #include "config_components.h"
-#if CONFIG_D3D11VA || CONFIG_DXVA2
+#if CONFIG_D3D11VA || CONFIG_D3D12VA || CONFIG_DXVA2
 #   include "../../libavcodec/dxva2.c"
 #endif

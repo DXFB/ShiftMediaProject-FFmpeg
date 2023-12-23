@@ -21,6 +21,7 @@
 #include "config.h"
 #include "config_components.h"
 static const AVFilter *filter_list[] = {
+    &ff_af_aap,
     &ff_af_abench,
     &ff_af_acompressor,
     &ff_af_acontrast,
@@ -427,6 +428,7 @@ static const AVFilter *filter_list[] = {
     &ff_vf_threshold,
     &ff_vf_thumbnail,
     &ff_vf_tile,
+    &ff_vf_tiltandshift,
     &ff_vf_tinterlace,
     &ff_vf_tlut2,
     &ff_vf_tmedian,

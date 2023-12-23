@@ -50,6 +50,9 @@
     <ClCompile Include="..\fftools\ffmpeg_opt.c">
       <Filter>Source Files\fftools</Filter>
     </ClCompile>
+    <ClCompile Include="..\fftools\ffmpeg_sched.c">
+      <Filter>Source Files\fftools</Filter>
+    </ClCompile>
     <ClCompile Include="..\fftools\objpool.c">
       <Filter>Source Files\fftools</Filter>
     </ClCompile>

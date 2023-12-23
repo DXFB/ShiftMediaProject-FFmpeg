@@ -1,4 +1,4 @@
-/** dxva2_vc1.c file wrapper for libavcodec
+/** hwcontext_d3d12va.c file wrapper for libavutil
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,6 @@
 
 #include "config.h"
 #include "config_components.h"
-#if CONFIG_VC1_D3D11VA_HWACCEL || CONFIG_VC1_DXVA2_HWACCEL || CONFIG_VC1_D3D12VA_HWACCEL
-#   include "../../libavcodec/dxva2_vc1.c"
+#if CONFIG_D3D12VA
+#   include "../../libavutil/hwcontext_d3d12va.c"
 #endif

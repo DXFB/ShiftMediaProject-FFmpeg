@@ -1,5 +1,5 @@
 diff --git a/fftools/opt_common.c b/fftools/opt_common.c
-index f6fe9815e1..d5d32cb89e 100644
+index f5b73c9f2f..672326999b 100644
 --- a/fftools/opt_common.c
 +++ b/fftools/opt_common.c
 @@ -48,6 +48,9 @@
@@ -13,7 +13,7 @@ index f6fe9815e1..d5d32cb89e 100644
  #include "libavdevice/version.h"
  
 diff --git a/libavcodec/mfenc.c b/libavcodec/mfenc.c
-index 8d950a3109..43ca0ead31 100644
+index 8bb6f1d38d..a9ca24443d 100644
 --- a/libavcodec/mfenc.c
 +++ b/libavcodec/mfenc.c
 @@ -59,6 +59,10 @@ typedef struct MFContext {

@@ -72,6 +72,7 @@
     <ClCompile Include="..\libavfilter\file_open.c" />
     <ClCompile Include="..\libavfilter\pthread.c" />
     <ClCompile Include="..\libavfilter\dnn_filter_common.c" />
+    <ClCompile Include="..\libavfilter\af_aap.c" />
     <ClCompile Include="..\libavfilter\f_bench.c" />
     <ClCompile Include="..\libavfilter\af_sidechaincompress.c" />
     <ClCompile Include="..\libavfilter\af_acontrast.c" />
@@ -208,6 +209,7 @@
     <ClCompile Include="..\libavfilter\vf_bm3d.c" />
     <ClCompile Include="..\libavfilter\vf_boxblur.c" />
     <ClCompile Include="..\libavfilter\boxblur.c" />
+    <ClCompile Include="..\libavfilter\bwdifdsp.c" />
     <ClCompile Include="..\libavfilter\yadif_common.c" />
     <ClCompile Include="..\libavfilter\vf_cas.c" />
     <ClCompile Include="..\libavfilter\vf_ccrepack.c" />
@@ -379,6 +381,7 @@
     <ClCompile Include="..\libavfilter\vf_telecine.c" />
     <ClCompile Include="..\libavfilter\vf_thumbnail.c" />
     <ClCompile Include="..\libavfilter\vf_tile.c" />
+    <ClCompile Include="..\libavfilter\vf_tiltandshift.c" />
     <ClCompile Include="..\libavfilter\vf_xmedian.c" />
     <ClCompile Include="..\libavfilter\vf_tmidequalizer.c" />
     <ClCompile Include="..\libavfilter\vf_tonemap.c" />

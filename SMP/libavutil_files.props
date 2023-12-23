@@ -58,6 +58,7 @@
     <ClCompile Include="..\libavutil\hdr_dynamic_vivid_metadata.c" />
     <ClCompile Include="..\libavutil\hmac.c" />
     <ClCompile Include="..\libavutil\hwcontext.c" />
+    <ClCompile Include="..\libavutil\iamf.c" />
     <ClCompile Include="..\libavutil\integer.c" />
     <ClCompile Include="..\libavutil\intmath.c" />
     <ClCompile Include="..\libavutil\lfg.c" />
@@ -112,6 +113,7 @@
     <ClCompile Include="..\libavutil\x86\pixelutils_init.c" />
     <ClCompile Include="libavutil\hwcontext_cuda_wrap.c" />
     <ClCompile Include="libavutil\hwcontext_d3d11va_wrap.c" />
+    <ClCompile Include="libavutil\hwcontext_d3d12va_wrap.c" />
     <ClCompile Include="libavutil\hwcontext_dxva2_wrap.c" />
     <ClCompile Include="libavutil\hwcontext_qsv_wrap.c" />
     <ClCompile Include="..\libavutil\float_dsp.c">
@@ -178,6 +180,7 @@
     <ClInclude Include="..\libavutil\hwcontext.h" />
     <ClInclude Include="..\libavutil\hwcontext_cuda.h" />
     <ClInclude Include="..\libavutil\hwcontext_d3d11va.h" />
+    <ClInclude Include="..\libavutil\hwcontext_d3d12va.h" />
     <ClInclude Include="..\libavutil\hwcontext_drm.h" />
     <ClInclude Include="..\libavutil\hwcontext_dxva2.h" />
     <ClInclude Include="..\libavutil\hwcontext_qsv.h" />
@@ -187,6 +190,7 @@
     <ClInclude Include="..\libavutil\hwcontext_videotoolbox.h" />
     <ClInclude Include="..\libavutil\hwcontext_vdpau.h" />
     <ClInclude Include="..\libavutil\hwcontext_vulkan.h" />
+    <ClInclude Include="..\libavutil\iamf.h" />
     <ClInclude Include="..\libavutil\imgutils.h" />
     <ClInclude Include="..\libavutil\intfloat.h" />
     <ClInclude Include="..\libavutil\intreadwrite.h" />

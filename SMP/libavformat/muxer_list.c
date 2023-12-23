@@ -87,6 +87,7 @@ static const FFOutputFormat *muxer_list[] = {
     &ff_hds_muxer,
     &ff_hevc_muxer,
     &ff_hls_muxer,
+    &ff_iamf_muxer,
     &ff_ico_muxer,
     &ff_ilbc_muxer,
     &ff_image2_muxer,

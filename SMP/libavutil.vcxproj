@@ -67,6 +67,7 @@ copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_d3d11va.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_d3d12va.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
@@ -76,6 +77,7 @@ copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vulkan.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\iamf.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\imgutils.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
@@ -214,6 +216,7 @@ copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_d3d11va.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_d3d12va.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
@@ -223,6 +226,7 @@ copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vulkan.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\iamf.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\imgutils.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
@@ -362,6 +366,7 @@ copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_d3d11va.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_d3d12va.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
@@ -371,6 +376,7 @@ copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vulkan.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\iamf.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\imgutils.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
@@ -510,6 +516,7 @@ copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_d3d11va.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_d3d12va.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
@@ -519,6 +526,7 @@ copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vulkan.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\iamf.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\imgutils.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
@@ -657,6 +665,7 @@ copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_d3d11va.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_d3d12va.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
@@ -666,6 +675,7 @@ copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vulkan.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\iamf.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\imgutils.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
@@ -804,6 +814,7 @@ copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_d3d11va.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_d3d12va.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
@@ -813,6 +824,7 @@ copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vulkan.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\iamf.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\imgutils.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
@@ -952,6 +964,7 @@ copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_d3d11va.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_d3d12va.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
@@ -961,6 +974,7 @@ copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vulkan.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\iamf.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\imgutils.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
@@ -1100,6 +1114,7 @@ copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_d3d11va.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_d3d12va.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
@@ -1109,6 +1124,7 @@ copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vulkan.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\iamf.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\imgutils.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
@@ -1248,6 +1264,7 @@ copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_d3d11va.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_d3d12va.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
@@ -1257,6 +1274,7 @@ copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vulkan.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\iamf.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\imgutils.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil
@@ -1396,6 +1414,7 @@ copy ..\libavutil\hmac.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_cuda.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_d3d11va.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\hwcontext_d3d12va.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_drm.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_dxva2.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_qsv.h "$(OutDir)"\include\libavutil
@@ -1405,6 +1424,7 @@ copy ..\libavutil\hwcontext_vaapi.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_videotoolbox.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vdpau.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\hwcontext_vulkan.h "$(OutDir)"\include\libavutil
+copy ..\libavutil\iamf.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\imgutils.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intfloat.h "$(OutDir)"\include\libavutil
 copy ..\libavutil\intreadwrite.h "$(OutDir)"\include\libavutil

@@ -313,6 +313,18 @@ EXPORTS
     av_hwframe_transfer_data
     av_hwframe_transfer_get_formats
     av_i2int
+    av_iamf_audio_element_add_layer
+    av_iamf_audio_element_alloc
+    av_iamf_audio_element_free
+    av_iamf_audio_element_get_class
+    av_iamf_mix_presentation_add_submix
+    av_iamf_mix_presentation_alloc
+    av_iamf_mix_presentation_free
+    av_iamf_mix_presentation_get_class
+    av_iamf_param_definition_alloc
+    av_iamf_param_definition_get_class
+    av_iamf_submix_add_element
+    av_iamf_submix_add_layout
     av_image_alloc
     av_image_check_sar
     av_image_check_size
@@ -324,6 +336,7 @@ EXPORTS
     av_image_copy_uc_from
     av_image_fill_arrays
     av_image_fill_black
+    av_image_fill_color
     av_image_fill_linesizes
     av_image_fill_max_pixsteps
     av_image_fill_plane_sizes

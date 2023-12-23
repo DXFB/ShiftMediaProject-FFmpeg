@@ -21,6 +21,6 @@
 
 #include "config.h"
 #include "config_components.h"
-#if CONFIG_AV1_D3D11VA_HWACCEL || CONFIG_AV1_DXVA2_HWACCEL
+#if CONFIG_AV1_D3D11VA_HWACCEL || CONFIG_AV1_DXVA2_HWACCEL || CONFIG_AV1_D3D12VA_HWACCEL
 #   include "../../libavcodec/dxva2_av1.c"
 #endif

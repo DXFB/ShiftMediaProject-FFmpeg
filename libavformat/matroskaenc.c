@@ -61,6 +61,7 @@
 #include "libavcodec/av1.h"
 #include "libavcodec/bytestream.h"
 #include "libavcodec/codec_desc.h"
+#include "libavcodec/codec_par.h"
 #include "libavcodec/defs.h"
 #include "libavcodec/xiph.h"
 #include "libavcodec/mpeg4audio.h"
@@ -195,6 +196,8 @@ typedef struct mkv_track {
     int             codecpriv_offset;
     unsigned        codecpriv_size;     ///< size reserved for CodecPrivate excluding header+length field
     int64_t         ts_offset;
+    uint64_t        default_duration_low;
+    uint64_t        default_duration_high;
     /* This callback will be called twice: First with a NULL AVIOContext
      * to return the size of the (Simple)Block's data via size
      * and a second time with the AVIOContext set when the data
@@ -1327,7 +1330,7 @@ fail:
 static void mkv_write_video_color(EbmlWriter *writer, const AVStream *st,
                                   const AVCodecParameters *par)
 {
-    const void *side_data;
+    const AVPacketSideData *side_data;
 
     ebml_writer_open_master(writer, MATROSKA_ID_VIDEOCOLOR);
 
@@ -1361,20 +1364,20 @@ static void mkv_write_video_color(EbmlWriter *writer, const AVStream *st,
                              (ypos >> 7) + 1);
     }
 
-    side_data = av_stream_get_side_data(st, AV_PKT_DATA_CONTENT_LIGHT_LEVEL,
-                                        NULL);
+    side_data = av_packet_side_data_get(st->codecpar->coded_side_data, st->codecpar->nb_coded_side_data,
+                                        AV_PKT_DATA_CONTENT_LIGHT_LEVEL);
     if (side_data) {
-        const AVContentLightMetadata *metadata = side_data;
+        const AVContentLightMetadata *metadata = (AVContentLightMetadata *)side_data->data;
         ebml_writer_add_uint(writer, MATROSKA_ID_VIDEOCOLORMAXCLL,
                              metadata->MaxCLL);
         ebml_writer_add_uint(writer, MATROSKA_ID_VIDEOCOLORMAXFALL,
                              metadata->MaxFALL);
     }
 
-    side_data = av_stream_get_side_data(st, AV_PKT_DATA_MASTERING_DISPLAY_METADATA,
-                                        NULL);
+    side_data = av_packet_side_data_get(st->codecpar->coded_side_data, st->codecpar->nb_coded_side_data,
+                                        AV_PKT_DATA_MASTERING_DISPLAY_METADATA);
     if (side_data) {
-        const AVMasteringDisplayMetadata *metadata = side_data;
+        const AVMasteringDisplayMetadata *metadata = (AVMasteringDisplayMetadata *)side_data->data;
         ebml_writer_open_master(writer, MATROSKA_ID_VIDEOCOLORMASTERINGMETA);
         if (metadata->has_primaries) {
             ebml_writer_add_float(writer, MATROSKA_ID_VIDEOCOLOR_RX,
@@ -1410,11 +1413,15 @@ static void mkv_write_video_color(EbmlWriter *writer, const AVStream *st,
 static void mkv_handle_rotation(void *logctx, const AVStream *st,
                                 double *yaw, double *roll)
 {
-    const int32_t *matrix =
-        (const int32_t*)av_stream_get_side_data(st, AV_PKT_DATA_DISPLAYMATRIX, NULL);
+    const int32_t *matrix;
+    const AVPacketSideData *side_data =
+        av_packet_side_data_get(st->codecpar->coded_side_data, st->codecpar->nb_coded_side_data,
+                                AV_PKT_DATA_DISPLAYMATRIX);
 
-    if (!matrix)
+    if (!side_data)
         return;
+
+    matrix = (int32_t *)side_data->data;
 
     /* Check whether this is an affine transformation */
     if (matrix[2] || matrix[5])
@@ -1462,13 +1469,15 @@ static int mkv_handle_spherical(void *logctx, EbmlWriter *writer,
                                 const AVStream *st, uint8_t private[],
                                 double *yaw, double *pitch, double *roll)
 {
-    const AVSphericalMapping *spherical =
-        (const AVSphericalMapping *)av_stream_get_side_data(st, AV_PKT_DATA_SPHERICAL,
-                                                            NULL);
+    const AVPacketSideData *sd = av_packet_side_data_get(st->codecpar->coded_side_data,
+                                                         st->codecpar->nb_coded_side_data,
+                                                         AV_PKT_DATA_SPHERICAL);
+    const AVSphericalMapping *spherical;
 
-    if (!spherical)
+    if (!sd)
         return 0;
 
+    spherical = (const AVSphericalMapping *)sd->data;
     if (spherical->projection != AV_SPHERICAL_EQUIRECTANGULAR      &&
         spherical->projection != AV_SPHERICAL_EQUIRECTANGULAR_TILE &&
         spherical->projection != AV_SPHERICAL_CUBEMAP) {
@@ -1628,6 +1637,7 @@ static int mkv_write_stereo_mode(AVFormatContext *s, EbmlWriter *writer,
             format = stereo_mode;
         }
     } else {
+        const AVPacketSideData *sd;
         const AVStereo3D *stereo;
         /* The following macro presumes all MATROSKA_VIDEO_STEREOMODE_TYPE_*
          * values to be in the range 0..254. */
@@ -1639,10 +1649,12 @@ static int mkv_write_stereo_mode(AVFormatContext *s, EbmlWriter *writer,
         };
         int fmt;
 
-        stereo = (const AVStereo3D*)av_stream_get_side_data(st, AV_PKT_DATA_STEREO3D,
-                                                            NULL);
-        if (!stereo)
+        sd = av_packet_side_data_get(st->codecpar->coded_side_data, st->codecpar->nb_coded_side_data,
+                                     AV_PKT_DATA_STEREO3D);
+        if (!sd)
             return 0;
+
+        stereo = (const AVStereo3D*)sd->data;
 
         /* A garbage AVStereo3D or something with no Matroska analogon. */
         if ((unsigned)stereo->type >= FF_ARRAY_ELEMS(conversion_table))
@@ -1681,6 +1693,7 @@ static void mkv_write_blockadditionmapping(AVFormatContext *s, const MatroskaMux
 {
 #if CONFIG_MATROSKA_MUXER
     const AVDOVIDecoderConfigurationRecord *dovi;
+    const AVPacketSideData *sd;
 
     if (IS_SEEKABLE(s->pb, mkv)) {
         track->blockadditionmapping_offset = avio_tell(pb);
@@ -1697,9 +1710,14 @@ static void mkv_write_blockadditionmapping(AVFormatContext *s, const MatroskaMux
         }
     }
 
-    dovi = (const AVDOVIDecoderConfigurationRecord *)
-           av_stream_get_side_data(st, AV_PKT_DATA_DOVI_CONF, NULL);
-    if (dovi && dovi->dv_profile <= 10) {
+    sd = av_packet_side_data_get(st->codecpar->coded_side_data, st->codecpar->nb_coded_side_data,
+                                 AV_PKT_DATA_DOVI_CONF);
+
+    if (!sd)
+        return;
+
+    dovi = (const AVDOVIDecoderConfigurationRecord *)sd->data;
+    if (dovi->dv_profile <= 10) {
         ebml_master mapping;
         uint8_t buf[ISOM_DVCC_DVVC_SIZE];
         uint32_t type;
@@ -1803,6 +1821,16 @@ static int mkv_write_track_video(AVFormatContext *s, MatroskaMuxContext *mkv,
     mkv_write_video_projection(s, &writer, st, projection_private);
 
     return ebml_writer_write(&writer, pb);
+}
+
+static void mkv_write_default_duration(mkv_track *track, AVIOContext *pb,
+                                       AVRational duration)
+{
+    put_ebml_uint(pb, MATROSKA_ID_TRACKDEFAULTDURATION,
+                  1000000000LL * duration.num / duration.den);
+    track->default_duration_low  = 1000LL * duration.num / duration.den;
+    track->default_duration_high = track->default_duration_low +
+                                    !!(1000LL * duration.num % duration.den);
 }
 
 static int mkv_write_track(AVFormatContext *s, MatroskaMuxContext *mkv,
@@ -1913,16 +1941,21 @@ static int mkv_write_track(AVFormatContext *s, MatroskaMuxContext *mkv,
     }
 
     switch (par->codec_type) {
+        AVRational frame_rate;
+        int audio_frame_samples;
+
     case AVMEDIA_TYPE_VIDEO:
         mkv->have_video = 1;
         put_ebml_uint(pb, MATROSKA_ID_TRACKTYPE, MATROSKA_TRACK_TYPE_VIDEO);
 
-        if(   st->avg_frame_rate.num > 0 && st->avg_frame_rate.den > 0
-           && av_cmp_q(av_inv_q(st->avg_frame_rate), st->time_base) > 0)
-            put_ebml_uint(pb, MATROSKA_ID_TRACKDEFAULTDURATION, 1000000000LL * st->avg_frame_rate.den / st->avg_frame_rate.num);
-        else if(   st->r_frame_rate.num > 0 && st->r_frame_rate.den > 0
-                && av_cmp_q(av_inv_q(st->r_frame_rate), st->time_base) > 0)
-            put_ebml_uint(pb, MATROSKA_ID_TRACKDEFAULTDURATION, 1000000000LL * st->r_frame_rate.den / st->r_frame_rate.num);
+        frame_rate = (AVRational){ 0, 1 };
+        if (st->avg_frame_rate.num > 0 && st->avg_frame_rate.den > 0)
+            frame_rate = st->avg_frame_rate;
+        else if (st->r_frame_rate.num > 0 && st->r_frame_rate.den > 0)
+            frame_rate = st->r_frame_rate;
+
+        if (frame_rate.num > 0)
+            mkv_write_default_duration(track, pb, av_inv_q(frame_rate));
 
         if (CONFIG_MATROSKA_MUXER && !native_id &&
             ff_codec_get_tag(ff_codec_movvideo_tags, par->codec_id) &&
@@ -1976,6 +2009,10 @@ static int mkv_write_track(AVFormatContext *s, MatroskaMuxContext *mkv,
 
         put_ebml_uint(pb, MATROSKA_ID_TRACKTYPE, MATROSKA_TRACK_TYPE_AUDIO);
 
+        audio_frame_samples = av_get_audio_frame_duration2(par, 0);
+        if (audio_frame_samples)
+            mkv_write_default_duration(track, pb, (AVRational){ audio_frame_samples,
+                                                                par->sample_rate });
         if (!native_id)
             // no mkv-specific ID, use ACM mode
             put_ebml_string(pb, MATROSKA_ID_CODECID, "A_MS/ACM");
@@ -2739,7 +2776,12 @@ static int mkv_write_block(void *logctx, MatroskaMuxContext *mkv,
     ebml_writer_open_master(&writer, MATROSKA_ID_BLOCKGROUP);
     ebml_writer_add_block(&writer, mkv);
 
-    if (duration)
+    if (duration > 0 && (par->codec_type == AVMEDIA_TYPE_SUBTITLE ||
+        /* If the packet's duration is inconsistent with the default duration,
+         * add an explicit duration element. */
+        track->default_duration_high > 0 &&
+        duration != track->default_duration_high &&
+        duration != track->default_duration_low))
         ebml_writer_add_uint(&writer, MATROSKA_ID_BLOCKDURATION, duration);
 
     av_log(logctx, AV_LOG_DEBUG,
@@ -2917,7 +2959,7 @@ static int mkv_write_packet_internal(AVFormatContext *s, const AVPacket *pkt)
     /* All subtitle blocks are considered to be keyframes. */
     int keyframe            = is_sub || !!(pkt->flags & AV_PKT_FLAG_KEY);
     int64_t duration        = FFMAX(pkt->duration, 0);
-    int64_t write_duration  = is_sub ? duration : 0;
+    int64_t cue_duration    = is_sub ? duration : 0;
     int ret;
     int64_t ts = track->write_dts ? pkt->dts : pkt->pts;
     int64_t relative_packet_pos;
@@ -2958,7 +3000,7 @@ static int mkv_write_packet_internal(AVFormatContext *s, const AVPacket *pkt)
     /* The WebM spec requires WebVTT to be muxed in BlockGroups;
      * so we force it even for packets without duration. */
     ret = mkv_write_block(s, mkv, pb, par, track, pkt,
-                          keyframe, ts, write_duration,
+                          keyframe, ts, duration,
                           par->codec_id == AV_CODEC_ID_WEBVTT,
                           relative_packet_pos);
     if (ret < 0)
@@ -2969,7 +3011,7 @@ static int mkv_write_packet_internal(AVFormatContext *s, const AVPacket *pkt)
          !mkv->have_video && !track->has_cue)) {
         ret = mkv_add_cuepoint(mkv, pkt->stream_index, ts,
                                mkv->cluster_pos, relative_packet_pos,
-                               write_duration);
+                               cue_duration);
         if (ret < 0)
             return ret;
         track->has_cue = 1;
@@ -3474,7 +3516,6 @@ static const AVOption options[] = {
 
 static const AVClass matroska_webm_class = {
     .class_name = "matroska/webm muxer",
-    .item_name  = av_default_item_name,
     .option     = options,
     .version    = LIBAVUTIL_VERSION_INT,
 };
@@ -3512,7 +3553,11 @@ const FFOutputFormat ff_matroska_muxer = {
     .write_packet      = mkv_write_flush_packet,
     .write_trailer     = mkv_write_trailer,
     .p.flags           = AVFMT_GLOBALHEADER | AVFMT_VARIABLE_FPS |
+#if FF_API_ALLOW_FLUSH
                          AVFMT_TS_NONSTRICT | AVFMT_ALLOW_FLUSH,
+#else
+                         AVFMT_TS_NONSTRICT,
+#endif
     .p.codec_tag       = (const AVCodecTag* const []){
          ff_codec_bmp_tags, ff_codec_wav_tags,
          additional_audio_tags, additional_subtitle_tags, 0
@@ -3521,6 +3566,7 @@ const FFOutputFormat ff_matroska_muxer = {
     .query_codec       = mkv_query_codec,
     .check_bitstream   = mkv_check_bitstream,
     .p.priv_class      = &matroska_webm_class,
+    .flags_internal    = FF_FMT_ALLOW_FLUSH,
 };
 #endif
 
@@ -3551,8 +3597,13 @@ const FFOutputFormat ff_webm_muxer = {
     .query_codec       = webm_query_codec,
     .check_bitstream   = mkv_check_bitstream,
     .p.flags           = AVFMT_GLOBALHEADER | AVFMT_VARIABLE_FPS |
+#if FF_API_ALLOW_FLUSH
                          AVFMT_TS_NONSTRICT | AVFMT_ALLOW_FLUSH,
+#else
+                         AVFMT_TS_NONSTRICT,
+#endif
     .p.priv_class      = &matroska_webm_class,
+    .flags_internal    = FF_FMT_ALLOW_FLUSH,
 };
 #endif
 
@@ -3572,11 +3623,16 @@ const FFOutputFormat ff_matroska_audio_muxer = {
     .write_packet      = mkv_write_flush_packet,
     .write_trailer     = mkv_write_trailer,
     .check_bitstream   = mkv_check_bitstream,
+#if FF_API_ALLOW_FLUSH
     .p.flags           = AVFMT_GLOBALHEADER | AVFMT_TS_NONSTRICT |
                          AVFMT_ALLOW_FLUSH,
+#else
+    .p.flags           = AVFMT_GLOBALHEADER | AVFMT_TS_NONSTRICT,
+#endif
     .p.codec_tag       = (const AVCodecTag* const []){
         ff_codec_wav_tags, additional_audio_tags, 0
     },
     .p.priv_class      = &matroska_webm_class,
+    .flags_internal    = FF_FMT_ALLOW_FLUSH,
 };
 #endif

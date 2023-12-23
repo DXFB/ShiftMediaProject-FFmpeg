@@ -726,7 +726,36 @@ FF_ENABLE_DEPRECATION_WARNINGS
 
     pkt->flags |= AV_PKT_FLAG_KEY*pic_out.b_keyframe;
     if (ret) {
-        ff_side_data_set_encoder_stats(pkt, (pic_out.i_qpplus1 - 1) * FF_QP2LAMBDA, NULL, 0, pict_type);
+        int error_count = 0;
+        int64_t *errors = NULL;
+        int64_t sse[3] = {0};
+
+        if (ctx->flags & AV_CODEC_FLAG_PSNR) {
+            const AVPixFmtDescriptor *pix_desc = av_pix_fmt_desc_get(ctx->pix_fmt);
+            double scale[3] = { 1,
+                (double)(1 << pix_desc->log2_chroma_h) * (1 << pix_desc->log2_chroma_w),
+                (double)(1 << pix_desc->log2_chroma_h) * (1 << pix_desc->log2_chroma_w),
+            };
+
+            error_count = pix_desc->nb_components;
+
+            for (int i = 0; i < pix_desc->nb_components; ++i) {
+                double max_value = (double)(1 << pix_desc->comp[i].depth) - 1.0;
+                double plane_size = ctx->width * (double)ctx->height / scale[i];
+
+                /* psnr = 10 * log10(max_value * max_value / mse) */
+                double mse = (max_value * max_value) / pow(10, pic_out.prop.f_psnr[i] / 10.0);
+
+                /* SSE = MSE * width * height / scale -> because of possible chroma downsampling */
+                sse[i] = (int64_t)floor(mse * plane_size + .5);
+            };
+
+            errors = sse;
+        }
+
+        ff_side_data_set_encoder_stats(pkt, (pic_out.i_qpplus1 - 1) * FF_QP2LAMBDA,
+                                       errors, error_count, pict_type);
+
         if (wallclock)
             ff_side_data_set_prft(pkt, wallclock);
     }
@@ -1433,7 +1462,6 @@ static const FFCodecDefault x264_defaults[] = {
 #if CONFIG_LIBX264_ENCODER
 static const AVClass x264_class = {
     .class_name = "libx264",
-    .item_name  = av_default_item_name,
     .option     = options,
     .version    = LIBAVUTIL_VERSION_INT,
 };
@@ -1475,7 +1503,6 @@ FFCodec ff_libx264_encoder = {
 #if CONFIG_LIBX264RGB_ENCODER
 static const AVClass rgbclass = {
     .class_name = "libx264rgb",
-    .item_name  = av_default_item_name,
     .option     = options,
     .version    = LIBAVUTIL_VERSION_INT,
 };
@@ -1507,7 +1534,6 @@ const FFCodec ff_libx264rgb_encoder = {
 #if CONFIG_LIBX262_ENCODER
 static const AVClass X262_class = {
     .class_name = "libx262",
-    .item_name  = av_default_item_name,
     .option     = options,
     .version    = LIBAVUTIL_VERSION_INT,
 };

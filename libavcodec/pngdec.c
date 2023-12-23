@@ -661,8 +661,13 @@ static int populate_avctx_color_fields(AVCodecContext *avctx, AVFrame *frame)
             av_log(avctx, AV_LOG_WARNING, "unrecognized cICP transfer\n");
         else
             avctx->color_trc = frame->color_trc = s->cicp_trc;
-        if (s->cicp_range == 0)
-            av_log(avctx, AV_LOG_WARNING, "unsupported tv-range cICP chunk\n");
+        if (s->cicp_range == 0) {
+            av_log(avctx, AV_LOG_WARNING, "tv-range cICP tag found. Colors may be wrong\n");
+            avctx->color_range = frame->color_range = AVCOL_RANGE_MPEG;
+        } else if (s->cicp_range != 1) {
+            /* we already printed a warning when parsing the cICP chunk */
+            avctx->color_range = frame->color_range = AVCOL_RANGE_UNSPECIFIED;
+        }
     } else if (s->iccp_data) {
         AVFrameSideData *sd = av_frame_new_side_data(frame, AV_FRAME_DATA_ICC_PROFILE, s->iccp_data_len);
         if (!sd)
@@ -713,9 +718,10 @@ static int populate_avctx_color_fields(AVCodecContext *avctx, AVFrame *frame)
             avctx->color_trc = frame->color_trc = AVCOL_TRC_LINEAR;
     }
 
-    /* we only support pc-range RGB */
+    /* PNG only supports RGB */
     avctx->colorspace = frame->colorspace = AVCOL_SPC_RGB;
-    avctx->color_range = frame->color_range = AVCOL_RANGE_JPEG;
+    if (!s->have_cicp || s->cicp_range == 1)
+        avctx->color_range = frame->color_range = AVCOL_RANGE_JPEG;
 
     /*
      * tRNS sets alpha depth to full, so we ignore sBIT if set.
@@ -815,7 +821,7 @@ static int decode_idat_chunk(AVCodecContext *avctx, PNGDecContext *s,
             s->bpp += byte_depth;
         }
 
-        ff_thread_release_ext_buffer(avctx, &s->picture);
+        ff_thread_release_ext_buffer(&s->picture);
         if (s->dispose_op == APNG_DISPOSE_OP_PREVIOUS) {
             /* We only need a buffer for the current picture. */
             ret = ff_thread_get_buffer(avctx, p, 0);
@@ -1455,11 +1461,8 @@ static int decode_frame_common(AVCodecContext *avctx, PNGDecContext *s,
             if (bytestream2_get_byte(&gb_chunk) != 0)
                 av_log(avctx, AV_LOG_WARNING, "nonzero cICP matrix\n");
             s->cicp_range = bytestream2_get_byte(&gb_chunk);
-            if (s->cicp_range != 0 && s->cicp_range != 1) {
-                av_log(avctx, AV_LOG_ERROR, "invalid cICP range: %d\n", s->cicp_range);
-                ret = AVERROR_INVALIDDATA;
-                goto fail;
-            }
+            if (s->cicp_range != 0 && s->cicp_range != 1)
+                av_log(avctx, AV_LOG_WARNING, "invalid cICP range: %d\n", s->cicp_range);
             s->have_cicp = 1;
             break;
         case MKTAG('s', 'R', 'G', 'B'):
@@ -1703,7 +1706,7 @@ static int decode_frame_png(AVCodecContext *avctx, AVFrame *p,
         goto the_end;
 
     if (!(avctx->active_thread_type & FF_THREAD_FRAME)) {
-        ff_thread_release_ext_buffer(avctx, &s->last_picture);
+        ff_thread_release_ext_buffer(&s->last_picture);
         FFSWAP(ThreadFrame, s->picture, s->last_picture);
     }
 
@@ -1756,9 +1759,9 @@ static int decode_frame_apng(AVCodecContext *avctx, AVFrame *p,
 
     if (!(avctx->active_thread_type & FF_THREAD_FRAME)) {
         if (s->dispose_op == APNG_DISPOSE_OP_PREVIOUS) {
-            ff_thread_release_ext_buffer(avctx, &s->picture);
+            ff_thread_release_ext_buffer(&s->picture);
         } else {
-            ff_thread_release_ext_buffer(avctx, &s->last_picture);
+            ff_thread_release_ext_buffer(&s->last_picture);
             FFSWAP(ThreadFrame, s->picture, s->last_picture);
         }
     }
@@ -1799,7 +1802,7 @@ static int update_thread_context(AVCodecContext *dst, const AVCodecContext *src)
     src_frame = psrc->dispose_op == APNG_DISPOSE_OP_PREVIOUS ?
                 &psrc->last_picture : &psrc->picture;
 
-    ff_thread_release_ext_buffer(dst, &pdst->last_picture);
+    ff_thread_release_ext_buffer(&pdst->last_picture);
     if (src_frame && src_frame->f->data[0]) {
         ret = ff_thread_ref_frame(&pdst->last_picture, src_frame);
         if (ret < 0)
@@ -1813,8 +1816,6 @@ static int update_thread_context(AVCodecContext *dst, const AVCodecContext *src)
 static av_cold int png_dec_init(AVCodecContext *avctx)
 {
     PNGDecContext *s = avctx->priv_data;
-
-    avctx->color_range = AVCOL_RANGE_JPEG;
 
     s->avctx = avctx;
     s->last_picture.f = av_frame_alloc();
@@ -1831,9 +1832,9 @@ static av_cold int png_dec_end(AVCodecContext *avctx)
 {
     PNGDecContext *s = avctx->priv_data;
 
-    ff_thread_release_ext_buffer(avctx, &s->last_picture);
+    ff_thread_release_ext_buffer(&s->last_picture);
     av_frame_free(&s->last_picture.f);
-    ff_thread_release_ext_buffer(avctx, &s->picture);
+    ff_thread_release_ext_buffer(&s->picture);
     av_frame_free(&s->picture.f);
     av_freep(&s->buffer);
     s->buffer_size = 0;

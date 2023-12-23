@@ -23,12 +23,11 @@
 #include "config.h"
 #include "config_components.h"
 
-#if CONFIG_LINUX_PERF
-# ifndef _GNU_SOURCE
-#  define _GNU_SOURCE // for syscall (performance monitoring API)
-# endif
+#ifndef _GNU_SOURCE
+# define _GNU_SOURCE // for syscall (performance monitoring API), strsignal()
 #endif
 
+#include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -77,6 +76,12 @@ static const struct {
     #if CONFIG_AAC_DECODER
         { "aacpsdsp", checkasm_check_aacpsdsp },
         { "sbrdsp",   checkasm_check_sbrdsp },
+    #endif
+    #if CONFIG_AAC_ENCODER
+        { "aacencdsp", checkasm_check_aacencdsp },
+    #endif
+    #if CONFIG_AC3DSP
+        { "ac3dsp", checkasm_check_ac3dsp },
     #endif
     #if CONFIG_ALAC_DECODER
         { "alacdsp", checkasm_check_alacdsp },
@@ -133,6 +138,9 @@ static const struct {
     #if CONFIG_JPEG2000_DECODER
         { "jpeg2000dsp", checkasm_check_jpeg2000dsp },
     #endif
+    #if CONFIG_LLAUDDSP
+        { "llauddsp", checkasm_check_llauddsp },
+    #endif
     #if CONFIG_HUFFYUVDSP
         { "llviddsp", checkasm_check_llviddsp },
     #endif
@@ -150,6 +158,9 @@ static const struct {
     #endif
     #if CONFIG_PIXBLOCKDSP
         { "pixblockdsp", checkasm_check_pixblockdsp },
+    #endif
+    #if CONFIG_TAK_DECODER
+        { "takdsp", checkasm_check_takdsp },
     #endif
     #if CONFIG_UTVIDEO_DECODER
         { "utvideodsp", checkasm_check_utvideodsp },
@@ -733,6 +744,14 @@ int main(int argc, char *argv[])
     if (have_vfp(av_get_cpu_flags()) || have_neon(av_get_cpu_flags()))
         checkasm_checked_call = checkasm_checked_call_vfp;
 #endif
+#if ARCH_RISCV && HAVE_RV
+    struct sigaction act = {
+        .sa_handler = checkasm_handle_signal,
+        .sa_flags = 0,
+    };
+
+    sigaction(SIGILL, &act, NULL);
+#endif
 
     if (!tests[0].func || !cpus[0].flag) {
         fprintf(stderr, "checkasm: no tests to perform\n");
@@ -860,6 +879,15 @@ void checkasm_fail_func(const char *msg, ...)
     }
 }
 
+void checkasm_fail_signal(int signum)
+{
+#ifdef __GLIBC__
+    checkasm_fail_func("fatal signal %d: %s", signum, strsignal(signum));
+#else
+    checkasm_fail_func("fatal signal %d", signum);
+#endif
+}
+
 /* Get the benchmark context of the current function */
 CheckasmPerf *checkasm_get_perf_context(void)
 {
@@ -908,10 +936,10 @@ void checkasm_report(const char *name, ...)
 }
 
 #define DEF_CHECKASM_CHECK_FUNC(type, fmt) \
-int checkasm_check_##type(const char *const file, const int line, \
+int checkasm_check_##type(const char *file, int line, \
                           const type *buf1, ptrdiff_t stride1, \
                           const type *buf2, ptrdiff_t stride2, \
-                          const int w, int h, const char *const name) \
+                          int w, int h, const char *name) \
 { \
     int y = 0; \
     stride1 /= sizeof(*buf1); \

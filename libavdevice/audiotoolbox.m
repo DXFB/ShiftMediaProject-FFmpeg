@@ -85,7 +85,11 @@ static av_cold int at_write_header(AVFormatContext *avctx)
     AudioObjectPropertyAddress prop;
     prop.mSelector = kAudioHardwarePropertyDevices;
     prop.mScope    = kAudioObjectPropertyScopeGlobal;
+#if !TARGET_OS_IPHONE && __MAC_OS_X_VERSION_MIN_REQUIRED >= 120000
+    prop.mElement  = kAudioObjectPropertyElementMain;
+#else
     prop.mElement  = kAudioObjectPropertyElementMaster;
+#endif
     err = AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &prop, 0, NULL, &data_size);
     if (check_status(avctx, &err, "AudioObjectGetPropertyDataSize devices"))
         return AVERROR(EINVAL);
@@ -289,7 +293,6 @@ static const AVOption options[] = {
 
 static const AVClass at_class = {
     .class_name = "AudioToolbox",
-    .item_name  = av_default_item_name,
     .option     = options,
     .version    = LIBAVUTIL_VERSION_INT,
     .category   = AV_CLASS_CATEGORY_DEVICE_AUDIO_OUTPUT,

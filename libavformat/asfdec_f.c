@@ -125,7 +125,6 @@ static const AVOption options[] = {
 
 static const AVClass asf_class = {
     .class_name = "asf demuxer",
-    .item_name  = av_default_item_name,
     .option     = options,
     .version    = LIBAVUTIL_VERSION_INT,
 };
@@ -674,7 +673,7 @@ static int asf_read_marker(AVFormatContext *s)
 
         avio_rl64(pb);             // offset, 8 bytes
         pres_time = avio_rl64(pb); // presentation time
-        pres_time -= asf->hdr.preroll * 10000;
+        pres_time = av_sat_sub64(pres_time, asf->hdr.preroll * 10000);
         avio_rl16(pb);             // entry length
         avio_rl32(pb);             // send time
         avio_rl32(pb);             // flags

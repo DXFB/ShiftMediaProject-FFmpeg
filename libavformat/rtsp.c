@@ -410,7 +410,7 @@ static void parse_fmtp(AVFormatContext *s, RTSPState *rt,
         if (rtsp_st->sdp_payload_type == payload_type &&
             rtsp_st->dynamic_handler &&
             rtsp_st->dynamic_handler->parse_sdp_a_line) {
-            rtsp_st->dynamic_handler->parse_sdp_a_line(s, i,
+            rtsp_st->dynamic_handler->parse_sdp_a_line(s, rtsp_st->stream_index,
                 rtsp_st->dynamic_protocol_context, line);
         }
     }
@@ -2479,7 +2479,6 @@ static int sdp_read_close(AVFormatContext *s)
 
 static const AVClass sdp_demuxer_class = {
     .class_name     = "SDP demuxer",
-    .item_name      = av_default_item_name,
     .option         = sdp_options,
     .version        = LIBAVUTIL_VERSION_INT,
 };
@@ -2638,7 +2637,6 @@ fail:
 
 static const AVClass rtp_demuxer_class = {
     .class_name     = "RTP demuxer",
-    .item_name      = av_default_item_name,
     .option         = rtp_options,
     .version        = LIBAVUTIL_VERSION_INT,
 };

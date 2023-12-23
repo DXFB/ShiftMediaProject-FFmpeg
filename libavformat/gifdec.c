@@ -272,7 +272,6 @@ static const AVOption options[] = {
 
 static const AVClass demuxer_class = {
     .class_name = "GIF demuxer",
-    .item_name  = av_default_item_name,
     .option     = options,
     .version    = LIBAVUTIL_VERSION_INT,
     .category   = AV_CLASS_CATEGORY_DEMUXER,
@@ -285,7 +284,7 @@ const AVInputFormat ff_gif_demuxer = {
     .read_probe     = gif_probe,
     .read_header    = gif_read_header,
     .read_packet    = gif_read_packet,
-    .flags          = AVFMT_GENERIC_INDEX | AVFMT_NOTIMESTAMPS,
+    .flags          = AVFMT_GENERIC_INDEX,
     .extensions     = "gif",
     .priv_class     = &demuxer_class,
 };

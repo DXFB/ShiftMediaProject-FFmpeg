@@ -181,7 +181,6 @@ include $(SRC_PATH)/tests/fate/enc_external.mak
 # Must be included after lavf-video.mak
 include $(SRC_PATH)/tests/fate/ffmpeg.mak
 include $(SRC_PATH)/tests/fate/ffprobe.mak
-include $(SRC_PATH)/tests/fate/fft.mak
 include $(SRC_PATH)/tests/fate/fifo-muxer.mak
 include $(SRC_PATH)/tests/fate/filter-audio.mak
 # Must be included after vcodec.mak
@@ -227,6 +226,7 @@ include $(SRC_PATH)/tests/fate/pixfmt.mak
 include $(SRC_PATH)/tests/fate/pixlet.mak
 include $(SRC_PATH)/tests/fate/probe.mak
 include $(SRC_PATH)/tests/fate/prores.mak
+include $(SRC_PATH)/tests/fate/qoa.mak
 include $(SRC_PATH)/tests/fate/qt.mak
 include $(SRC_PATH)/tests/fate/qtrle.mak
 include $(SRC_PATH)/tests/fate/real.mak
@@ -305,8 +305,8 @@ $(FATE): export PROGSUF = $(PROGSSUF)
 $(FATE): export EXECSUF = $(EXESUF)
 $(FATE): export HOSTEXECSUF = $(HOSTEXESUF)
 $(FATE): $(FATE_UTILS:%=tests/%$(HOSTEXESUF)) | $(FATE_OUTDIRS)
-	@echo "TEST    $(@:fate-%=%)"
-	$(Q)$(SRC_PATH)/tests/fate-run.sh $@ "$(TARGET_SAMPLES)" "$(TARGET_EXEC)" "$(TARGET_PATH)" '$(CMD)' '$(CMP)' '$(REF)' '$(FUZZ)' '$(THREADS)' '$(THREAD_TYPE)' '$(CPUFLAGS)' '$(CMP_SHIFT)' '$(CMP_TARGET)' '$(SIZE_TOLERANCE)' '$(CMP_UNIT)' '$(GEN)' '$(HWACCEL)' '$(REPORT)' '$(KEEP_FILES)'
+	@echo "TEST    $(@:fate-%=%)$(FATE_SUFFIX)"
+	$(Q)$(SRC_PATH)/tests/fate-run.sh $@$(FATE_SUFFIX) "$(TARGET_SAMPLES)" "$(TARGET_EXEC)" "$(TARGET_PATH)" '$(CMD)' '$(CMP)' '$(REF)' '$(FUZZ)' '$(THREADS)' '$(THREAD_TYPE)' '$(CPUFLAGS)' '$(CMP_SHIFT)' '$(CMP_TARGET)' '$(SIZE_TOLERANCE)' '$(CMP_UNIT)' '$(GEN)' '$(HWACCEL)' '$(REPORT)' '$(KEEP_FILES)'
 
 fate-list:
 	@printf '%s\n' $(sort $(FATE))

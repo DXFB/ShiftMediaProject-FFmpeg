@@ -147,7 +147,9 @@ typedef struct FFFormatContext {
     int missing_ts_warning;
 #endif
 
+#if FF_API_AVSTREAM_SIDE_DATA
     int inject_global_side_data;
+#endif
 
     int avoid_negative_ts_use_pts;
 
@@ -200,6 +202,7 @@ typedef struct FFStream {
      */
     AVStream pub;
 
+    AVFormatContext *fmtctx;
     /**
      * Set to 1 if the codec allows reordering, so pts can be different
      * from dts.
@@ -356,10 +359,12 @@ typedef struct FFStream {
     uint8_t dts_ordered;
     uint8_t dts_misordered;
 
+#if FF_API_AVSTREAM_SIDE_DATA
     /**
      * Internal data to inject global side data
      */
     int inject_global_side_data;
+#endif
 
     /**
      * display aspect ratio (0 if unknown)
@@ -421,6 +426,26 @@ static av_always_inline FFStream *ffstream(AVStream *st)
 static av_always_inline const FFStream *cffstream(const AVStream *st)
 {
     return (const FFStream*)st;
+}
+
+typedef struct FFStreamGroup {
+    /**
+     * The public context.
+     */
+    AVStreamGroup pub;
+
+    AVFormatContext *fmtctx;
+} FFStreamGroup;
+
+
+static av_always_inline FFStreamGroup *ffstreamgroup(AVStreamGroup *stg)
+{
+    return (FFStreamGroup*)stg;
+}
+
+static av_always_inline const FFStreamGroup *cffstreamgroup(const AVStreamGroup *stg)
+{
+    return (const FFStreamGroup*)stg;
 }
 
 #ifdef __GNUC__
@@ -603,6 +628,13 @@ void ff_free_stream(AVStream **st);
  * The stream must be the last stream of the AVFormatContext.
  */
 void ff_remove_stream(AVFormatContext *s, AVStream *st);
+
+/**
+ * Frees a stream group without modifying the corresponding AVFormatContext.
+ * Must only be called if the latter doesn't matter or if the stream
+ * is not yet attached to an AVFormatContext.
+ */
+void ff_free_stream_group(AVStreamGroup **pstg);
 
 unsigned int ff_codec_get_tag(const AVCodecTag *tags, enum AVCodecID id);
 

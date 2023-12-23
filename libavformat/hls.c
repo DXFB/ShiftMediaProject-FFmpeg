@@ -540,11 +540,16 @@ static struct rendition *new_rendition(HLSContext *c, struct rendition_info *inf
     }
 
     if (info->assoc_language[0]) {
-        int langlen = strlen(rend->language);
+        size_t langlen = strlen(rend->language);
         if (langlen < sizeof(rend->language) - 3) {
+            size_t assoc_len;
             rend->language[langlen] = ',';
-            strncpy(rend->language + langlen + 1, info->assoc_language,
-                    sizeof(rend->language) - langlen - 2);
+            assoc_len = av_strlcpy(rend->language + langlen + 1,
+                                   info->assoc_language,
+                                   sizeof(rend->language) - langlen - 1);
+            if (langlen + assoc_len + 2 > sizeof(rend->language)) // truncation occurred
+                av_log(c->ctx, AV_LOG_WARNING, "Truncated rendition language: %s\n",
+                       info->assoc_language);
         }
     }
 
@@ -1852,17 +1857,6 @@ static int set_stream_info_from_input_stream(AVStream *st, struct playlist *pls,
 
     av_dict_copy(&st->metadata, ist->metadata, 0);
 
-    // copy side data
-    for (int i = 0; i < ist->nb_side_data; i++) {
-        const AVPacketSideData *sd_src = &ist->side_data[i];
-        uint8_t *dst_data;
-
-        dst_data = av_stream_new_side_data(st, sd_src->type, sd_src->size);
-        if (!dst_data)
-            return AVERROR(ENOMEM);
-        memcpy(dst_data, sd_src->data, sd_src->size);
-    }
-
     ffstream(st)->need_context_update = 1;
 
     return 0;
@@ -2595,7 +2589,6 @@ static const AVOption hls_options[] = {
 
 static const AVClass hls_class = {
     .class_name = "hls demuxer",
-    .item_name  = av_default_item_name,
     .option     = hls_options,
     .version    = LIBAVUTIL_VERSION_INT,
 };

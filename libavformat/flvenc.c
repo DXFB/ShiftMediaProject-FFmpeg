@@ -1072,6 +1072,8 @@ static int flv_check_bitstream(AVFormatContext *s, AVStream *st,
     }
     if (!st->codecpar->extradata_size &&
             (st->codecpar->codec_id == AV_CODEC_ID_H264 ||
+             st->codecpar->codec_id == AV_CODEC_ID_HEVC ||
+             st->codecpar->codec_id == AV_CODEC_ID_AV1 ||
              st->codecpar->codec_id == AV_CODEC_ID_MPEG4))
         return ff_stream_add_bitstream_filter(st, "extract_extradata", NULL);
     return 1;
@@ -1103,7 +1105,6 @@ static const AVOption options[] = {
 
 static const AVClass flv_muxer_class = {
     .class_name = "flv muxer",
-    .item_name  = av_default_item_name,
     .option     = options,
     .version    = LIBAVUTIL_VERSION_INT,
 };

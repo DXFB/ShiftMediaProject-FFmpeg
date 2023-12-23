@@ -2343,7 +2343,6 @@ static const AVOption options[] = {
 
 static const AVClass mpegts_muxer_class = {
     .class_name = "MPEGTS muxer",
-    .item_name  = av_default_item_name,
     .option     = options,
     .version    = LIBAVUTIL_VERSION_INT,
 };
@@ -2361,6 +2360,11 @@ const FFOutputFormat ff_mpegts_muxer = {
     .write_trailer  = mpegts_write_end,
     .deinit         = mpegts_deinit,
     .check_bitstream = mpegts_check_bitstream,
+#if FF_API_ALLOW_FLUSH
     .p.flags        = AVFMT_ALLOW_FLUSH | AVFMT_VARIABLE_FPS | AVFMT_NODIMENSIONS,
+#else
+    .p.flags         = AVFMT_VARIABLE_FPS | AVFMT_NODIMENSIONS,
+#endif
+    .flags_internal  = FF_FMT_ALLOW_FLUSH,
     .p.priv_class   = &mpegts_muxer_class,
 };

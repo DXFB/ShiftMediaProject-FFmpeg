@@ -21,6 +21,7 @@
 
 #include "avfilter.h"
 
+extern const AVFilter ff_af_aap;
 extern const AVFilter ff_af_abench;
 extern const AVFilter ff_af_acompressor;
 extern const AVFilter ff_af_acontrast;
@@ -339,6 +340,7 @@ extern const AVFilter ff_vf_lenscorrection;
 extern const AVFilter ff_vf_lensfun;
 extern const AVFilter ff_vf_libplacebo;
 extern const AVFilter ff_vf_libvmaf;
+extern const AVFilter ff_vf_libvmaf_cuda;
 extern const AVFilter ff_vf_limitdiff;
 extern const AVFilter ff_vf_limiter;
 extern const AVFilter ff_vf_loop;
@@ -481,6 +483,7 @@ extern const AVFilter ff_vf_threshold;
 extern const AVFilter ff_vf_thumbnail;
 extern const AVFilter ff_vf_thumbnail_cuda;
 extern const AVFilter ff_vf_tile;
+extern const AVFilter ff_vf_tiltandshift;
 extern const AVFilter ff_vf_tinterlace;
 extern const AVFilter ff_vf_tlut2;
 extern const AVFilter ff_vf_tmedian;

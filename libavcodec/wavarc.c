@@ -111,7 +111,7 @@ static av_cold int wavarc_init(AVCodecContext *avctx)
     }
 
     s->max_framesize = s->nb_samples * 16;
-    s->bitstream = av_calloc(s->max_framesize, sizeof(*s->bitstream));
+    s->bitstream = av_calloc(s->max_framesize + AV_INPUT_BUFFER_PADDING_SIZE, sizeof(*s->bitstream));
     if (!s->bitstream)
         return AVERROR(ENOMEM);
 
@@ -154,11 +154,11 @@ static void do_stereo(WavArcContext *s, int ch, int correlated, int len)
     } else {
         if (correlated) {
             for (int n = 0; n < nb_samples; n++)
-                s->samples[1][n + len] += s->samples[0][n + len];
+                s->samples[1][n + len] += (unsigned)s->samples[0][n + len];
         }
         for (int n = 0; n < len; n++) {
             s->pred[0][n] = s->samples[1][nb_samples + n];
-            s->pred[1][n] = s->pred[0][n] - s->samples[0][nb_samples + n];
+            s->pred[1][n] = s->pred[0][n] - (unsigned)s->samples[0][nb_samples + n];
         }
     }
 }
@@ -539,6 +539,8 @@ static int decode_5elp(AVCodecContext *avctx,
         if (block_type >= 0 && block_type <= 7) {
             k = 1 + (avctx->sample_fmt == AV_SAMPLE_FMT_S16P);
             k = get_urice(gb, k) + 1;
+            if (k >= 32)
+                return AVERROR_INVALIDDATA;
         }
 
         if (block_type <=  2 || block_type ==  6 || block_type == 13 ||

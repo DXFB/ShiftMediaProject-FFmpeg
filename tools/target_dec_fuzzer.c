@@ -221,6 +221,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     case AV_CODEC_ID_CFHD:        maxpixels  /= 16384; break;
     case AV_CODEC_ID_CINEPAK:     maxpixels  /= 128;   break;
     case AV_CODEC_ID_COOK:        maxsamples /= 1<<20; break;
+    case AV_CODEC_ID_CSCD:        maxpixels  /= 1024;  break;
     case AV_CODEC_ID_DFA:         maxpixels  /= 1024;  break;
     case AV_CODEC_ID_DIRAC:       maxpixels  /= 8192;  break;
     case AV_CODEC_ID_DSICINVIDEO: maxpixels  /= 1024;  break;
@@ -261,6 +262,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     case AV_CODEC_ID_MSZH:        maxpixels  /= 128;   break;
     case AV_CODEC_ID_MTS2:        maxpixels  /= 4096;  break;
     case AV_CODEC_ID_MVC2:        maxpixels  /= 128;   break;
+    case AV_CODEC_ID_MVHA:        maxpixels  /= 16384; break;
     case AV_CODEC_ID_MVDV:        maxpixels  /= 1024;  break;
     case AV_CODEC_ID_MWSC:        maxpixels  /= 256;   break;
     case AV_CODEC_ID_MXPEG:       maxpixels  /= 128;   break;
@@ -296,6 +298,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     case AV_CODEC_ID_VC1IMAGE:    maxpixels  /= 8192;  break;
     case AV_CODEC_ID_VMNC:        maxpixels  /= 8192;  break;
     case AV_CODEC_ID_VMDVIDEO:    maxpixels  /= 1024;  break;
+    case AV_CODEC_ID_VMIX:        maxpixels  /= 8192;  break;
     case AV_CODEC_ID_VP3:         maxpixels  /= 4096;  break;
     case AV_CODEC_ID_VP4:         maxpixels  /= 4096;  break;
     case AV_CODEC_ID_VP5:         maxpixels  /= 256;   break;
@@ -309,6 +312,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     case AV_CODEC_ID_WMV3:        maxpixels  /= 1024;  break;
     case AV_CODEC_ID_WS_VQA:      maxpixels  /= 16384; break;
     case AV_CODEC_ID_WMALOSSLESS: maxsamples /= 1024;  break;
+    case AV_CODEC_ID_WMAPRO:      maxsamples /= 16384; break;
     case AV_CODEC_ID_YLC:         maxpixels  /= 1024;  break;
     case AV_CODEC_ID_ZEROCODEC:   maxpixels  /= 128;   break;
     case AV_CODEC_ID_ZLIB:        maxpixels  /= 4096;  break;
